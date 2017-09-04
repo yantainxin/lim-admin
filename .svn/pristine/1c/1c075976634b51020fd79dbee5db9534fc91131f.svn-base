@@ -1,0 +1,339 @@
+<template>
+<div class="chat">
+    <div class="widget radius-bordered">
+      <div class="widget-header">
+          <span class="widget-caption">在线客服</span>
+      </div>
+      <div class="widget-body">
+				<div class="layui-box layui-layim" id="layui-layim"></div>
+  			<el-tabs class="layui-box layui-layim-panel"  type="border-card" value="fastreply">
+			    <el-tab-pane label="快捷回复" name="fastreply">
+						  <ul>
+						    <li v-for="(item, index) in items" @click="handleClick(index)">{{item.fastreplyContent}}</li>
+						  </ul>
+			    </el-tab-pane>
+			    <el-tab-pane label="用户信息" name="userinfo">
+			    	用户详细信息............
+			    </el-tab-pane>
+			  </el-tabs>
+				<div class="layui-box layui-layim-chat layer-anim" id="layui-layim-chat">
+					<div class="layui-unselect layim-chat-list"></div>
+					<div class="layim-chat-box">
+						<div class="layui-unselect layim-chat-title"></div>
+						<div class="layim-chat-main"></div>
+						<div class="layim-chat-footer">
+							<div class="layui-unselect layim-chat-tool"></div>
+							<div class="layim-chat-textarea"><div class="textarea"></div></div>
+							<div class="layim-chat-bottom"></div>
+						</div>
+					</div>
+				</div>
+      </div>
+    </div>
+</div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+
+export default{
+	data() {
+		return {
+			items: null
+		}
+	},
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+
+	mounted(){
+		this.getData('items', './thinktank/fastreply/fastreply-items.json');
+
+		let $this = this;
+		let socket, kefuStatus, recevingCount = 0;
+		layui.use(['layim', 'laytpl', 'form', 'webupload'], function(){
+			let layim = layui.layim;
+			let laytpl = layui.laytpl;
+			let form = layui.form;
+
+		  layim.config({
+		    init: {url: $this.config.host + '/kefu/kefuInit.action', type : 'get', data : {}},
+		    members: {url: $this.config.host + '/kefu/kefuMembers.action', type: 'get', data: {}},
+		    // uploadImage: {url: $this.config.host + '/library/ajaxUpload.action;jsessionid=' + $this.personal.sessionId, type: 'post'},
+		    // uploadFile: {url: $this.config.host + '/library/ajaxUpload.action;jsessionid=' + $this.personal.sessionId, type: 'post'},
+		    tool: [
+		    	{"alias" : "webuploadImage", "title" : "图片上传", "icon" : "&#xe60d;"},
+		    	{"alias" : "webuploadFile", "title" : "文件上传", "icon" : "&#xe61d;"},
+		    	{"alias" : "order", "title" : "工单提交", "icon" : "&#xe63c;"},
+		    	{"alias" : "rebroad", "title" : "呼叫转移", "icon" : "&#xe606;"},
+		    	{"alias" : "finish", "title" : "已解决", "icon" : "&#xe627;"},
+		    ],
+		    title : "我的IM",
+		    isAudio : true,
+				copyright : true,
+		  //   msgbox: $this.config.host + '/socket/msgbox.html',
+		    chatLog: $this.config.host + '/kefu/chatlog/chatlog.html'
+	  	});
+
+	  	let webuploadImage = layui.webupload({
+				auto: true,
+				swf: 'static/lib/webuploader/Uploader.swf',
+		    server: $this.config.host + '/kefu/kefuUploadImage.action',		    
+				paste: document.body,
+		    accept: {
+	        title: 'Images',
+	        extensions: 'gif,jpg,jpeg,png',
+	        mimeTypes: 'image/*'
+	    	}
+			});
+
+	  	let webuploadFile = layui.webupload({
+				auto: true,
+				swf: 'static/lib/webuploader/Uploader.swf',
+		    server: $this.config.host + '/kefu/kefuUploadFile.action',
+		    accept: {
+	        title: 'Files',
+	        extensions: 'txt,doc,xls,ppt,docx,xlsx,pptx,gif,jpg,jpeg,png',
+	        mimeTypes: 'text/plain, application/octet-stream, image/*'
+	    	}
+			});
+
+			let mine = layim.cache().mine;
+			let target = $this.config.wshost + '?key=' + $this.personal.kefuMineId;
+			socket = new WebSocket(target);
+		  let msgboxCount = 0;
+		  socket.onopen = function() {
+		  	heartCheck.reset().start();
+			}
+
+			layim.on('chatChange', function(res) {
+				console.log(res, res.data, res.data.type);
+				if(res.data.type === 'friend'){
+					$('.layim-tool-order, .layim-tool-rebroad, .layim-tool-finish').remove();
+				}
+				webuploadImage.addButton({id: '.layim-tool-webuploadImage'});
+				webuploadFile.addButton({id: '.layim-tool-webuploadFile'});
+				
+			});
+
+			//监听发送消息
+			layim.on('sendMessage', function(res) {
+				heartCheck.reset().start();
+				socket.send(JSON.stringify({
+					type : 'chatMessage' // 随便定义，用于在服务端区分消息类型
+					,
+					data : res
+				}));
+			});
+
+
+				// 监听收到的消息
+			socket.onmessage = function(res) {		
+				heartCheck.reset().start();
+				let to = JSON.parse(res.data);
+				if (to != null && to.hasOwnProperty('type') && to.hasOwnProperty('data')) {
+					let to = obj.data;
+					switch(obj.type) {
+						case 'online':
+						case 'offline':
+							layim.setFriendStatus(to.id, type);
+							break;
+						case 'chatMessage':
+						case 'rebroadMessage':
+						case 'crossMessage':
+							to.groupid = 0;
+							layim.addList(to);
+	          	layim.getMessage(to);
+							break;
+						case 'kefuStatusMessage':
+							if (data.content.length > 0) {
+								kefuStatus = data.content;
+							}
+							if (data.receving > 0) {
+								kefuReceving = data.receving;
+							}
+							break;
+						case 'systemTip':
+							layer.open({
+								title: '系统提醒',
+								content: data.systemTip,
+								offset: 'rb',
+								shade: 0,
+								time :10000
+							});
+							break;
+					}
+
+				} else {
+					console.log('接受到的消息为空');
+				}
+			};
+
+			// 状态切换
+			layim.on('online', function(status) {
+				if (status == 'online') { // 除非选在在线状态，其他状态全部是离线
+					socket.send(JSON.stringify({
+						type : 'memberStatusMessage', // 随便定义，用于在服务端区分消息类型
+						data : {
+							id : mine.id,
+							type : 'friend',
+							content : 'online'
+						}
+					}));
+				} else { // 如果是隐身或者离线，同一提示为离线
+					socket.send(JSON.stringify({
+						type : 'memberStatusMessage', // 随便定义，用于在服务端区分消息类型
+						data : {
+							id : mine.id,
+							system : true,
+							type : 'friend',
+							content : 'offline'
+						}
+					}));
+				}
+			});
+
+			layim.on('tool(order)', function(insert, send, obj) {
+				let to = obj.data;
+				let tpl = ['<form class="layui-form" action="">',
+									  '<div class="layui-form-item">',
+									   ' <label class="layui-form-label">用户ID</label>',
+									    '<div class="layui-input-block">{{d.to.username}}</div>',
+									  '</div>',
+									  '<div class="layui-form-item">',
+									   ' <label class="layui-form-label">用户类型</label>',
+									    '<div class="layui-input-block">{{d.to.type}}</div>',
+									  '</div>',
+									  '<div class="layui-form-item layui-form-text">',
+									    '<label class="layui-form-label">工单内容</label>',
+									    '<div class="layui-input-block">',
+									      '<textarea name="orderContent" placeholder="请输入内容" class="layui-textarea"></textarea>',
+									    '</div>',
+									  '</div>',
+									'</form>'].join('');
+
+				layer.open({
+					area: '600px',
+				  title: '工单提交',
+				  content: laytpl(tpl).render({to:to}),
+				  yes: function(index, layero) {
+				  		    
+				  }
+				});
+			});
+
+			/* 将客户呼叫转移给其他客服 */
+			layim.on('tool(rebroad)', function(insert, send, obj) {
+				let to = obj.data;
+				let tpl = '<ul class="item-ul">{{# layui.each(d.list, function(index, item){ }}<li><label><input type="radio" name="id" id="{{ item.id }}" value="{{ item.id }}" title="{{ item.username }}">{{ item.username }}</label></li>{{# }); }}</ul>'
+				let list = new Array();
+				$.each(layim.cache().friend[3].list, function(index, item){
+					if(item.status == 'online'){
+						list.push(item);
+					}					
+				});
+
+				layer.open({
+				  title: '选择目标客服',
+				  content: laytpl(tpl).render({list:list}),
+				  yes: function(index, layero) {
+				  	let temp = mine;
+				  	$.each(list, function(index, item){
+				  		if(item.id === layero.find('input[name="id"]:checked').val()){
+				  			temp = item;
+				  		}
+				  	});
+
+						socket.send(JSON.stringify({
+							type : 'rebroadMessage', // 随便定义，用于在服务端区分消息类型
+							data : {to: to, mine: temp}
+						}));
+						to.groupid = 2;
+						layim.addList(to);
+				    layer.close(index); //如果设定了yes回调，需进行手工关闭			    
+				  }
+				});
+
+			});
+
+			/* 完成客户咨询 */
+			layim.on('tool(finish)', function(insert, send, obj) {
+				let to = obj.data;
+				layer.confirm('确定强行结束咨询？', function(index){
+					to.groupid = 1;
+					layim.removeList({ type: 'friend', id: to.id}).addList(to);
+					socket.send(JSON.stringify({
+						type : 'finishChatKefu',
+						data : {to: to, mine : mine}
+					}));
+					recevingCount = recevingCount - 1;
+					layer.close(index);
+				});
+
+
+			});
+
+			webuploadImage.on('uploadSuccess', function( file, res ) {
+				$('.layim-chat-friend.layui-show').find('.textarea').append('<img class="layui-layim-photos" src="' + ($this.config.host + res.data.src||'') + '">');
+			});
+			webuploadFile.on('uploadSuccess', function( file, res ) {
+				$('.layim-chat-friend.layui-show').find('.textarea').append('<a class="layui-layim-file" href="'+ $this.config.host + res.data.src +'" contenteditable="false" download target="_blank"><i class="layui-icon">&#xe61e;</i><cite>'+ (res.data.name||res.data.src) +'</cite></a>');
+			});
+
+			$('.site-demo-layim').on('click', function() {
+				let type = $(this).data('type');
+				active[type] ? active[type].call(this) : '';
+			});
+
+		});
+
+
+		// 心跳检测
+		let heartCheck = {
+			timeout : 80000,// 80秒.框架是120秒没有心跳就断开
+			timeoutObj : null,
+			reset : function() {
+				clearTimeout(this.timeoutObj);
+				clearTimeout(this.serverTimeoutObj);
+
+				return this;
+			},
+			start : function() {
+				this.timeoutObj = setInterval(function() {
+					socket.send("$%$");
+				}, this.timeout);
+			}
+		}
+
+	},
+	methods:{
+		aesEncrypt(content) {
+			let key = CryptoJS.enc.Utf8.parse(this.config.aesKey);
+			let srcs = CryptoJS.enc.Utf8.parse(content);
+			let encrypted = CryptoJS.AES.encrypt(srcs, key, {
+				mode : CryptoJS.mode.ECB,
+				padding : CryptoJS.pad.Pkcs7
+			});
+			return encrypted.toString();
+		},
+		aesDecrypt(content) {
+			content = content.replace(/\s/g,'+');//由于地址栏接收到的加密串存在+号回被自动转为空格。需要替换回来。
+			let key = CryptoJS.enc.Utf8.parse(this.config.aesKey);
+			let decrypt = CryptoJS.AES.decrypt(content, key, {
+				mode : CryptoJS.mode.ECB,
+				padding : CryptoJS.pad.Pkcs7
+			});
+			return CryptoJS.enc.Utf8.stringify(decrypt).toString();
+		},
+		handleClick(index){
+			$('.layim-chat-friend.layui-show').find('.textarea').append(this.items[index].fastreplyContent);
+		}
+	}
+
+}
+</script>
+<style>
+	.layim-tool-webuploadImage input, .layim-tool-webuploadFile input{display: none;}
+</style>

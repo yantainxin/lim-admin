@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>鸭梨企业通信平台--管理员</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="shortcut icon" type="image/x-icon" href="../static/image/favicon.png"/>
+  	<link rel="stylesheet" type="text/css" href="../static/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/lib/layer/skin/default/layer.css">
+    <link rel="stylesheet" type="text/css" href="../static/lib/theme/index.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/global.css">
+  </head>
+  <body>
+    <div id="sysadm"></div>
+  </body>
+</html>
+
+
+

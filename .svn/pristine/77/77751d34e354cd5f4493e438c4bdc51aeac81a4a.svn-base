@@ -1,0 +1,9 @@
+layui.config({
+	dir: 'http://im.newyali.com/static/lib/layui/',
+});
+layui.addcss('layui.css', function(){
+}, 'skinlayuicss');
+layui.addcss('layui.mobile.css', function(){
+}, 'skinlayuimobilecss');
+layui.addcss('layui.plugs.css', function(){
+}, 'plugslayuicss');

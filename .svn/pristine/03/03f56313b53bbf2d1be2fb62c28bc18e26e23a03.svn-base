@@ -1,0 +1,32 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="ID">{{item.robotId}}</d-text>
+    <d-text label="关键字">{{item.robotKeyword}}</d-text>
+    <d-text label="问题">{{item.robotQuestion}}</d-text>
+    <d-text label="答案">{{item.robotAnswer}}</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data() {
+    return {
+      loading:true,
+      path: './thinktank/robot/robot',
+      item: null
+    } 
+  },
+  mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {id:this.$route.query.id}); 
+
+  }
+}
+</script>

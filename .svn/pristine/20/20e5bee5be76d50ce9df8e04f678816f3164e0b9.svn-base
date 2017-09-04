@@ -1,0 +1,44 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :工作日="rules" ref="syskefutimeForm" label-width="200px">
+  <el-form-item label="上班提示语" prop="syskefutimeWorkdays">
+    <s-checkbox-group v-model="item.syskefutimeWorkdays" :options="[{'value':1, 'label':'星期一'}, {'value':2, 'label':'星期二'}, {'value':3, 'label':'星期三'}, {'value':4, 'label':'星期四'}, {'value':5, 'label':'星期五'}, {'value':6, 'label':'星期六'}, {'value':7, 'label':'星期日'}]"></s-checkbox-group>
+  </el-form-item>
+  <el-form-item label="下班时间是否接入新会话" prop="syskefutimeIsdialog">
+    <s-switch v-model="item.syskefutimeIsdialog"></s-switch>
+  </el-form-item>
+  <el-form-item label="下班时间是否释放排队访客" prop="syskefutimeIsvisitor">
+    <s-switch v-model="item.syskefutimeIsvisitor"></s-switch>
+  </el-form-item>
+  <el-form-item label="上班时间" prop="syskefutimeWorktime">
+    <s-time-select v-model="item.syskefutimeWorktime" :picker-options="{maxTime: item.syskefutimeOffworktime}"></s-time-select>
+    到
+    <s-time-select v-model="item.syskefutimeOffworktime" :picker-options="{minTime: item.syskefutimeWorktime}"></s-time-select>
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('syskefutimeForm')">确认</el-button>
+    <el-button @click="formReset('syskefutimeForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './syssetting/syskefutime/syskefutime',
+      rules: null,
+      item: {}
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  }
+}
+</script>

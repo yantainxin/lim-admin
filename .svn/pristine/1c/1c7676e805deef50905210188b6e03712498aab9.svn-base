@@ -1,0 +1,62 @@
+<template>
+  <div class="page-desk">
+  <el-row>
+  <el-col :span="12"><canvas id="barChar"></canvas></el-col>
+  <el-col :span="12"><canvas id="lineChar"></canvas></el-col>
+  <el-col :span="12"><canvas id="pieChar"></canvas></el-col>
+
+  <el-col :span="12"><canvas id="polarChar"></canvas></el-col>
+  <el-col :span="12">
+    <div class="Chart">
+    <h2>2017上半年费用支出情况</h2>
+          <line-example labelRed="小红" :dataRed="dataRed" labelBlue="小蓝" :dataBlue="dataBlue"></line-example>
+        </div>
+  </el-col>
+  <el-col :span="12"><canvas id="radarChar"></canvas></el-col>
+</el-row>
+</div>
+</template>
+
+<script>
+import LineExample from './LineChart.js'
+export default {
+  components: {
+    LineExample
+  },
+  data(){
+    return{
+      dataRed: [40, 39, 10, 40, 39, 80, 40],
+      dataBlue: [60, 55, 32, 10, 2, 12, 53]
+    }
+  },
+  mounted(){
+    this.barChar({'data': [12, 19, 3, 5, 2, 3]});
+    this.lineChar({'data': [12, 19, 3, 5, 2, 3]});
+    this.polarChar({'data': [10, 6, 8, 4, 8, 6]});
+    this.radarChar({'data': [80, 50, 70, 60, 40, 20], 'data1': [30, 90, 50, 50, 10, 60]});
+    this.pieChar({'data': [40, 50, 10]});
+  }
+}
+</script>
+ <style>
+    .container {
+      max-width: 800px;
+      margin:  0 auto;
+    }
+    .Chart {
+      background: rgba(54, 162, 235, 0.1);
+      border-radius: 5px;
+      box-shadow: 0px 2px 15px rgba(25, 25, 25, 0.27);
+      margin:  25px 0;
+    }
+
+    .Chart h2 {
+      margin-top: 0;
+      padding: 15px 0;
+      color:  rgba(255, 0,0, 0.5);
+      border-bottom: 1px solid #323d54;
+    }
+    .smallchar{
+    	max-width: 400px;
+    }
+    </style>

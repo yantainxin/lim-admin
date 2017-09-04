@@ -1,0 +1,33 @@
+<template>
+<div class="item-box">
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+  <el-row v-if="item != null"class="item-detail">
+    <d-text label="ID">{{item.roleId}}</d-text>
+    <d-text label="角色名称">{{item.roleName}}</d-text>
+    <!-- <d-text label="角色权限">{{item.roleColumnIds}}</d-text> -->
+    <d-text label="角色描述">{{item.roleDescription}}</d-text>
+  </el-row>
+</el-row>
+</div>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data() {
+    return {
+      loading:true,
+      path: './permissions/role/role',
+      item: null
+    } 
+  },
+  mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {id:this.$route.query.id});
+  }
+}
+</script>

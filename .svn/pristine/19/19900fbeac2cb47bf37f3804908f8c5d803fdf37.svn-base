@@ -1,0 +1,57 @@
+<template>
+<div class="order">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+            <span class="widget-caption">工单列表</span>
+        </div>
+        <div class="widget-body">
+            <el-row class="content-tools">              
+                <el-col :span="8">
+                    <s-search routeName="orderManage"></s-search>
+                </el-col>
+                <el-col :span="16" class="text-right">
+                <h-privilege-top></h-privilege-top>
+                <!--<el-button-group>
+                        <router-link class="el-button" :to="{name:'orderManage'}" tag="button" title="管理"><i class="fa fa-list"></i><span class="hidden-xs">管理</span></router-link>
+                        <router-link class="el-button" :to="{name:'orderImport'}" tag="button" title="导入"><i class="fa fa-sign-in"></i><span class="hidden-xs">导入</span></router-link>
+                        <a class="el-button" @click="show()" tag="button" title="导出"><i class="fa fa-sign-out"></i><span class="hidden-xs">导出</span></a>
+                    </el-button-group> -->
+                </el-col>
+            </el-row>
+            <el-form ref="orderForm" class="export" v-if="willShow" label-width="160px">
+                <hr>
+                <el-col :span="20">
+                <el-form-item label="用户自定义" prop="columnPid">
+                <s-checkbox-group name="options" v-model="property" :options="options"></s-checkbox-group>
+                </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-button type="submit" @click.native="exportExcel()">确定导出</el-button><iframe style="display:none"></iframe>
+                </el-col>
+            </el-form>
+            <hr>
+            <router-view></router-view>
+        </div>
+    </div>
+</div>
+</template>
+<script>
+export default {
+    data() {
+        return {
+            willShow:false,
+            property: [],
+            options: [{'value':'ID', 'label':'ID'}, {'value':'工单主题', 'label':'工单主题'}, {'value':'创建时间', 'label':'创建时间'},{'value':'处理截止时间', 'label':'处理截止时间'}, {'value':'实际处理时间', 'label':'实际处理时间'}, {'value':'工单状态', 'label':'工单状态'}],
+            exportPath:'/order/orderExport.action',
+        }
+    },
+    methods: {
+        show:function(){
+          this.willShow = !this.willShow;
+        },
+        exportExcel(){
+            this.formExport();
+        }
+    }
+}
+</script>

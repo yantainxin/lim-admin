@@ -1,0 +1,56 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "columnId":[
+            {
+                "type": "string",
+                "required": true,
+                "message": "父节点不能为空",
+                "trigger": "blur"
+            }
+        ],
+        "privilegeName":[
+            {
+                "type": "string",
+                "required": true,
+                "message": "名称不能为空",
+                "trigger": "blur"
+            }
+        ],
+        "privilegeDescription": [
+            {
+                "type": "string",
+                "required": true,
+                "message" : "描述不能为空",
+                "trigger": "blur"
+            }
+        ],
+        "privilegeType":[
+            {
+                "type": "enum",
+                "required": true,
+                "enum": [0,1,2],
+                "message" : "类型不能为空",
+                "trigger": "blur"
+            }
+        ],
+        "privilegePosition":[
+            {
+                "type": "enum",
+                "required": true,
+                "enum": [0,1],
+                "message" : "位置不能为空",
+                "trigger": "blur"
+            }
+        ],
+        "privilegeUname": [
+            {   
+                "type": "string",
+                "required": true,
+                "message" : "链接不能为空",
+                "trigger": "blur"
+            }
+        ]
+    }
+}

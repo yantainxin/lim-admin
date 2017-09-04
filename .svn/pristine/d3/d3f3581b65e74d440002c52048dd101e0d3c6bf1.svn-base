@@ -1,0 +1,98 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+<el-form v-if="item != null && rules != null" :model="item" :rules="rules" ref="settingForm" label-width="200px">
+
+
+  <el-form-item label="版权信息" prop="settingCopyright">
+    <s-textfield v-model="item.settingCopyright" placeholder="请填写版权信息"></s-textfield>
+  </el-form-item>
+  <el-form-item label="企业信息接口地址" prop="settingCompanyViewurl">
+    <s-textfield v-model="item.settingCompanyViewurl" placeholder="请填写企业信息接口地址"></s-textfield>
+  </el-form-item>
+  <el-form-item label="部门信息接口地址" prop="settingSectionmanageurl">
+    <s-textfield v-model="item.settingSectionmanageurl" placeholder="请填写部门信息接口地址"></s-textfield>
+  </el-form-item>
+  <el-form-item label="员工信息接口地址" prop="settingStaffmanageurl">
+    <s-textfield v-model="item.settingStaffmanageurl" placeholder="请填写员工信息接口地址"></s-textfield>
+  </el-form-item>
+<!--   <el-form-item label="会员信息接口地址" prop="settingMembermanageurl">
+    <s-textfield v-model="item.settingMembermanageurl" placeholder="请填写会员信息接口地址"></s-textfield>
+  </el-form-item> -->
+
+
+  <el-form-item label="会话超时警告时间" prop="settingWarningletime">
+    <s-input-number v-model="item.settingWarningletime"></s-input-number>
+  </el-form-item>
+  <el-form-item label="会话超时关闭时间" prop="settingClosureletime">
+    <s-input-number v-model="item.settingClosureletime"></s-input-number>
+  </el-form-item>
+  <el-form-item label="会话超时警告提示语" prop="settingWarningletimetip">
+    <s-textfield v-model="item.settingWarningletimetip" placeholder="请填写会话超时警告提示语"></s-textfield>
+  </el-form-item>
+  <el-form-item label="会话超时关闭提示语" prop="settingClosureletimetip">
+    <s-textfield v-model="item.settingClosureletimetip" placeholder="请填写会话超时关闭提示语"></s-textfield>
+  </el-form-item>
+  <el-form-item label="评价邀请语" prop="settingInvitationmsg">
+    <s-textfield v-model="item.settingInvitationmsg" placeholder="请填写评价邀请语"></s-textfield>
+  </el-form-item>
+  <el-form-item label="评价感谢语" prop="settingThanksmsg">
+    <s-textfield v-model="item.settingThanksmsg" placeholder="请填写评价感谢语"></s-textfield>
+  </el-form-item>
+  <el-form-item label="客服接待设置" prop="settingReceive">
+    <s-switch v-model="item.settingReceive"></s-switch>
+  </el-form-item>
+  <el-form-item label="会话转接设置" prop="settingIstransfer">
+    <s-switch v-model="item.settingIstransfer"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否客服设置头像功能" prop="settingIsavatar">
+    <s-switch v-model="item.settingIsavatar"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启【游客/会员】发送图片功能" prop="settingIsimage">
+    <s-switch v-model="item.settingIsimage"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启【游客/会员】发送文件功能" prop="settingIsfile">
+    <s-switch v-model="item.settingIsfile"></s-switch>
+  </el-form-item>
+<!--   <el-form-item label="是否开启【游客/会员】截屏/截图功能" prop="settingIsprintscreen">
+    <s-switch v-model="item.settingIsprintscreen"></s-switch>
+  </el-form-item> -->
+  <el-form-item label="是否开启【游客/会员】发送表情功能" prop="settingIsemotion">
+    <s-switch v-model="item.settingIsemotion"></s-switch>
+  </el-form-item>
+<!--   <el-form-item label="是否开启【游客/会员】发送语音功能" prop="settingIsvoice">
+    <s-switch v-model="item.settingIsvoice"></s-switch>
+  </el-form-item>
+  <el-form-item label="预知访客消息" prop="settingIsmessage">
+    <s-switch v-model="item.settingIsmessage"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启敏感词感知功能" prop="settingIssensitive">
+    <s-switch v-model="item.settingIssensitive"></s-switch>
+  </el-form-item> -->
+
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('settingForm')">确认</el-button>
+    <el-button @click="formReset('settingForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './setting/setting/setting',
+      rules: null,
+      item: null
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+        this.initItem();
+    }
+  }
+}
+</script>

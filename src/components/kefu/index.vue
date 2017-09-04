@@ -1,0 +1,101 @@
+<template>
+  <div class="wrapper">
+    <div class="floater"></div>
+    <el-row class="login" v-loading="loading" element-loading-text="拼命加载中">
+      <div class="login-form" @keyup.enter="userLogin('kefu')">
+      <el-form :model="item" :rules="rules" ref="kefu" label-width="80px">    
+        <el-row class="text-right"><img src="../../../static/image/logo.png"></el-row>
+        <el-row class="text-center h1">客服登录</el-row>
+
+        <el-form-item label="帐号" prop="account" class="text-white">
+          <s-textfield v-model="item.account" :autofocus="true" @focus="handleFocus" placeholder="用户名/邮箱/手机号码">
+            <el-button slot="prepend" icon="search"></el-button>
+          </s-textfield>
+        </el-form-item>
+        <el-form-item label="密码" prop="password" class="text-white">
+          <s-password v-model="item.password" @focus="handleFocus" placeholder="请输入密码"></s-password>
+        </el-form-item>
+        <el-form-item label="校验码" prop="randomcode" class="text-white randomcode">
+          <el-col :span="12">
+            <s-textfield v-model="item.randomcode" @focus="handleFocus" placeholder="请输入校验码"></s-textfield>
+          </el-col>
+          <el-col :span="1">&nbsp;</el-col>
+          <el-col :span="11">
+            <img class="random" :src="randomUrl" @click="getRandom">
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-row :gutter="10">
+          <el-col :span="12">
+            <el-button class="element-block" @click="userLogin('kefu')">登录</el-button>
+          </el-col>          
+          <el-col :span="12">
+            <el-button class="element-block" @click="kefu('sysadm')">重置</el-button>
+          </el-col> 
+<!--           <el-col :span="8">
+            <el-tooltip content="使用鸭梨通行证帐号登录">
+            <el-button  type="primary" class="element-block" @click="yaliPassport()"><img class="passport" src="../../../static/image/yali.png"/></el-button>
+            </el-tooltip>
+          </el-col> -->
+          </el-row>
+        </el-form-item>
+        <el-form-item>
+          <el-row :gutter="10">
+            <el-col :span="12"></el-col>
+            <el-col :span="12" class="text-right"></el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+      </div>
+      <div class="login-circle"></div>
+    </el-row>
+    <div class="copyright">Copyright © 2010-2017 广东鸭梨新媒体信息科技股份有限公司</div>  
+  </div>
+</template>
+<script>
+import { mapActions } from 'vuex'
+export default{
+  data() {
+    return {
+      loading: false,
+      path: './user/kefu',
+      route: 'desk',
+      random: Math.random(),
+      item: {
+        account:'',
+        password:'',
+        randomcode:''
+      },
+      rules: {
+        account:[{type: 'string',required: true,message : '账号不能为空',trigger: 'blur'}],
+        password:[
+          {type: 'string', required: true, message : '密码不能为空',trigger:' blur'},
+          {type: 'string', pattern: '^(\\w){6,20}$', message : '只能输入6-20个字母、数字、下划线', trigger: 'blur'}],
+        randomcode:[{type: 'string',required: true,message : '验证码不能为空',trigger: 'blur'}]
+      }
+    }
+  },
+  computed: {
+    randomUrl() {
+      return this.config.host + '/RandomServlet?' + this.random;
+    }
+  },
+  methods: {
+    ...mapActions({
+      setPersonal: 'SET_PERSONAL'
+    }),
+    getRandom() {
+      return this.random = Math.random();
+    },
+    handleFocus(e) {
+      e.target.select();
+    },
+    yaliPassport() {
+      location.href = 'http://ucenter.newyali.cn/client/auth/sys_auth_login?client_id=b655b0cecdf089ecdf08028c3abb4b3028c3abb44&app_secret=e4b1aa29055085cb7cbbe76c9ce12dc0&redirect_uri=http://' + location.host + '/kefu/index.html%23/login';
+    }
+  }
+}
+</script>
+<style>
+  .wrapper {background: #FFF;}
+</style>

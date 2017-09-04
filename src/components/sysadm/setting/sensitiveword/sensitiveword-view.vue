@@ -1,0 +1,35 @@
+<template>
+<div class="item-box">
+  <el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+   <el-row v-if="item != null"class="item-detail">
+    <d-text label="敏感词">
+      <el-tag v-for="tag in item.sensitivewordKeys" :key = "item.id" type="primary">{{tag}}</el-tag></d-text>
+  </el-row>
+  <el-row v-if="item != null"class="item-detail">
+    <d-text label="替换词汇">{{item.sensitivewordReplace}}</d-text>
+  </el-row>
+</el-row>
+</div>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+	data() {
+		return {
+			loading:true,
+			path: './setting/sensitiveword/sensitiveword',
+			item: null,
+            words:[]
+		} 
+	},
+	mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {id:this.$route.query.id}); 
+  }
+}
+</script>

@@ -1,0 +1,57 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table v-if="items != null" :data="items" border stripe>
+    <el-table-column align="center" prop="memberId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="memberNo" label="编号" sortable></el-table-column>
+    <el-table-column header-align="center" prop="memberUsername" label="账号" sortable></el-table-column>
+    <el-table-column header-align="center" prop="memberTel" label="电话" sortable></el-table-column>
+    <el-table-column header-align="center" prop="memberEmail" label="邮箱" sortable></el-table-column>
+    <!-- <el-table-column align="center" label="操作" width="180">
+      <template scope="scope">
+        <d-privilege v-if="privileges != null" :options="privileges" :query="{id: scope.row.memberId}" size="small" :isLabel="false"></d-privilege>
+      </template>
+        <template scope="scope">
+            <router-link class="el-button el-button-info el-button-small" :to="{name:'memberView', query:{id: scope.row.memberId}}" tag="button" title="详细">
+                <i class="iconfont icon-chakan"></i><span class="hidden-xs">详细</span>
+            </router-link>
+              </template>
+    </el-table-column> -->
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL',
+      tabItems: 'GET_TABS',
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  data() {
+    return {
+      loading: false,
+      path: './basicinfo/member/member',
+      count: 0,
+      items: null,
+      privileges:null,
+    } 
+  },
+  mounted(){
+    let url = this.config.userpath + this.path.substr(1) + '-items.action';
+    this.listItems(url); 
+    this.getPrivilege({pos: 1});
+    this.$bus.$on('memberDelete', (option) => {
+      this.reomveItem(option);
+    });
+  },
+  watch:{
+    $route(){
+      let url = this.config.userpath + this.path.substr(1) + '-items.action';
+      this.listItems(url);
+    }
+  }
+}
+</script>

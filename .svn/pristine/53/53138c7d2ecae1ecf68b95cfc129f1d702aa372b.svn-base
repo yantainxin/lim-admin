@@ -1,0 +1,35 @@
+<template>
+	<span>
+		<template v-for="priR in privileges">
+		  <router-link  v-if="priR.privilegeName == '详细'"
+			  class="el-button el-button--info el-button--small" 
+			  :to="{name:priR.privilegeUname, query:objViewid}" 
+			  tag="button" :title="priR.privilegeName">
+			  <i :class="priR.privilegeIcon"></i>
+			  <!-- <span class="hidden-xs">{{priR.privilegeName}}</span> -->
+		  </router-link>
+			<router-link v-if="priR.privilegeName == '编辑'"
+				class="el-button el-button--info el-button--small" 
+				:to="{name:priR.privilegeUname, query:objId}" 
+				tag="button" :title="priR.privilegeName">
+				<i :class="priR.privilegeIcon"></i>
+				<!-- <span class="hidden-xs">{{priR.privilegeName}}</span> -->
+			</router-link>
+			<a v-if="priR.privilegeName == '删除'"
+				class="el-button el-button--danger el-button--small"
+				@click="reomveItem(objId)" :title="priR.privilegeName">
+				<i :class="priR.privilegeIcon"></i>
+				<!-- <span class="hidden-xs">{{priR.privilegeName}}</span> -->
+			</a>
+		</template>
+	</span>
+</template>
+<script>
+export default {
+  props:['columnId','privileges','objId','objViewid','path'],
+}
+	
+</script>
+<style>
+	a{text-decoration: none;}
+</style>

@@ -1,0 +1,30 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="ID">{{item.syschannelId}}</d-text>
+    <d-text label="渠道号">{{item.syschannelNumber}}</d-text>
+    <d-text label="网站名称">{{item.syschannelWebname}}</d-text>
+    <d-text label="网站链接">{{item.syschannelUrl}}</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data() {
+    return {
+      loading:true,
+      path: './system/syschannel/syschannel',
+      item: null
+    } 
+  },
+  mounted() {
+    this.viewItem();
+  }
+}
+</script>

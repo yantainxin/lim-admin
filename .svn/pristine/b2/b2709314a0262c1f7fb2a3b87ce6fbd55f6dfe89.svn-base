@@ -1,0 +1,177 @@
+<template>
+<div class="chat">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+            <span class="widget-caption">在线客服</span>
+        </div>
+        <div class="widget-body">            
+      		<el-row :gutter="10">
+						<el-col :span="4">
+      				<div class="layui-box layui-layim" id="layui-layim"></div>
+      			</el-col>
+      			<el-col :span="15">
+      				<div class="layui-box layui-layim-chat layer-anim" id="layui-layim-chat">
+      					<ul class="layui-unselect layim-chat-list"></ul>
+
+      				</div>
+      			</el-col>
+      			<el-col :span="5">
+      				<el-tabs value="fastreply">
+					    <el-tab-pane label="快捷回复" name="fastreply">								
+	      				<el-card class="box-card">	
+								  <div v-for="o in 4" class="text item">
+								    {{'列表内容 ' + o }}
+								  </div>
+								</el-card>
+					    </el-tab-pane>
+					    <el-tab-pane label="用户信息" name="userinfo">
+					    	用户详细信息............
+					    </el-tab-pane>
+					  </el-tabs>
+      			</el-col>
+      			</el-row>
+        </div>
+    </div>
+</div>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+
+export default{
+	data() {
+		return {
+			item: null
+		}
+	},
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    }),
+    wshost() {
+    	console.log(11, this.config.host.replace('http', 'ws'));
+    	return this.config.host.replace('http', 'ws');
+    }
+  },
+
+	mounted(){
+
+		// this.getData('item', './kefu/thinktank/fastreply/fastreply-items.json')
+
+
+		let $this = this;
+		layui.use('layim', function(layim){
+		  layim.config({
+		    init: {url: $this.config.host + '/httpClient/ajaxInit.action;jsessionid=' + $this.personal.sessionId, type : 'get', data : {}},
+		    members: {url: $this.config.host + '/httpClient/ajaxMembers.action;jsessionid=' + $this.personal.sessionId, type: 'get', data: {}},
+		    uploadImage: {url: $this.config.host + '/library/ajaxUpload.action;jsessionid=' + $this.personal.sessionId, type: 'post'},
+		    uploadFile: {url: $this.config.host + '/library/ajaxUpload.action;jsessionid=' + $this.personal.sessionId, type: 'post'},
+		    tool: [
+		    	{"alias" : "code", "title" : "代码", "icon" : "&#xe64e;"},
+		    	{"alias" : "rebroad", "title" : "呼叫转移", "icon" : "&#xe606;"},
+		    	{"alias" : "finish", "title" : "已解决", "icon" : "&#xe627;"}
+		    ],
+		    title : "我的IM",
+		    isAudio : true,
+				copyright : true,
+		    msgbox: $this.config.host + '/socket/msgbox.html;jsessionid=' + $this.personal.sessionId,
+		    chatLog: $this.config.host + '/chatlog/showChatlog.action;jsessionid=' + $this.personal.sessionId
+	  	});
+
+			let target = $this.wshost + '/webSocketServer.action?key=' + $this.personal.id;
+			let socket = new WebSocket(target);
+		  let msgboxCount = 0;
+		  socket.onopen = function() {
+		  	$this.$http.get($this.config.host + '/chatlog/countChatlog.action?id='+$this.personal.id).then(function(res) {
+		  		msgboxCount = Number(res.body);
+	  			if (msgboxCount > 0) {
+						layim.msgbox(msgboxCount);
+					}
+	      });
+			}
+
+			layim.on('chatChange', function(res) {
+				let type = res.data.type;
+				let fromid = res.data.id;
+				let avatar = res.data.avatar;
+				let username = res.data.username;
+				if (type == 'friend' && msgboxCount != 0) {
+					$this.$http.post($this.config.host + '/chatlog/readFriendChatlog.action', {fromid : fromid,id : user.id}).then(function(res) {
+						if(res.body != null && res.body != ''){
+							$.each(JSON.parse(data), function(n, value) {
+									layim.getMessage({
+										username : value.username,
+										avatar : value.avatar,
+										id : value.id,
+										type : value.type,
+										content : value.content,
+										timestamp : value.timestamp,
+										fromid : value.fromid,
+										mine : value.mine,
+										system : false
+									});
+								});
+								msgboxCount = msgboxCount - JSON.parse(data).length;
+								layim.msgbox(msgboxCount);
+						}
+					}, function(){
+						layer.msg('发生错误。请重新登录。');
+					});
+				}
+			});
+
+			//监听发送消息
+			layim.on('sendMessage', function(res) {
+				socket.send(JSON.stringify({
+					type : 'chatMessage' // 随便定义，用于在服务端区分消息类型
+					,
+					data : res
+				}));
+			});
+
+
+				// 监听收到的消息
+					socket.onmessage = function(res) {
+						//eval('var obj =' + res.data + ';');
+						var obj = JSON.parse(res.data);
+						if (obj != null) {
+							var type = obj.type;
+							var data = obj.data;
+							/* 各种消息类型 */
+							if (type != null && (type == 'chatMessage'  || type == 'chatKefuMessage' || type == 'rebroadMessage' || type == 'crossMessage')) {
+								layim.getMessage(data);
+							} else if (type != null && (type == 'offline' || type == 'online')) {
+								var id = data.id;
+								layim.setFriendStatus(id, type);
+							} else if (type != null && type == 'kefuStatusMessage') {
+								console.log("提示客服:"+data.content);
+								if (data.content.length > 0) {
+									$('#tipContent').html(data.content);
+								}
+								if (data.receving > 0) {
+									$('#recevingCount').html(data.receving);
+								}
+								
+							}else if (type != null && (type == 'systemTip')) {
+								layer.open({
+									  title: '系统提醒'
+									  ,content: data.systemTip
+									  ,offset: 'rb'
+									  ,shade: 0
+									  ,time :10000
+								});  
+							}
+						} else {
+							console.log('socket.onmessage接受到的消息为空');
+						}
+					};
+
+
+
+		});
+
+		// this.$nextTick(function(){
+  //     $('.layim-chat-main').height(400);
+  //   });
+	}
+}
+</script>

@@ -1,0 +1,45 @@
+<template>
+  <div class="wrapper" v-if="hasSession">
+      <page-head></page-head>
+      <el-row>
+        <page-side></page-side>
+        <div class="page-body">
+          <page-tabs></page-tabs>
+          <page-main></page-main>
+        </div>
+      </el-row>
+  </div>
+</template>
+
+<script>
+import pageHead from './page-head.vue'
+import pageSide from './page-side.vue'
+import pageTabs from './page-tabs.vue'
+import pageMain from './page-main.vue'
+import { mapGetters } from 'vuex'
+export default {
+  name: 'syskefu',
+  components: {pageHead, pageSide, pageTabs, pageMain},
+  data(){
+    return {     
+      hasSession : sessionStorage.hasOwnProperty('personal'),
+    }
+  },
+  mounted(){
+    this.$nextTick(function () {
+      $('.page-side').height($(window).height() - $('.page-head').outerHeight(true));
+      $('.page-main').height($(window).height() - $('.page-head').outerHeight(true) - $('.el-tabs__header').outerHeight(true));
+    });
+  },
+  computed:{
+    ...mapGetters({
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  watch: {
+    tabActive() {
+      this.$router.push({name: this.tabActive});
+    }
+  }
+}
+</script>

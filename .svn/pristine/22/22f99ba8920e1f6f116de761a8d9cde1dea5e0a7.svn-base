@@ -1,0 +1,136 @@
+<template>
+<div class="desk">
+  <div class="widget radius-bordered">
+    <div class="widget-header">
+      <span class="widget-caption">桌面</span>
+    </div>
+    <div class="widget-body">
+    <el-row :gutter="10">
+      <el-col :span="16">
+          <el-card class="box-card text-center text-white">
+            <el-row :gutter="10">
+              <template v-for="order in orderdata">
+                <el-col :span="6" class="box-padding" :style="'background:' + order.background">
+                {{order.count}}
+                <h6>{{order.orderdetailStatu}}</h6>
+                <i :class="order.icon"></i>
+                </el-col>
+              </template>
+            </el-row>
+          </el-card>
+          <el-card class="box-card">
+            <span>访问量</span>
+            <hr>
+            <canvas class="lineChar"></canvas>
+          </el-card>
+      </el-col>
+      <el-col :span="8">
+        <el-card class="box-card">
+          <label id="dateTime"></label>
+        </el-card>
+
+        <el-card class="box-card">
+          <span>客服</span>
+          <hr>
+          <div v-for="kefu in kefudata">
+          {{kefu.kefuIsstate}} | {{kefu.count}}
+          </div>
+        </el-card>
+        <el-card class="box-card">
+            <span>最近访客</span>
+            <!-- <router-link :to="{name:'touristManage'}" class="pull-right">更多访客详情</router-link> -->
+            <hr>
+            <el-row>
+              <template v-for="tourist in touristdata">
+                <el-col :md="12" :lg="8">
+                  <img class="pull-left" :src="tourist.touristPhoto">
+                  {{tourist.touristName}}<br>
+                  {{tourist.touristCreatetime}}                  
+                </el-col>
+              </template>
+            </el-row>
+        </el-card>
+      </el-col>
+      </el-row>
+    </div>
+  </div>
+</div>
+</template>
+
+<script> 
+import charSource from '../../common/char.source.js'
+import { mapGetters, mapActions } from 'vuex'
+export default {
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL',
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  data(){
+    return{
+      kefudata:{},
+      orderdata:{},
+      touristdata:{}
+    }
+  },
+  mounted(){
+    var slidint;
+    newTimer();  
+    function newTimer() {
+      var today = new Date();
+      var str = "  "+today.toLocaleDateString() + "<br>";
+      str += "  " + week();
+      str += "  " + today.toLocaleTimeString();
+      var dt ;
+      if(dt= document.getElementById("dateTime")){
+        dt.innerHTML = str;
+      }
+      slidint = setTimeout(newTimer, 1000); 
+    }
+    function stopit() {
+      clearTimeout(slidint);   
+    }
+    function week() {
+      var d, day, x, s = " ";  
+      var x = new Array("星期日", "星期一", "星期二","星期三", "星期四", "星期五","星期六");
+      d = new Date();
+      day = d.getDay();
+      return (s += x[day]);
+    }
+
+
+    let obj = this;
+    /*---------游客访问量--------------*/
+    this.getSource(this.config.userpath +'/diagram/tourist-monthSum.json', {}, function(res) {
+      let arr =  res.data;
+      let months = res.months;
+      let month=[];
+      let counts=[0,0,0,0,0,0,0,0,0,0,0,0];
+      let count=[];
+      $.each(arr,function(idx,item){
+        month.push(item.month);
+        count.push(item.count);
+        counts[parseInt(item.month)-1]= item.count;
+
+      });
+      charSource.lineChar({'month': months, 'count':counts});
+    })
+
+    /*----------客服状态数-------------------------*/
+    this.getSource(this.config.userpath +'/diagram/kefu-statuSum.json', {}, function(res) {
+      this.kefudata = res.data;
+    })
+
+    /*-----------工单状态---------------------------*/
+    this.getSource(this.config.userpath + '/diagram/order-statuSum.json', {}, function(res) {
+      this.orderdata = res.data;
+    });
+
+    /*-----------游客访问-------------------------------*/
+    this.getSource(this.config.userpath + '/diagram/tourist-newly.json', {}, function(res) {
+      this.touristdata = res.data;
+    });        
+  }
+}
+</script>

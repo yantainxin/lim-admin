@@ -1,0 +1,37 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="kefuForm" label-width="120px">
+  <el-form-item label="网站名称" prop="syschannelWebname">
+    <s-textfield v-model="item.syschannelWebname"></s-textfield>
+  </el-form-item>
+  <el-form-item label="网站链接" prop="syschannelUrl">
+    <s-textarea v-model="item.syschannelUrl"></s-textarea>
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('syschannelForm')">确认</el-button>
+    <el-button @click="formReset('syschannelForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './system/syschannel/syschannel',
+      route: 'syschannelManage',
+      rules: null,
+      item: null
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  }
+}
+</script>

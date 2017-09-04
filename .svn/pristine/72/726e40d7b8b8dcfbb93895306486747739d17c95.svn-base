@@ -1,0 +1,34 @@
+$(function(){
+	$('.page-tabs').find('.prev').click(function() {
+		var $obj = $('.page-tabs').find('.nav');
+		var _offset = 0 - $obj.position().left;
+		if(_offset >= 0){
+			if(_offset > $obj.parent().width()) {
+				_offset = $obj.parent().width() * 0.8;
+			}
+			$obj.animate({'left':  $obj.position().left + _offset + 'px'});
+		}
+	});
+	$('.page-tabs').find('.next').click(function() {
+		var $obj = $('.page-tabs').find('.nav');
+		var _offset = $obj.outerWidth(true) - ($obj.parent().width() - $obj.position().left);
+		if(_offset >= 0){
+			if(_offset > $obj.parent().width()){
+				_offset = $obj.parent().width() * 0.8;
+			}
+			$obj.animate({'left': $obj.position().left - _offset + 'px'});
+		}
+	});
+})
+
+
+
+
+// function contains(arr, obj){
+// 	$.each(arr, function(index, temp){
+// 		if(obj.id == temp.id){
+// 			return true;
+// 		}
+// 	})	
+// 	return false;
+// }

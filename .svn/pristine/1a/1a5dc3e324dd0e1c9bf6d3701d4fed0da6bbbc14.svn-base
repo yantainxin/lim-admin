@@ -1,0 +1,312 @@
+layui.use(['jquery','layer'], function(){
+	var aesKey= "abcdefgabcdefg12";//秘钥。16位
+	//加密
+	function aesEncrypt(content) {
+		var key = CryptoJS.enc.Utf8.parse(aesKey);
+		var srcs = CryptoJS.enc.Utf8.parse(content);
+		var encrypted = CryptoJS.AES.encrypt(srcs, key, {
+			mode : CryptoJS.mode.ECB,
+			padding : CryptoJS.pad.Pkcs7
+		});
+		return encrypted.toString();
+	}
+	//解密
+	function aesDecrypt(content) {
+		content =content.replace(/\s/g,'+');//由于地址栏接收到的加密串存在+号回被自动转为空格。需要替换回来。
+		var key = CryptoJS.enc.Utf8.parse(aesKey);
+		var decrypt = CryptoJS.AES.decrypt(content, key, {
+			mode : CryptoJS.mode.ECB,
+			padding : CryptoJS.pad.Pkcs7
+		});
+		return CryptoJS.enc.Utf8.stringify(decrypt).toString();
+	}
+	var $ = layui.jquery;
+	var layer = layui.layer;
+	var scripts = document.getElementsByTagName('script');
+	var sum = scripts.length;
+	var url = "";
+	var regex = /\S*mlim.js\?\S*$/;
+	for (var i = 0; i < sum; i++) {
+		if (regex.exec(scripts[i].src)) {
+			url = scripts[i].src;
+		}
+	}
+	var regex = /^(\w+):\/\/([^\/:]*)(?::(\d+))?\/([^?]*)(?:\?(.*))?$/gi;
+	regex.exec(url);
+	var protocol = RegExp.$1;
+	var domain = RegExp.$2;
+	var port = RegExp.$3;
+	var uri = RegExp.$4;
+	var qstring = RegExp.$5;
+	
+	var host = protocol + '://' + domain + ':' + port;
+	var wsPost ="9321";
+	var wshost = 'ws://192.168.1.158:9321';
+	var socket;
+	
+	$.ajax({
+		type : 'get',
+		url : host + '/httpClient/ajaxKey.action?' + qstring + '&' + window.location.hostname,
+		async : false,
+		xhrFields: {withCredentials: true},
+	    crossDomain: true,
+		success : function(res) {
+			if (res.code == 200) {
+				var userconfig;
+				var user = res.data;
+				console.log(user.username);
+				console.log(user);
+				document.cookie = "JSESSIONID=" + user.sessionId+";path=/";
+				console.log("user.sessionId",user.sessionId);
+				var initdata;
+				$.ajax({
+					type : 'GET',
+					url : host+"/static/lib/layui/mlim.config.json?type="+user.type+"&username="+user.username+"&avatar="+user.avatar+"&id="+user.id+"&host="+host+"&JS="+user.sessionId+"&wshost="+wshost,
+					async : false,
+					dataType : 'json',
+					success : function(res) {
+						userconfig = res.data;
+						$.ajax({
+							type : 'GET',
+							url : userconfig.init.url,
+							success : function(res) {
+								initdata = res.data;
+								var $mine =initdata.mine;
+								var $friend =initdata.friend;
+								var $group =initdata.group;
+								var init = {
+										mine: $mine,
+										friend:$friend,
+										group:$group
+								}
+								userconfig["init"] = init;
+							}
+						});
+					}
+				});
+				layui.use('mobile', function(){
+					var mobile = layui.mobile,
+					    layim = mobile.layim; 
+					var target = wshost + '?key=' + user.id;
+					socket = new WebSocket(target);
+					// 连接成功时触发
+					var msgboxCount = 0;
+					socket.onopen = function() {
+						$.get(host + '/chatlog/countChatlog.action?id='+user.id,function(data, status) {
+							setTimeout(function() {
+								console.log("msgboxCount"+msgboxCount);
+								layim.config(userconfig);
+								if (Number(data) > 0) {
+									console.log("msgboxCount"+data);
+									msgboxCount = data;
+									$.post(host + '/chatlog/mobile/getLeaveMsg.action', {id : user.id}, function(res) {
+										var  json = res.data;
+										if (json != null && json != '') {
+											$.each(json, function(n, value) {
+												layim.getMessage({
+													username : value.username,
+													avatar : value.avatar,
+													id : value.id,
+													type : value.type,
+													content : value.content,
+													timestamp : value.timestamp,
+													fromid : value.fromid,
+													mine : value.mine,
+													system : false
+												});
+											});
+											msgboxCount = msgboxCount - json.length;
+										}
+									});
+								}
+							}, 500);
+						});
+					};
+
+					// 每次窗口打开窗口查询离线消息
+					layim.on('chatChange', function(res) {
+						var type = res.data.type;
+						var fromid = res.data.id;
+						var avatar = res.data.avatar;
+						var username = res.data.username;
+						var status  = res.data.status;
+						console.log(status);
+						if(type == 'friend' && status =='online'){
+							 layim.setChatStatus('<span style="color:#FF5722;">在线</span>'); //留个bug 
+						}
+						if(type == 'friend' && status =='offline'){
+							 layim.setChatStatus('<span style="color:#FF5722;">离线</span>'); //留个bug 
+						}
+						if (type == 'friend' && msgboxCount > 0) {
+							$.getJSON( host + '/chatlog/readFriendChatlog.action',
+									{fromid : fromid, id : user.id}
+									,function(json) {
+										if (json != null && json != '') {
+											$.each(json, function(n, value) {
+												layim.getMessage({
+													username : value.username,
+													avatar : value.avatar,
+													id : value.id,
+													type : value.type,
+													content : value.content,
+													timestamp : value.timestamp,
+													fromid : value.fromid,
+													mine : value.mine,
+													system : false
+												});
+											});
+											msgboxCount = msgboxCount - json.length;
+										}
+							      }
+							);
+						}
+					});
+					// 监听收到的消息
+					var chatId =null;
+					socket.onmessage = function(res) {
+						eval('var obj =' + res.data + ';');
+						if (obj != null) {
+							var type = obj.type;
+							var data = obj.data;
+							/* 各种消息类型 */
+							 if (type != null && ( type == 'chatMessage' ||type == 'rebroadMessage' || type == 'crossMessage')) {
+								 layim.getMessage(data);
+							} else if (type != null && (type == 'offline' || type == 'online')) {
+								var id = data.id;
+								layim.setFriendStatus(id, type);
+							} else if (type != null && (type == 'systemTip')) {
+								layer.open({
+									  title: '系统提醒'
+									  ,content: data.systemTip
+									  ,shade: 0
+									  ,time :10000
+								});  
+							}else if (type != null && (type == 'closeSocket')) {
+								layer.open({
+									  title: '系统提醒'
+									  ,content: data.systemTip
+									  ,shade: 0
+								});
+								socket.close();
+							}
+						} else {
+							console.log('socket.onmessage接受到的消息为空');
+						}
+					};
+					// 监听发送消息
+					layim.on('sendMessage', function(res) {
+						if (res.to.list != null ) {
+							res.to.list = null;
+						}
+						socket.send(JSON.stringify({
+							type : 'chatMessage',
+								data : res
+						}));
+					});
+					// 状态切换
+					layim.on('online', function(status) {
+						if (status == 'online') { // 除非选在在线状态，其他状态全部是离线
+							socket.send(JSON.stringify({
+								type : 'memberStatusMessage', // 随便定义，用于在服务端区分消息类型
+								data : {
+									id : user.id,
+									type : 'friend',
+									content : 'online'
+								}
+							}));
+						} else { // 如果是隐身或者离线，同一提示为离线
+							socket.send(JSON.stringify({
+								type : 'memberStatusMessage', // 随便定义，用于在服务端区分消息类型
+								data : {
+									id : user.id,
+									system : true,
+									type : 'friend',
+									content : 'offline'
+								}
+							}));
+						}
+					});
+					//监听查看更多记录
+					layim.on('chatlog', function(data, ul){
+						  $.getJSON(host+'/chatlog/showChatlog.action?mineId='+user.id+'&type='+data.type+'&toId='+data.id, function(res) {
+							  layim.panel({
+							    title: '与 '+ data.name +' 的聊天记录' //标题
+							    ,tpl: '<div class="layim-chat-main"><ul> {{# layui.each(d.data.row, function(index, item){  if(item.id =="'+user.id+'") { }} <li class="layim-chat-li layim-chat-mine"><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite><i>{{ layui.data.date(item.timestamp) }}</i>{{ item.username }}</cite></div><div class="layim-chat-text">{{item.content}}</div></li> {{# } else { }}<li layim-chat-li><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite>{{ item.username }}<i>{{ layui.data.date(item.timestamp) }}</i></cite></div><div class="layim-chat-text">{{item.content}}</div></li> {{# } });  }} <ul></div>'
+							    ,data: {
+							    	row: res.data
+							    }
+							  });
+						 });
+					});
+					//监听查看聊天信息(如群成员)
+					layim.on('detail', function(data){
+						  //查看群组信息（如成员）
+						  $.get(host+'/httpClient/ajaxMembers.action', {id: data.id}, function(res){
+							  layim.panel({
+							      title: data.name + '('+res.data.list.length+')'
+							      ,tpl: '<ul class="layui-layim-list  layui-show">{{# layui.each(d.data.rows, function(index, item){  }}  <li><div><img src="{{ item.avatar }}" /></div><span>{{ item.username }}</span><p>{{ item.sign }} </p></li>  {{#   })}} </ul>' 
+							      ,data: {
+							        rows: res.data.list //rows为群组成员
+							      }
+							  });
+						  });
+					});
+					//拓展更多功能
+					layim.on('moreList', function(obj){
+						  switch(obj.alias){ //alias即为上述配置对应的alias
+						    case 'find': //发现
+						      layer.msg('未定义');
+						    break;
+						    case 'share':
+						      layim.panel({
+						        title: 'share' //分享
+						        ,tpl: '<div style="padding: 10px;">自定义模版，{{d.data.test}}</div>' //模版
+						        ,data: { //数据
+						          test: '123'
+						        }
+						      });
+						    break;
+						  }
+					});
+					//修改个性签名
+					layim.on('sign', function(value){
+						console.log("value",value);
+						$.ajax({
+							type : 'POST',
+							url : host+"/httpClient/ajaxUpateSign.action",
+							data : {"id" : user.id, "sign" : value},
+							dataType : "text",
+							success : function(res) {
+								console.log("res",res);
+								layer.msg(res);
+							},
+							error : function() {
+								console.log("出错了");
+							}
+						});
+						//此时，你就可以通过Ajax将新的签名同步到数据库中了。
+					});     
+					// 专为程序猿设计,发送代码
+					layim.on('tool(code)', function(insert, send, obj) { // 事件中的tool为固定字符，而code则为过滤器，对应的是工具别名（alias）
+						layer.prompt({
+							title : '插入代码',
+							formType : 2,
+							shade : 0
+						}, function(text, index) {
+							layer.close(index);
+							insert('[pre class=layui-code]' + text + '[/pre]'); // 将内容插入到编辑器，主要由insert完成
+							// send(); //自动发送
+						});
+					});
+					$('.site-demo-layim').on('click', function() {
+						var type = $(this).data('type');
+						active[type] ? active[type].call(this) : '';
+					});
+				});
+
+			} else {
+				console.log(res.msg);
+			}
+		}
+	});
+});

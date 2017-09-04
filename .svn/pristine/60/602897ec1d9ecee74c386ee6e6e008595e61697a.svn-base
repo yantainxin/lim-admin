@@ -1,0 +1,39 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="sysskillId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="sysskillName" label="名称" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+             
+            <h-privilege-right :privileges="privileges" :objId="{id: scope.row.sysskillId}" :objViewid="{id: scope.row.sysskillId}" @reomve="reomveItem($event)"></h-privilege-right>
+      
+      </template>
+    </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+export default{
+    data() {
+        return {
+            loading: true,
+            path: './management/sysskill/sysskill',
+            count: 0,
+            items: [],
+            privileges:[],
+            columnId:3
+        } 
+    },
+    mounted(){
+        this.listItems(); 
+        this.getPrivilege();
+    },
+    watch:{
+        $route(){
+            this.listItems();
+        }
+    }
+}
+</script>

@@ -1,0 +1,56 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "kefutimeWorkdays" : [
+            {
+                "type": "array",
+                "required": true,
+                "message" : "工作日不能为空,至少要有一天",
+                "trigger": "change"
+            }
+        ],
+        "kefutimeIsdialog" : [
+            {
+                "type": "enum",
+                "required": true,
+                "enum": [0,1],
+                "message" : "请选择下班时间是否接入新会话",
+                "trigger": "change"
+            }
+        ],
+        "kefutimeIsvisitor" : [
+            {
+                "type": "enum",
+                "required": true,
+                "enum": [0,1],
+                "message" : "请选择下班时间是否释放排队访客",
+                "trigger": "change"
+            }
+        ],
+
+        "kefutimeWorktime" :[
+            {
+                "type": "object", "required": true,
+                "message" : "上班时间设置不正确",
+                "fields": {
+                    "item.kefutimeOnworktime" :
+                        {
+                            "type": "string",
+                            "required": true,
+                            "message" : "上班时间设置不正确1",
+                            "trigger": "blur"
+                        },
+                   "item.kefutimeOffworktime" :
+                        {
+                            "type": "string",
+                            "required": true,
+                            "message" : "上班时间设置不正确2",
+                            "trigger": "blur"
+                        }
+                   
+                }  
+            }
+        ]
+    }
+}

@@ -1,0 +1,65 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+	<el-table v-if="items != null" :data="items" border stripe>
+    <el-table-column align="center" prop="kefuId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="kefuWorkid" label="工号" sortable></el-table-column>
+    <el-table-column header-align="center" prop="kefuUsername" label="用户名" sortable></el-table-column>
+    <el-table-column header-align="center" prop="kefuRealname" label="真实姓名" sortable></el-table-column>
+    <el-table-column header-align="center" prop="kefuNickname" label="昵称" sortable></el-table-column>
+   <!--  <el-table-column header-align="center" label="在线状态" sortable>
+      <template scope="scope">
+        <el-tag :type="scope.row.kefuIsstate == 1 ? 'success' : 'gray'" close-transition>
+        <d-maps v-model="scope.row.kefuIsstate" :options="[{'value':1, 'label':'在线'}, {'value':0, 'label':'离线'}]"></d-maps>
+      </el-tag></template>
+    </el-table-column> -->
+   <!--  <el-table-column header-align="center" label="机器人服务" sortable>      
+      <template scope="scope">
+        <d-maps v-model="scope.row.kefuIsrobot" :options="[{'value':1, 'label':'开启'}, {'value':0, 'label':'关闭'}]"></d-maps>
+      </template>
+    </el-table-column> -->
+    <el-table-column header-align="center" label="评价得分" >
+      <template scope="scope">
+         {{Math.round((scope.row.kefuScore/(scope.row.kefuScorenumber==0?1:scope.row.kefuScorenumber)) * Math.pow(10, 2)) / Math.pow(10, 2)}}
+      </template>
+    </el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+    	<template scope="scope">
+    		<d-privilege v-if="privileges != null" :options="privileges" :query="{id: scope.row.kefuId}" size="small" :isLabel="false"></d-privilege>
+      </template>
+    </el-table-column>
+  </el-table>					
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+	data() {
+		return {
+			loading: true,
+			path: './management/kefu/kefu',
+			count: 0,
+			items: null,
+			privileges: null
+		} 
+	},
+	computed:{
+    ...mapGetters({
+      tabItems: 'GET_TABS',
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+	mounted(){
+	  this.listItems();
+	  this.getPrivilege({pos: 1});
+  	this.$bus.$on('kefuDelete', (option) => {
+  		this.reomveItem(option);
+  	});
+	},
+  watch:{
+    $route(){
+      this.listItems();
+    }
+  }
+}
+</script>

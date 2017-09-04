@@ -1,0 +1,66 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table v-if="items != null" :data="items" border stripe>
+    <el-table-column header-align="center" prop="columnName" label="名称">
+      <template scope="scope">
+        <i v-if="scope.row.haschild === 1 && scope.row.isopen === 0" class="fa fa-folder" :style="'margin-left:' + 24 * (scope.row.level - 1) + 'px'" @click="haddleSelect(scope.$index)"></i>
+        <i v-else-if="scope.row.haschild === 1 && scope.row.isopen == 1" class="fa fa-folder-open" :style="'margin-left:' + 24 * (scope.row.level - 1) + 'px'" @click="haddleSelect(scope.$index)"></i>
+        <i v-else class="iconfont icon-document-o" :style="'margin-left:' + 24 * (scope.row.level - 1) + 'px'"/></i>
+        {{scope.row.columnName}}
+      </template>
+    </el-table-column>
+    <el-table-column header-align="center" label="操作权限">
+      <template scope="scope">
+      <template v-if="scope.row.haschild === 0">
+        <el-tag v-for="priv in scope.row.privilege" :key="priv.privilegeName">{{priv.privilegeName}}</el-tag>
+      </template>
+      </template>
+    </el-table-column>
+    <el-table-column align="center" label="细粒度" width="150">
+      <template scope="scope">
+      <template v-if="scope.row.haschild === 0">
+        <router-link class="el-button el-button--small" :to="{name:'privilegeManage', query:{cid: scope.row.columnId}}">管理</router-link>
+        <router-link class="el-button el-button--small" :to="{name:'privilegeModify', query:{cid: scope.row.columnId}}">添加</router-link>
+      </template>
+      </template>
+    </el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+      <template scope="scope">
+        <d-privilege v-if="privileges != null" :options="privileges" :query="{id: scope.row.columnId}" size="small" :isLabel="false"></d-privilege>
+      </template>
+    </el-table-column>
+  </el-table>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  data() {
+    return {
+      loading: true,
+      path: './navigation/column/column',
+      count: 0,
+      items: null,
+      privileges:null
+    } 
+  },
+  computed:{
+    ...mapGetters({
+      tabItems: 'GET_TABS',
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  mounted(){
+    this.listItems();
+    this.getPrivilege({pos: 1});
+    this.$bus.$on('columnDelete', (option) => {
+      this.reomveItem(option);
+    });
+  },
+  methods: {
+    haddleSelect(index){
+      this.listTrees(null, {pid: this.items[index].columnId, level:this.items[index].level}, index);
+    }
+  }
+}
+</script>

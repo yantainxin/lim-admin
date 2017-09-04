@@ -1,0 +1,43 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="上班提示语状态" v-if="item.greetingIswork == 0">关闭</d-text>
+    <d-text label="上班提示语状态" v-if="item.greetingIswork == 1">开启</d-text>
+    <d-text label="上班提示语">{{item.greetingWorktip}}</d-text>
+    <d-text label="下班提示语状态" v-if="item.greetingIsknockoff == 0">关闭</d-text>
+    <d-text label="下班提示语状态" v-if="item.greetingIsknockoff == 1">开启</d-text>
+    <d-text label="下班提示语">{{item.greetingOffworktip}}</d-text>
+<!--     <d-text label="通话结束语状态" v-if="item.greetingIscallend == 0">关闭</d-text>
+    <d-text label="通话结束语状态" v-if="item.greetingIscallend == 1">开启</d-text>
+    <d-text label="通话结束语">{{item.greetingCallendtip}}</d-text>
+    <d-text label="客服离线提示语状态" v-if="item.greetingIsoffline == 0">关闭</d-text>
+    <d-text label="客服离线提示语状态" v-if="item.greetingIsoffline == 1">开启</d-text>
+    <d-text label="客服离线提示语">{{item.greetingOfflinetip}}</d-text>
+    <d-text label="回呼欢迎语状态" v-if="item.greetingIscallback == 0">关闭</d-text>
+    <d-text label="回呼欢迎语状态" v-if="item.greetingIscallback == 1">开启</d-text>
+    <d-text label="回呼欢迎语">{{item.greetingCallbacktip}}</d-text> -->
+    <d-text label="回呼转接提示语欢迎语">{{item.greetingTransfertip}}</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+	data() {
+		return {
+			loading:true,
+			path: './setting/greeting/greeting',
+			item: null
+		} 
+	},
+	mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {id:this.$route.query.id}); 
+  }
+}
+</script>

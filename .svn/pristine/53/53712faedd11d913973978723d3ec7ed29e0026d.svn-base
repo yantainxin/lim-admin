@@ -1,0 +1,58 @@
+<template>
+<div class="order">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+            <span class="widget-caption">工单列表</span>
+        </div>
+        <div class="widget-body">
+            <el-row class="content-tools">              
+                <el-col :span="8">
+                    <el-tooltip class="item" effect="dark" content="如检索时间，则填写“2017-06-25”或“20170625”" placement="right">
+                        <s-search routeName="orderManage"></s-search>
+                    </el-tooltip>
+                </el-col>
+                <el-col :span="16" class="text-right">
+          <el-dropdown @command="handleClick">
+            <el-button type="primary">
+              {{orderdetailStatus}} <i class="el-icon-caret-bottom el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="{'value':-1,'label':'全部状态'}">全部状态</el-dropdown-item>
+              <el-dropdown-item :command="{'value':0, 'label':'待受理'}">待受理</el-dropdown-item>
+              <el-dropdown-item :command="{'value':1, 'label':'已受理'}">已受理</el-dropdown-item>
+              <el-dropdown-item :command="{'value':2, 'label':'已解决'}">已解决</el-dropdown-item>
+              <el-dropdown-item :command="{'value':3, 'label':'已超时'}">已超时</el-dropdown-item>
+              <el-dropdown-item :command="{'value':4, 'label':'已取消'}">已取消</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+                    <el-button-group>
+                        <router-link class="el-button" :to="{name:'orderManage'}" tag="button"><i class="iconfont icon-manage"></i><span>管理</span></router-link>
+                    </el-button-group>
+                </el-col>
+            </el-row>
+            <hr>
+            <router-view></router-view>
+        </div>
+    </div>
+</div>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default {
+  data() {
+    return {
+      orderdetailStatus:'工单状态'      
+    }
+  },
+  methods: {
+    handleClick: function(status){
+      let query = null;
+      this.orderdetailStatus = status.label;
+      if(status.value >= 0) {
+        query = {'orderdetailStatus': status.value};
+      }
+      this.$router.push({name:'orderManage', query: query});
+    }
+  }
+}
+</script>

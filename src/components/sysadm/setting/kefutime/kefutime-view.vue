@@ -1,0 +1,44 @@
+<template>
+<div class="item-box">
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+  <el-row v-if="item != null"class="item-detail">
+    <d-text label="工作日">
+      <template v-for="time in item.kefutimeWorkdays">
+        <template v-for="time1 in options">
+          <el-tag v-if="time == time1.value" type="primary">{{time1.label}}</el-tag>
+        </template>
+      </template>
+    </d-text>
+    <d-text label="上班时间">{{item.kefutimeOnworktime}}-{{item.kefutimeOffworktime}}</d-text>
+    <d-text label="下班时间接入新会话状态">
+      <d-maps v-model="item.kefutimeIsdialog" :options="[{'value':0, 'label':'关闭'}, {'value':1, 'label':'开启'}]"></d-maps>
+    </d-text>
+    <d-text label="下班时间是否释放排队访客">
+      <d-maps v-model="item.kefutimeIsvisitor" :options="[{'value':0, 'label':'否'}, {'value':1, 'label':'是'}]"></d-maps>
+    </d-text>
+  </el-row>
+</el-row>
+</div>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+	data() {
+		return {
+			loading:true,
+			path: './setting/kefutime/kefutime',
+			item: null,
+      options:[{'value':1, 'label':'星期一'}, {'value':2, 'label':'星期二'}, {'value':3, 'label':'星期三'}, {'value':4, 'label':'星期四'}, {'value':5, 'label':'星期五'}, {'value':6, 'label':'星期六'}, {'value':7, 'label':'星期日'}]
+		} 
+	},
+	mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {id:this.$route.query.id});
+  }
+}
+</script>

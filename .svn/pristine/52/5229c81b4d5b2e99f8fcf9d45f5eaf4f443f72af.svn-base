@@ -1,0 +1,41 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+  <el-row class="item-detail">
+    <d-text label="用户名">{{syspersonal.managerUsername}}</d-text>
+    <d-text label="真实姓名">{{syspersonal.managerRealname}}</d-text>
+    <d-text label="性别" v-if="syspersonal.managerSex == 0" value="男"></d-text>
+    <d-text label="性别" v-if="syspersonal.managerSex == 1" value="女"></d-text>
+    <d-text label="移动电话">{{syspersonal.managerPhone}}</d-text>
+    <d-text label="邮箱">{{syspersonal.managerEmail}}</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      syspersonal: 'GET_PERSONAL'
+    })
+  },
+  data() {
+    return {
+      loading: true,
+      path: './sysperson/sysperson',
+      item: {}
+    } 
+  },
+  mounted() {
+    this.initForm(); 
+  },
+  watch: {
+    $route (to, form){         
+      this.initForm();
+    }
+  }
+}
+</script>
+
+<!-- <s-password label="原密码" type="text" name="syspersonPwd" @getValue="getValue"></s-password>
+<s-password label="新密码" type="text" name="syspersonNewPwd" @getValue="getValue"></s-password>
+<s-password label="确认密码" type="text" name="syspersonRepwd" @getValue="getValue"></s-password> -->

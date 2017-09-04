@@ -1,0 +1,50 @@
+<template>
+  <el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+    <el-form :model="item" :rules="rules" ref="syscolumnForm" label-width="120px">
+      <el-form-item label="父节点" prop="syscolumnPid">
+        <s-cascader v-if="syscolumnJson != null" v-model="item.syscolumnPid" :options="syscolumnJson" :props="{label:'syscolumnName', value:'syscolumnId', children:'syscolumns'}" :show-all-levels="false" change-on-select></s-cascader>    
+      </el-form-item>
+      <el-form-item label="名称" prop="syscolumnName">
+        <s-textfield v-model="item.syscolumnName"></s-textfield>
+      </el-form-item>
+      <el-form-item label="链接" prop="syscolumnUrl">
+        <s-textfield v-model="item.syscolumnUrl"></s-textfield>
+      </el-form-item>
+      <el-form-item label="描述" prop="syscolumnDescription">
+        <s-textarea v-model="item.syscolumnDescription"></s-textarea>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="formSubmit('syscolumnForm')">确认</el-button>
+        <el-button @click="formReset('syscolumnForm')">重置</el-button>
+      </el-form-item>
+    </el-form>
+  </el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './navigation/syscolumn/syscolumn',
+      route: 'syscolumnManage',
+      rules: null,
+      item: null,
+      syscolumnJson: null
+    }
+  },
+  computed:{
+    syscolumnPid(){
+      return this.item.syscolumn.syscolumnId;
+    }
+  },
+  mounted() {
+    this.getData('syscolumnJson', this.path + '-nodes.json', this.$route.query);
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  }
+}
+</script>

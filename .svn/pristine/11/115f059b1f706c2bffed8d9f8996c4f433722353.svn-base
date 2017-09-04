@@ -1,0 +1,53 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="sysgreetingForm" label-width="200px">
+  <el-form-item label="上班提示语" prop="sysgreetingWorktip">
+    <el-col :span="20"><s-textfield v-model="item.sysgreetingWorktip"></s-textfield></el-col>
+    <el-col :span="4"><s-switch v-model="item.sysgreetingIswork"></s-switch></el-col>
+  </el-form-item>
+  <el-form-item label="下班提示语" prop="sysgreetingOffworktip">
+    <el-col :span="20"><s-textfield v-model="item.sysgreetingOffworktip"></s-textfield></el-col>
+    <el-col :span="4"><s-switch v-model="item.sysgreetingIsknockoff"></s-switch></el-col>
+  </el-form-item>
+  <el-form-item label="通话结束语" prop="sysgreetingCallendtip">
+    <el-col :span="20"><s-textfield v-model="item.sysgreetingCallendtip"></s-textfield></el-col>
+    <el-col :span="4"><s-switch v-model="item.sysgreetingIscallend"></s-switch></el-col>
+  </el-form-item>
+  <el-form-item label="客服离线提示语" prop="sysgreetingOfflinetip">
+    <el-col :span="20"><s-textfield v-model="item.sysgreetingOfflinetip"></s-textfield></el-col>
+    <el-col :span="4"><s-switch v-model="item.sysgreetingIsoffline"></s-switch></el-col>
+  </el-form-item>
+  <el-form-item label="回呼欢迎语" prop="sysgreetingCallbacktip">
+    <el-col :span="20"><s-textfield v-model="item.sysgreetingCallbacktip"></s-textfield></el-col>
+    <el-col :span="4"><s-switch v-model="item.sysgreetingIscallback"></s-switch></el-col>
+  </el-form-item>
+  <el-form-item label="转接提示语" prop="sysgreetingTransfertip">
+    <s-textfield v-model="item.sysgreetingTransfertip"></s-textfield>
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('sysgreetingForm')">确认</el-button>
+    <el-button @click="formReset('sysgreetingForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+        loading: true,
+        path: './syssetting/sysgreeting/sysgreeting',
+        rules: null,
+        item: {}
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+        this.initItem();
+    }
+  }
+}
+</script>

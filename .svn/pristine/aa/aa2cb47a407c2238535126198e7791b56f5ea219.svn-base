@@ -1,0 +1,35 @@
+<template>
+	<el-button-group>
+		<template v-for="priTop in privileges">
+			<router-link class="el-button" :to="{name:priTop.privilegeUname}" tag="button" :title="priTop.privilegeName">
+				<i :class="priTop.privilegeIcon"></i>
+				<span class="hidden-xs">{{priTop.privilegeName}}</span>
+			</router-link>
+		</template>
+		<!-- 导出这里可能要做成组件 -->
+		<!-- <a class="el-button" @click="show()" tag="button" title="导出"><i class="fa fa-sign-out"></i><span class="hidden-xs">导出</span></a> -->
+	</el-button-group>
+</template>
+<script>
+export default {
+	data() {
+    return {
+    	privileges:[]
+    }
+	},
+  props:['columnId'],
+	mounted() {
+		let obj = this;
+    this.$http.get(this.config.userpath +'/privilege-items.json?id='+this.columnId).then(function(res) {
+      if(res.body.code == 200){
+        $.each(res.body.data,function(idx,val){
+        	if(val.privilegePosition == 0){
+        		obj.privileges.push(val);
+        	}
+        })
+      }
+    });
+	}
+}
+	
+</script>

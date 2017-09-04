@@ -1,0 +1,48 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table v-if="items != null" :data="items" border stripe>
+    <el-table-column align="center" prop="messageBoardId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="touristName" label="游客名字" sortable></el-table-column>
+ <!--    <el-table-column header-align="center" prop="touristEmail" label="游客邮箱" sortable></el-table-column> -->
+    <el-table-column header-align="center" prop="touristContent" label="游客留言" sortable></el-table-column>
+    <el-table-column header-align="center" label="操作状态" sortable>
+      <template scope="scope">
+        <d-maps v-model="scope.row.messageBoardStatus" :options="[{'value':0, 'label':'待处理'}, {'value':1, 'label':'已处理'}, {'value':2, 'label':'已关闭'}]"></d-maps>
+      </template>
+
+    </el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+            <router-link v-if="scope.row.messageBoardStatus == 0" class="el-button el-button--info el-button--small" :to="{name:'messageboardModify', query:{id: scope.row.messageBoardId}}" tag="button">
+                <i class="iconfont icon-edit"></i>
+            </router-link>
+
+            <router-link v-else class="el-button el-button--small" :to="{name:'messageboardView', query:{id: scope.row.messageBoardId}}" tag="button">
+                <i class="iconfont icon-detail"></i>
+            </router-link>
+      </template>
+    </el-table-column>
+	</el-table>
+    <d-pagination :count="count"></d-pagination>
+</el-row>			
+</template>
+<script>
+export default{
+  data() {
+    return {
+      loading: true,
+      path: './messageboard/messageboard',
+      count: 0,
+      items: null,
+    }
+  },
+  mounted() {
+    this.listItems();
+  },
+  watch:{
+    $route(){
+      this.listItems();
+    }
+  }
+}
+</script>

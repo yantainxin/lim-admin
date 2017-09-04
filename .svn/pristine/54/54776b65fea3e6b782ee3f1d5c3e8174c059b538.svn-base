@@ -1,0 +1,41 @@
+<template>
+<div>
+    <div class="importButton">
+        <a class="btn btn-success btn-lg" @click="_download()" title="下载模板"><i class="fa fa-download"></i>
+            <span class="hidden-xs">下载模板</span></a><iframe style="display:none"></iframe>
+        <div class="tips">温馨提示：先下载模板文件，并根据模板内的表格填写对应内容，填写完整后保存文件，即可导入。
+</div>
+    </div>    
+    <hr>
+    <div id="uploader-demo" class="uploaderDemo">
+        <div class="well bordered-left bordered-themeprimary">
+            <div class="uploader-list" id="thelist"></div>
+        </div> 
+        <div class="filePicker">
+            <div class="col-md-4"></div>
+            <div class="col-md-2"><div id="filePicker"><i class="fa fa-file"></i>&nbsp;选择文件</div></div>
+            <div class="col-md-1"><button id="ctlBtn" class="btn btn-primary ctlBtn">
+                <i class="fa fa-cloud-upload"></i>&nbsp;开始上传</button>
+            </div>
+            <div class="col-md-5"></div>
+        </div>
+    </div>
+</div>
+</template>
+<script>
+export default{
+    data() {
+        return {
+            path: './management/syskefu/syskefu',
+        }
+    },
+  methods:{
+        _download(){
+            this.mouldDownLoad();
+        }
+    },
+    mounted(){
+        this.fileUpLoad();
+    }
+}
+</script>

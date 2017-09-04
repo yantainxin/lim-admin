@@ -1,0 +1,54 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="messageBoardId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="touristName" label="游客名字" sortable></el-table-column>
+    <el-table-column header-align="center" prop="touristEmail" label="游客邮箱" sortable></el-table-column>
+    <el-table-column header-align="center" prop="touristContent" label="游客留言" sortable></el-table-column>
+    <el-table-column header-align="center" prop="messageBoardStatus" label="操作状态" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+            <router-link class="el-button el-button--info el-button--small" :to="{name:'messageboardView', query:{id: scope.row.messageBoardId}}" tag="button">
+                <i class="fa fa-edit"></i><span>详细</span>
+            </router-link>
+      </template>
+    </el-table-column>
+	</el-table>
+    <d-pagination :count="count"></d-pagination>
+</el-row>			
+</template>
+<script>
+export default{
+    data() {
+        return {
+            loading: true,
+            path: './messageboard/messageboard',
+            count: 0,
+            items: [],
+        } 
+    },
+    mounted(){
+        this.listDbItems();
+    },
+    watch:{
+        $route:function(){
+            this.listDbItems();
+        }
+    }
+}
+    // // 本地测试
+    //  data() {
+    //     return {
+    //         count: 0,
+    //         items: []
+    //     } 
+    // },
+    // mounted(){
+    //     var url = '../../../../static/validation/kefu/messageBoard/messageBoard-items.json';//菜单
+    //     this.$http.get(url,{}).then(function(res) { 
+    //      if(res.body.code == 200){
+    //         this.items = res.body.data;
+    //      }
+    //   });
+    // }
+</script>

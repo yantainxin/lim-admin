@@ -1,0 +1,39 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="sysroleId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="sysroleName" label="角色名称" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+            
+            <h-privilege-right :privileges="privileges" :objId="{id: scope.row.sysroleId}" :objViewid="{id: scope.row.sysroleId}" @reomve="reomveItem($event)"></h-privilege-right>
+
+      </template>
+    </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+export default{
+    data() {
+        return {
+            loading: true,
+            path: './permissions/sysrole/sysrole',
+            count: 0,
+            items: [],
+            privileges:[],
+            columnId:16
+        } 
+    },
+    mounted(){
+        this.listItems();
+        this.getPrivilege();
+    },
+    watch:{
+        $route(){
+            this.listItems();
+        }
+    }
+}
+</script>

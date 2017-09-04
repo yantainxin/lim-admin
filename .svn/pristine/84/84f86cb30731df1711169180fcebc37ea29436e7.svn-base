@@ -1,0 +1,35 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "roleName" :[
+            {
+                "type": "string",
+                "required": true,
+                "message": "名称不能为空",
+                "trigger": "blur"
+            },
+            {
+                "pattern" : "[a-zA-Z\u4E00-\u9FA5\uf900-\ufa2d]",
+                "message" : "格式有误,请输入中文或英文",
+                "trigger": "blur"
+            }
+        ],
+        "roleDescription" :[
+            {
+                "type": "string",
+                "required": true,
+                "message" : "描述不能为空",
+                "trigger": "blur"
+            }
+        ],
+       "roleColumnIds" : [
+            {
+                "type": "array",
+                "required": true,
+                "message" : "角色权限不能为空",
+                "trigger": "blur"
+            }
+       ]
+    }
+}

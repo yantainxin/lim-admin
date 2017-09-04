@@ -1,0 +1,39 @@
+[
+	{"columnId":1,"columnName":"坐席管理","columnUrl":"/#","columnIcon":"menu-icon fa fa-user-circle","children":[
+		{"columnId":2,"columnName":"技能组管理","columnUrl":"/skill-manage","columnIcon":""},
+	    {"columnId":3,"columnName":"人工坐席","columnUrl":"/kefu-manage","columnIcon":""}
+	]},
+	{"columnId":4,"columnName":"系统管理","columnUrl":"/#","columnIcon":"menu-icon fa fa-tasks","children":[
+		{"columnId":5,"columnName":"渠道设置","columnUrl":"/channel-manage","columnIcon":""},
+		{"columnId":6,"columnName":"网站基本配置","columnUrl":"/config-view","columnIcon":""}
+	]},
+	{"columnId":7,"columnName":"工单查询","columnUrl":"/order-manage","columnIcon":"menu-icon fa fa-newspaper-o"},
+	{"columnId":8,"columnName":"导航管理","columnUrl":"/#","columnIcon":"menu-icon fa fa-th","children":[
+		{"columnId":9,"columnName":"栏目","columnUrl":"/column-manage","columnIcon":""},
+		{"columnId":10,"columnName":"细粒度","columnUrl":"/privilege-manage","columnIcon":""}
+	]},
+	{"columnId":11,"columnName":"权限管理","columnUrl":"/#","columnIcon":"menu-icon fa fa-key","children":[
+		{"columnId":12,"columnName":"用户管理","columnUrl":"/admin-manage","columnIcon":""},
+		{"columnId":13,"columnName":"角色管理","columnUrl":"/role-manage","columnIcon":""}
+	]},
+	{"columnId":14,"columnName":"基础智库管理","columnUrl":"/#","columnIcon":"menu-icon fa fa-github-alt","children":[
+		{"columnId":15,"columnName":"快捷回复","columnUrl":"/fastreply-manage","columnIcon":""},
+		{"columnId":16,"columnName":"机器人回复","columnUrl":"/robot-manage","columnIcon":""}
+	]},
+	{"columnId":17,"columnName":"基本信息","columnUrl":"/#","columnIcon":"menu-icon fa fa-desktop","children":[
+		{"columnId":18,"columnName":"企业信息","columnUrl":"/company-view","columnIcon":""},
+	    {"columnId":19,"columnName":"部门信息","columnUrl":"/section-manage","columnIcon":""},
+	    {"columnId":20,"columnName":"员工信息","columnUrl":"/staff-manage","columnIcon":""},
+	    {"columnId":21,"columnName":"会员信息","columnUrl":"/member-manage","columnIcon":""}
+	]},
+	{"columnId":22,"columnName":"游客列表","columnUrl":"/tourist-manage","columnIcon":"menu-icon fa fa-users"},       
+	{"columnId":23,"columnName":"设置中心","columnUrl":"/#","columnIcon":"menu-icon fa fa-cogs","children":[
+		{"columnId":24,"columnName":"基本设置","columnUrl":"/setting-modify","columnIcon":""},
+	    {"columnId":25,"columnName":"欢迎语设置","columnUrl":"/greeting-modify","columnIcon":""},
+	    {"columnId":26,"columnName":"服务时间管理","columnUrl":"/kefutime-modify","columnIcon":""},
+	    {"columnId":27,"columnName":"工单属性管理","columnUrl":"/orderattr-modify","columnIcon":""}
+	]},
+	{"columnId":28,"columnName":"个人管理","columnUrl":"/#","columnIcon":"menu-icon fa fa-vcard","children":[
+		{"columnId":29,"columnName":"个人管理","columnUrl":"/person-modify","columnIcon":""}
+	]}
+]

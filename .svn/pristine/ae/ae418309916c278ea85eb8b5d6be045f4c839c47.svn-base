@@ -1,0 +1,38 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="robotId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="robotQuestion" label="问题" sortable></el-table-column>
+    <el-table-column header-align="center" prop="robotAnswer" label="答案" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+            <router-link class="el-button el-button--info el-button--small" :to="{name:'robotModify', query:{id: scope.row.robotId}}" tag="button">
+                <i class="fa fa-edit"></i><span>编辑</span>
+            </router-link>
+        <el-button size="small" type="danger" icon="delete" @click="reomveItem(scope.row.robotId)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+export default{
+    data() {
+        return {
+            loading: true,
+            path: './thinktank/robot/robot',
+            count: 0,
+            items: []
+        } 
+    },
+    mounted(){
+        this.listItems(); 
+    },
+    watch:{
+        $route(){
+            this.listItems();
+        }
+    }
+}
+</script>

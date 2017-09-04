@@ -1,0 +1,84 @@
+<template>
+  <div class="wrapper bgImage">
+    <div class="floater"></div>
+    <div class="login-logo">
+        <img class="img-responsive" src="../../../static/image/logo-blue.png">
+    </div> 
+    <el-row class="login-form bg-primary-light" v-loading="loading" element-loading-text="拼命加载中">    
+      <el-row class="text-center h3">管理员登录<hr></el-row>
+      <el-form :model="item" :rules="rules" ref="sysadm" label-width="80px">
+        <el-form-item label="帐号" prop="account" class="text-white">
+          <s-textfield v-model="item.account" placeholder="用户名/邮箱/手机号码"></s-textfield>
+        </el-form-item>
+        <el-form-item label="密码" prop="password" class="text-white">
+          <s-password v-model="item.password" placeholder="请输入密码"></s-password>
+        </el-form-item>
+        <el-form-item label="校验码" prop="randomcode" class="text-white randomcode">
+          <el-col :span="12">
+            <s-textfield v-model="item.randomcode" placeholder="请输入校验码"></s-textfield>
+          </el-col>
+          <el-col :span="1">&nbsp;</el-col>
+          <el-col :span="11">
+            <img id="random" :src="randomUrl" @click="getRandom">
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="userLogin('sysadm')">登录</el-button>
+          <el-button @click="formReset('sysadm')">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-row>
+    <p align="center" class="copyright">技术支持：<a href="http://www.newyali.com/" target="_blank" title="广东鸭梨">广东鸭梨新媒体信息科技股份有限公司</a><br>©2017 Yali</p>  
+  </div>
+</template>
+<script>
+import { mapActions } from 'vuex'
+export default{
+  data() {
+    return {
+      loading: false,
+      path: './user/sysadm',
+      route: 'desk',
+      random: Math.random(),
+      item: {
+        account:'1234@qq.com',
+        password:'222222',
+        randomcode:'1234'
+      },
+      rules: {
+        account:[{type: 'string',required: true,message : '账号不能为空',trigger: 'blur'}],
+        password:[
+          {type: 'string', required: true, message : '密码不能为空',trigger:' blur'},
+          {pattern: '^(\\w){6,20}$', message : '只能输入6-20个字母、数字、下划线', trigger: 'blur'}],
+        randomcode:[{type: 'string',required: true,message : '验证码不能为空',trigger: 'blur'}]
+      }
+    }
+  },
+  computed: {
+    randomUrl() {
+      return this.config.host + '/RandomServlet?' + this.random;
+    }
+  },
+  methods: {
+    ...mapActions({
+      setPersonal: 'SET_PERSONAL'
+    }),
+    getRandom(){
+      return this.random = Math.random();
+    },
+    validator(rule, value, callback){
+      console.log(1111111111111111111111111111, rule);
+      // if(!value.match(rule.pattern)){
+      //   callback(new Error(rule.message));
+      // } else {
+      //   callback();
+      // }
+    }
+  }
+}
+</script>
+<style>
+  .bgImage{
+    background-image: url(../../../static/image/login_bgx.gif) !important;
+  }
+</style>

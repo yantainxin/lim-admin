@@ -1,0 +1,18 @@
+<template>
+<div class="body-404">
+    <div class="error-header"></div>
+    <div class="container ">
+        <section class="error-container text-center">
+            <h1>404 Error</h1>
+            <div class="error-divider">
+                <p>Oops!Page has gone missing...</p>
+                <img src="../../../static/image/errorWeb.gif">
+                <br>
+            </div>
+            <div class="home">
+                <a href="index.html" class="return-btn"><i class="fa fa-home"></i>Home</a>
+            </div>
+        </section>
+    </div>
+</div>
+</template>

@@ -1,0 +1,165 @@
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex);
+
+const state = ({
+  isReload: true,
+  usertype: null,
+  personal: null,
+	tabActive: null,
+  tabItems: []
+})
+
+const getters = {
+  
+  GET_PERSONAL(state){
+    let result = state.personal;
+    if(state.isReload === true && sessionStorage.hasOwnProperty('usertype')){
+      state.usertype = sessionStorage.getItem('usertype');
+      if(sessionStorage.hasOwnProperty('personal')) {
+        result = state.personal = JSON.parse(sessionStorage.getItem('personal'));
+      }
+    }
+    return result;
+  },
+
+  GET_TAB_ACTIVE(state){
+    let result = state.tabActive;
+    if(state.isReload === true && sessionStorage.hasOwnProperty('tabActive')) {
+      result = state.tabActive = sessionStorage.getItem('tabActive');
+    }
+    return result;
+  },
+
+  GET_TABS(state){
+    let result = state.tabItems;
+    if(state.isReload === true && sessionStorage.hasOwnProperty('tabItems')) {
+      result = state.tabItems = JSON.parse(sessionStorage.getItem('tabItems'));
+    }
+    return result;
+  },
+
+  IS_RELOAD(state){
+    let result = state.isReload;
+    return result;
+  }
+}
+
+const mutations = {
+
+  SET_PERSONAL(state, obj){
+    state.usertype = obj.usertype;
+    state.personal = obj.personal;
+  },
+
+  CLEAR_PERSONAL(state, obj){
+    state.personal = null;
+  },
+
+  ADD_TABS (state, obj) {
+    let result = false;
+    state.tabItems.forEach((tab) => {
+      if(obj.name === tab.name){
+        result = true;
+      }
+    })
+    if(result == false){
+      state.tabItems.push(obj);
+    }
+    state.tabActive = obj.name;
+  },
+
+  REMOVE_TABS (state, obj) {
+    let tabHandle = 'desk', tabHandleIndex = 0;
+  	state.tabItems.forEach((tab, index) => {
+  		if(obj.name === tab.name){
+        tabHandle = tab.name;
+        tabHandleIndex = index;
+  			state.tabItems.splice(index, 1);
+  		}
+
+      if(state.tabActive === tabHandle){
+        if (tabHandleIndex < state.tabItems.length){
+          state.tabActive = state.tabItems[tabHandleIndex].name;  
+        } else {
+          state.tabActive = state.tabItems[tabHandleIndex - 1].name;  
+        }
+      }
+  	});
+
+  },
+
+  CLEAR_TABS (state, obj) {    
+      state.tabItems.splice(1, state.tabItems.length-1);
+      state.tabActive = 'desk';
+  },
+
+  ACTIVE_TABS (state, obj) {
+  	state.tabActive = obj.name;
+  },
+
+  REFRESH_SESSION(state, items) {
+    items.forEach((item) => {
+      if(typeof(state[item]) === 'object'){
+        sessionStorage.setItem(item, JSON.stringify(state[item]));
+      } else {
+        sessionStorage.setItem(item, state[item]);
+      }
+    })
+  },
+
+  CLEAR(state){
+    state = null;
+    sessionStorage.clear();
+  }
+}
+
+const actions = {
+  
+  SET_PERSONAL ({commit}, obj) {
+    commit('SET_PERSONAL', obj);
+    commit('REFRESH_SESSION', ['usertype', 'personal']);
+    state.isReload = false;
+  },
+  CLEAR_PERSONAL  ({commit}, obj) {
+    commit('CLEAR_PERSONAL', obj);
+    commit('REFRESH_SESSION', ['usertype', 'personal']);
+    state.isReload = false;
+  },
+  ADD_TABS ({commit}, obj) {
+    commit('ADD_TABS', obj);
+    commit('REFRESH_SESSION', ['tabActive', 'tabItems']);
+    state.isReload = false;
+  },
+
+  REMOVE_TABS ({commit}, obj) {
+    commit('REMOVE_TABS', obj);
+    commit('REFRESH_SESSION', ['tabActive', 'tabItems']);
+    state.isReload = false;
+  },
+
+  CLEAR_TABS ({commit}, obj) {
+    commit('CLEAR_TABS', obj);
+    commit('REFRESH_SESSION', ['tabActive', 'tabItems']);
+    state.isReload = false;
+  },
+
+  ACTIVE_TABS ({commit}, obj) {
+    commit('ACTIVE_TABS', obj);
+    commit('REFRESH_SESSION', ['tabActive']);
+    state.isReload = false;
+  },
+
+  CLEAR ({commit}) {
+    commit('CLEAR');
+  }
+
+}
+
+export default new Vuex.Store({
+  state,
+  getters,
+  actions,
+  mutations
+})

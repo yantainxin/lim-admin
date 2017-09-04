@@ -1,0 +1,46 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="historyId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="historyType" label="会话类型" sortable></el-table-column>
+    <el-table-column header-align="center" prop="historyTab" label="会话标签" sortable></el-table-column>
+    <el-table-column header-align="center" prop="historyKefu" label="接待客服" sortable></el-table-column>
+	<el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+            <router-link class="el-button el-button--info el-button--small" :to="{name:'historyView', query:{id: scope.row.historyId}}" tag="button">
+                <i class="fa fa-eye"></i><span>详细</span>
+            </router-link>
+      </template>
+    </el-table-column>			
+ </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+	computed:{
+		...mapGetters({
+		  personal: 'GET_PERSONAL'
+		})
+	},
+	data() {
+    	return {
+      		loading: false,
+			path: './history/history',
+			count: 0,
+			items: [],
+		}
+	},
+	mounted(){
+		let url = this.config.userpath + this.path.substr(1) + '-items.action';
+		this.listDbItems(url);
+	},
+	watch:{
+		$route:function(){
+			let url = this.config.userpath + this.path.substr(1) + '-items.action';
+			this.listDbItems(url);
+		}
+	}
+}
+</script>

@@ -1,0 +1,43 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "sysprivilegeName":[
+            {
+                "type": "string",
+                "required": true,
+                "message" : "名称不能为空",
+                "trigger": "blur"
+            }
+        ],
+        "sysprivilegeDescription": [
+            {
+                "type": "string",
+                "required": true,
+                "message" : "描述不能为空",
+                "trigger": "change"
+            }
+        ],
+        "sysprivilegeUrl": [
+            {
+               "type": "string",
+                "required": true,
+                "message" : "路由不能为空",
+                "trigger": "blur"
+            },
+            {
+                "pattern": "\\/([a-zA-Z]{1,10})\\-([a-zA-Z]{1,10})|\\/([a-zA-Z]{1,10})|\\/#",
+                "message": "请输入正确的路由 [ 格式：/xxx , /xx-xx , /# ]",                
+                "trigger": "blur"
+            }
+        ],
+        "sysprivilegePid": [
+            {
+                "type": "string",
+                "required": true,
+                "message" : "父节点不能为空",
+                "trigger": "blur"
+            }
+        ]
+    }
+}

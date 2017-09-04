@@ -1,0 +1,94 @@
+<template>
+  <div class="wrapper">
+    <div class="floater"></div>
+    <el-row class="login" v-loading="loading" element-loading-text="拼命加载中">
+      <div class="login-form">
+      <el-form :model="item" :rules="rules" ref="kefu" label-width="80px">    
+        <el-row class="text-center"><img class="img-responsive" src="../../../static/image/logo.png"></el-row>
+        <el-row class="text-center h1">客服登录</el-row>
+
+        <el-form-item label="帐号" prop="account" class="text-white">
+          <s-textfield v-model="item.account" placeholder="用户名/邮箱/手机号码">
+            <el-button slot="prepend" icon="search"></el-button>
+          </s-textfield>
+        </el-form-item>
+        <el-form-item label="密码" prop="password" class="text-white">
+          <s-password v-model="item.password" placeholder="请输入密码"></s-password>
+        </el-form-item>
+        <el-form-item label="校验码" prop="randomcode" class="text-white randomcode">
+          <el-col :span="12">
+            <s-textfield v-model="item.randomcode" placeholder="请输入校验码"></s-textfield>
+          </el-col>
+          <el-col :span="1">&nbsp;</el-col>
+          <el-col :span="11">
+            <img class="random" :src="randomUrl" @click="getRandom">
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-row :gutter="10">
+          <el-col :span="8"><el-button class="element-block" @click="userLogin('kefu')">登录</el-button></el-col>          
+          <el-col :span="8"><el-button class="element-block" @click="kefu('sysadm')">重置</el-button></el-col> 
+          <el-col :span="8">
+            <el-tooltip content="使用鸭梨通行证帐号登录">
+            <el-button  type="primary" class="element-block" @click="redirect('http://ucenter.newyali.cn/client/auth/index.html?response_type=code&redirect_uri=http%3a%2f%2f192.168.1.70%3a8080%2fkefu%2findex.html%23%2flogin')"><img class="passport" src="../../../static/image/yali.png"/></el-button>
+            </el-tooltip>
+          </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item>
+          <el-row :gutter="10">
+            <el-col :span="12"></el-col>
+            <el-col :span="12" class="text-right"></el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+      </div>
+      <div class="login-circle"></div>
+    </el-row>
+    <div class="copyright">Copyright © 2010-2017 广东鸭梨新媒体信息科技股份有限公司</div>  
+  </div>
+</template>
+<script>
+import { mapActions } from 'vuex'
+export default{
+  data() {
+    return {
+      loading: false,
+      path: './user/kefu',
+      route: 'desk',
+      random: Math.random(),
+      item: {
+        account:'admin123',
+        password:'123456',
+        randomcode:''
+      },
+      rules: {
+        account:[{type: 'string',required: true,message : '账号不能为空',trigger: 'blur'}],
+        password:[
+          {type: 'string', required: true, message : '密码不能为空',trigger:' blur'},
+          {type: 'string', pattern: '^(\\w){6,20}$', message : '只能输入6-20个字母、数字、下划线', trigger: 'blur'}],
+        randomcode:[{type: 'string',required: true,message : '验证码不能为空',trigger: 'blur'}]
+      }
+    }
+  },
+  computed: {
+    randomUrl() {
+      return this.config.host + '/RandomServlet?' + this.random;
+    }
+  },
+  methods: {
+    ...mapActions({
+      setPersonal: 'SET_PERSONAL'
+    }),
+    getRandom() {
+      return this.random = Math.random();
+    },
+    redirect(url) {
+      location.href = url;
+    }
+  }
+}
+</script>
+<style>
+  .wrapper {background: #FFF;}
+</style>

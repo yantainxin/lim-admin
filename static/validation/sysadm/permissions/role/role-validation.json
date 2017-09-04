@@ -1,0 +1,37 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "roleName" :[
+            {
+                "type": "string",
+                "required": true,
+                "message": "角色名称不能为空",
+                "trigger": "blur"
+            },
+            {
+                "type": "string",
+                "min": 2,
+                "max": 10,
+                "message": "长度不合法，请填写长度为2-10的角色名称",
+                "trigger": "blur"
+            }
+        ],
+        "roleDescription" :[
+            {
+                "type": "string",
+                "required": true,
+                "message" : "角色描述不能为空",
+                "trigger": "blur"
+            }
+        ],
+       "roleColumnIds" : [
+            {
+                "type": "array",
+                "required": true,
+                "message" : "角色权限不能为空",
+                "trigger": "blur"
+            }
+       ]
+    }
+}

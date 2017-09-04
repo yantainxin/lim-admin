@@ -1,0 +1,39 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="items != null">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="messageboardId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="touristname" label="游客名字" sortable></el-table-column>
+    <el-table-column header-align="center" prop="touristemail" label="游客邮箱" sortable></el-table-column>
+    <el-table-column header-align="center" prop="touristcontent" label="游客留言" sortable></el-table-column>
+    <el-table-column header-align="center" prop="messageboardStatus" label="操作状态" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+            <router-link class="el-button el-button--info el-button--small" :to="{name:'messageboardView', query:{id: scope.row.messageboardId}}" tag="button">
+                <i class="fa fa-edit"></i><span>详细</span>
+            </router-link>
+      </template>
+    </el-table-column>
+	</el-table>
+    <d-pagination :count="count"></d-pagination>
+</el-row>			
+</template>
+<script>
+export default{
+    data() {
+        return {
+            loading: true,
+            path: './messageboard/messageboard',
+            count: 0,
+            items: null,
+        } 
+    },
+    mounted(){
+        this.listItems();
+    },
+    watch:{
+        $route:function(){
+            this.listItems();
+        }
+    }
+}
+</script>

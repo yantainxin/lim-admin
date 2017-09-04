@@ -1,0 +1,37 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="skillFrom" label-width="120px">
+	<el-form-item label="昵称" prop="skillName">
+	  <s-textfield v-model="item.skillName"></s-textfield>
+	</el-form-item>
+	<el-form-item label="描述" prop="skillDescription">
+	  <s-textarea v-model="item.skillDescription"></s-textarea>
+	</el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('skillFrom')">确认</el-button>
+    <el-button @click="formReset('skillFrom')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './management/skill/skill',
+      route: 'skillManage',
+      rules: null,
+      item: {}
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+		  this.initItem();
+    }
+  }
+}
+</script>

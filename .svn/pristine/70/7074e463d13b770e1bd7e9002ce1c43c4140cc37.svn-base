@@ -1,0 +1,63 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="greetingFrom" label-width="200px">
+  <el-form-item label="上班提示语" prop="greetingWorktip">
+    <el-col :span="16"><s-textfield v-model="item.greetingWorktip"></s-textfield></el-col>
+  </el-form-item>
+  <el-form-item label="下班提示语" prop="greetingOffworktip">
+    <el-col :span="16"><s-textfield v-model="item.greetingOffworktip"></s-textfield></el-col>
+  </el-form-item>
+  <el-form-item label="通话结束语" prop="greetingCallendtip">
+    <el-col :span="16"><s-textfield v-model="item.greetingCallendtip"></s-textfield></el-col>
+  </el-form-item>
+  <el-form-item label="客服离线提示语" prop="greetingOfflinetip">
+    <el-col :span="16"><s-textfield v-model="item.greetingOfflinetip"></s-textfield></el-col>
+  </el-form-item>
+  <el-form-item label="回呼欢迎语" prop="greetingCallbacktip">
+    <el-col :span="16"><s-textfield v-model="item.greetingCallbacktip"></s-textfield></el-col>
+  </el-form-item>
+  <el-form-item label="转接提示语" prop="greetingTransfertip">
+    <el-col :span="16"><s-textfield v-model="item.greetingTransfertip"></s-textfield></el-col>
+  </el-form-item>
+  <el-form-item label="网页访客上班提示语开关" prop="greetingIswork">
+    <s-switch v-model="item.greetingIswork"></s-switch>
+  </el-form-item>
+  <el-form-item label="网页访客下班提示语开关" prop="greetingIsknockoff">
+    <s-switch v-model="item.greetingIsknockoff"></s-switch>
+  </el-form-item>
+  <el-form-item label="网页访客通话结束语开关" prop="greetingIscallend">
+    <s-switch v-model="item.greetingIscallend"></s-switch>
+  </el-form-item>
+  <el-form-item label="网页访客客服离线提示语开关" prop="greetingIsoffline">
+    <s-switch v-model="item.greetingIsoffline"></s-switch>
+  </el-form-item>
+  <el-form-item label="网页访客回呼欢迎语开关" prop="greetingIscallback">
+    <s-switch v-model="item.greetingIscallback"></s-switch>
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('greetingFrom')">确认</el-button>
+    <el-button @click="formReset('greetingFrom')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+        loading: true,
+        path: './setting/greeting/greeting',
+        rules: null,
+        item: null
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+        this.initItem();
+    }
+  }
+}
+</script>

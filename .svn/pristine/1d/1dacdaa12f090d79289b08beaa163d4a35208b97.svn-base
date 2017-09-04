@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="shortcut icon" type="image/x-icon" href="../static/image/favicon.png"/>
+
+ 
+  </head>
+  <body>
+  <i class="layui-icon">&#xe60c;</i>
+
+  <a class="layui-btn layui-btn-normal" href="./sysadm/index.html" target="_blank">公司管理入口</a>
+  <a class="layui-btn layui-btn-success" href="./kefu/index.html" target="_blank">公司客服入口</a>
+  <a class="layui-btn layui-btn-danger" href="http://pms.newyali.cn/index/index/index.html" target="_blank">公司员工入口</a>
+  <button class="lim layui-btn layui-btn-warm yali-disabled" data-skill="11">咨询售前11</button>
+  <button class="lim layui-btn layui-btn-warm yali-disabled" data-skill="12">咨询售后12</button>
+  <button class="login layui-btn layui-btn-warm">登录</button>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<!-- <script src="http://192.168.1.70:8080/static/lib/layui/layui.js"></script>  -->
+
+
+
+<!--   <script id="yali-im" src="http://192.168.1.70:8080/static/lib/layui/plugins/lim.pc.js?HKAA9IrHMm5jU0bHk3FJ4C7ZhUEK0rvywYZUUBIuo5TvcZnSYMZP/ecNaoWlHS0UrlpZ/rtW%2Bu3ik1ytREu6t2SDFMDdJZraIo0YyrYaQgA="></script> -->
+
+  <script id="yali-im" src="http://192.168.1.70:8080/static/js/lim.h5.js?HKAA9IrHMm5jU0bHk3FJ4C7ZhUEK0rvywYZUUBIuo5TvcZnSYMZP/ecNaoWlHS0UBTRswG6bdqnlVuA9E1ePpmSDFMDdJZraIo0YyrYaQgA="></script>
+
+<!--   <script id="yali-im" src="http://192.168.1.70:8080/static/js/lim.pc.js?UjiMWhw6tI9gJUztrJfwCzwzO2NzDhz41d/9bCUQYBXJ+PYCawHfIjUMb6xzr04Gr2cVdLHPFteO9XQxAVgAZSw0h7w63ql4jKEzDxMXwGw="></script>
+-->
+
+  <script type="text/javascript">
+  yaliui.use([ 'yaliim' ], function() {
+    var $ = yaliui.jquery;
+    var yaliim = yaliui.yaliim;
+    yaliim.aesEncrypt('{"brief":true,"companyid":1,"usertype":"tourist","device":"h5","channelId":5}', function(res){
+      console.log(111, res);
+    })
+    // $('.login').click(function(e) {
+    //   yaliim.imAuth(10534, function(res) {
+    //     yaliim.init(); 
+    //   });
+    // })
+  });
+  </script>
+  </html>

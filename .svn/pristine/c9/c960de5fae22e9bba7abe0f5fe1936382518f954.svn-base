@@ -1,0 +1,262 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+  <el-table v-if="items != null" :data="items" border stripe>
+  <el-table-column align="center" prop="channelId" label="ID" sortable width="100"></el-table-column>
+  <el-table-column header-align="center" prop="channelWebname" label="网站名称" sortable></el-table-column>
+  <el-table-column header-align="center" prop="channelDomain" label="网站域名" sortable></el-table-column>
+  <el-table-column align="center" label="渠道代码">
+    <template scope="scope">                
+      <el-popover width="500" trigger="click">
+          <el-form label-width="120px">
+          <el-form-item label="渠道域名">
+          <el-input v-model="scope.row.channelDomain" placeholder="渠道域名" readonly></el-input>
+          </el-form-item>
+          <el-form-item label="客户端">
+          <el-select @change="handleUrlScripts($event, scope.$index)" v-model="scope.row.device" placeholder="请选择客户端">
+            <el-option label="PC端" value="pc"></el-option>
+            <el-option label="H5端" value="h5"></el-option>
+            <el-option label="微信" value="wx"></el-option>
+            <el-option label="安卓" value="android"></el-option>
+            <el-option label="苹果" value="apple"></el-option>
+            <el-option label="小程序" value="wxa"></el-option>
+          </el-select>
+          </el-form-item>
+          <el-form-item label="用户类型">
+          <el-select @change="handleUrlScripts($event, scope.$index)" v-model="scope.row.usertype" placeholder="请选择用户类型">
+            <el-option label="游客" value="tourist"></el-option>
+            <el-option label="会员" value="member"></el-option>
+            <el-option label="员工" value="staff"></el-option>
+          </el-select>
+          </el-form-item>
+          <el-form-item label="简约模式">
+          <el-select @change="handleUrlScripts($event, scope.$index)" v-model="scope.row.brief" placeholder="请选择简约模式" :disabled="scope.row.usertype=='member'?false:true">
+            <el-option label="是" value="true"></el-option>
+            <el-option label="否" value="false"></el-option>
+          </el-select>
+          </el-form-item>
+          <el-form-item label="渠道代码">
+            <el-input ref="channelUrl" v-model="scope.row.channelUrl" readonly placeholder="请先生成渠道码/SDK下载地址"></el-input>
+          </el-form-item>
+          <el-form-item class="text-center" label-width="0">
+            <el-button v-if="scope.row.device=='pc'||scope.row.device=='h5'||scope.row.usertype=='wx'" class="fa fa-copy" @click="copyUrlScripts($event, scope.$index)">复制渠道码</el-button>
+            <el-button v-else @click="downUrlScripts($event, scope.$index)">下载SDK</el-button>
+          </el-form-item>
+          </el-form>            
+        </el-input>
+        <el-button size="small" slot="reference" @click="handleUrlScripts($event, scope.$index)">生成渠道码/SDK</el-button>
+      </el-popover>   
+
+      <el-popover width="500" trigger="click">
+        <el-form label-width="120px">
+          <el-form-item label="提示">
+            辅助工具给出的是WEB站的参考代码，您仍可以根据项目需要处行配置自定义样式。
+          </el-form-item>
+          <el-form-item label="技能组">
+            <el-select v-if="skillItems != null" @change="handleBoxScripts($event, scope.$index)" v-model="scope.row.skillIds" placeholder="请选择技能组"multiple>
+              <el-option v-for="item in skillItems" :key="item.skillId" :label="item.skillName" :value="item.skillId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="样式">
+            <el-select v-model="scope.row.skin" placeholder="请选择样式">
+              <el-option label="水平样式一" value="color-inline-1"></el-option>
+              <el-option label="水平样式二" value="color-inline-2"></el-option>
+              <el-option label="垂直样式一" value="color-block-1"></el-option>
+              <el-option label="垂直样式二" value="color-block-2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="坐标">
+            <el-select v-model="scope.row.offset" placeholder="请选择坐标">
+              <el-option label="内嵌" value="i"></el-option>
+              <el-option label="上" value="t"></el-option>
+              <el-option label="下" value="b"></el-option>
+              <el-option label="左" value="l"></el-option>
+              <el-option label="右" value="r"></el-option>
+              <el-option label="左上" value="lt"></el-option>
+              <el-option label="左下" value="lb"></el-option>
+              <el-option label="右上" value="rt"></el-option>
+              <el-option label="右下" value="rb"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="咨询框代码">
+            <el-input ref="channelCode" v-model="scope.row.channelCode" readonly placeholder="请通过改变以上表单值生成咨询框代码"></el-input>
+          </el-form-item>
+          <el-form-item class="text-center" label-width="0">
+            <el-button class="fa fa-copy" @click="previewBoxScripts($event, scope.$index)">预览效果</el-button>
+            <el-button class="fa fa-copy" @click="copyBoxScripts($event, scope.$index)">复制咨询框代码</el-button>
+          </el-form-item>
+
+        </el-form>
+        <el-button size="small" slot="reference">咨询框生成辅助</el-button>
+      </el-popover>     
+    </template>
+    </el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+        <d-privilege v-if="privileges != null" :options="privileges" :query="{id: scope.row.channelId}" size="small" :isLabel="false"></d-privilege>
+      </template>
+    </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  data() {
+      return {
+          loading: true,
+          path: './system/channel/channel',
+          count: 0,
+          items: null,
+          privileges:null,
+          skillItems: null
+      } 
+  },
+  computed:{
+    ...mapGetters({
+      tabItems: 'GET_TABS',
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  mounted(){
+    this.getData('skillItems', './management/skill/skill-items.json');
+    this.listItems();
+    this.getPrivilege({pos: 1});
+    this.$bus.$on('channelDelete', (option) => {
+      this.reomveItem(option);
+    });
+  },
+  watch:{
+    $route() {
+      this.listItems();
+    }
+  },
+  methods:{
+    getUrlScripts(item, code){
+      this.$http.post(this.config.userpath + this.path.substr(1) + 'GenerateCode.action', JSON.stringify(code), {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8'
+        }
+      }).then(function(res) {
+        if (res.body.code == 200) {
+          if ($.inArray(item.device, ['pc', 'h5', 'wx']) != -1) {
+            item.channelUrl = '<script id="yali-im" src="http://' + location.host + '/static/js/lim.' + item.device + '.js?' + res.body.data + '"><\/script>';
+          } else {
+            item.channelUrl = res.body.data;
+          }
+
+        }
+      }, function(res) {
+        layer.msg(res.body.msg);
+      });
+      
+    },
+    handleUrlScripts(e, index){
+      let item = this.items[index];
+
+      if(item.usertype == 'tourist') {
+        item.brief = 'true';
+      } else if (item.usertype == 'staff') {
+        item.brief = 'false';
+      }
+
+      let code = {
+        companyid: item.companyid,
+        channelid: item.channelId,
+        device: item.device,
+        usertype: item.usertype,
+        brief: item.brief
+      }
+
+      this.getUrlScripts(item, code);
+    },
+    copyUrlScripts(e, index) {
+      let item = this.items[index];
+      if (item.channelUrl == '') {
+        layer.msg('请先通过改变以上表单生成渠道代码');
+      } else {
+        $(e.target).parents('.el-form-item').prev().find('input').select();
+        document.execCommand('Copy');
+        layer.msg('复制成功！可以粘贴到您要使用IM通讯的应用上');
+      }
+    },
+    downUrlScripts(e, index){
+      let item = this.items[index];
+
+      if(item.channelUrl == ''){
+        layer.msg('请先生成SDK下载地址');
+      } else {
+        layer.msg('正在更新中...')
+      }
+    },
+    getBoxScripts(item, code){
+      let content = '';
+      this.skillItems.forEach((skill) => {
+        if ($.inArray(skill.skillId, code.skillIds) != -1) {
+          content += '<li><button class="lim disabled" data-skill="' + skill.skillId + '"><i class="layui-icon">&#xe606;</i> ' + skill.skillName + '</button></li>';
+        }
+      });
+      item.buttons = '<ul class="yali-btn-group">' + content + '</ul>';
+      if(content == ''){
+        item.channelCode = item.buttons = '';
+      } else {        
+        if (item.offset == 'i') {
+          item.channelCode = item.buttons;
+        } else {
+          item.channelCode = '<script>layui.use(\'layer\', function(){var layer = layui.layer;layer.open({type:1,title:false,content:\'' + item.buttons + '\',offset:\'' + code.offset + '\', skin:\'yali-im ' + item.skin + '\',shade: 0 }); })<\/script>';
+        }
+      }
+    },
+    previewBoxScripts(e, index) {
+      let item = this.items[index];
+      layer.closeAll('page');
+      if(item.buttons == ''){
+        layer.msg('请先通过改变以上表单生成咨询框代码');
+      } else {
+        if (item.offset == 'i') {
+          layer.open({
+            title: '效果预览',
+            content: item.buttons,
+            skin: 'yali-im',
+            maxWidth: 800
+          });
+        } else {
+          layer.open({
+            type: 1,
+            title: false,
+            content: item.buttons,
+            offset: item.offset,
+            skin: 'yali-im ' + item.skin,
+            shade: 0
+          });
+        }        
+      }
+    },
+    handleBoxScripts(e, index) {
+      let item = this.items[index];
+
+      let code = {
+        skillIds: item.skillIds,
+        style: item.skin,
+        offset: item.offset
+      }
+
+      this.getBoxScripts(item, code);
+
+    },
+    copyBoxScripts(e, index) {
+      let item = this.items[index];
+      if (item.channelCode == '') {
+        layer.msg('请先通过改变以上表单生成咨询框代码');
+      } else {
+        $(e.target).parents('.el-form-item').prev().find('input').select();
+        document.execCommand('Copy');
+        layer.msg('复制成功！可以粘贴到您要使用IM通讯的应用上');
+      }
+    }
+  }
+}
+
+
+
+</script>

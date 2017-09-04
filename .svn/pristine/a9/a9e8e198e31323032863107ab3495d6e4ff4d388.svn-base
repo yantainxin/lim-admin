@@ -1,0 +1,77 @@
+import Vue from 'vue'
+
+import SInput from '../components/tags/form/simple/input.vue';
+import SRadio from '../components/tags/form/simple/radio.vue';
+import SCheckbox from '../components/tags/form/simple/checkbox.vue';
+import SSelect from '../components/tags/form/simple/select.vue';
+
+import STextfield from '../components/tags/form/simple/textfield.vue';
+import SPassword from '../components/tags/form/simple/password.vue';
+import STextarea from '../components/tags/form/simple/textarea.vue';
+import SSwitch from '../components/tags/form/simple/switch.vue';
+import SSlider from '../components/tags/form/simple/slider.vue';
+import SInputNumber from '../components/tags/form/simple/input-number.vue';
+import SRadioGroup from '../components/tags/form/simple/radio-group.vue';
+import SCheckboxGroup from '../components/tags/form/simple/checkbox-group.vue';
+import SCascader from '../components/tags/form/simple/cascader.vue';
+import SUpload from '../components/tags/form/simple/upload.vue';
+import SRate from '../components/tags/form/simple/rate.vue';
+import STransfer from '../components/tags/form/simple/transfer.vue';
+import SColorPicker from '../components/tags/form/simple/color-picker.vue';
+
+import STimePicker from '../components/tags/form/simple/time-picker.vue';
+import STimeSelect from '../components/tags/form/simple/time-select.vue';
+import SDatePicker from '../components/tags/form/simple/date-picker.vue';
+import SDatetimePicker from '../components/tags/form/simple/datetime-picker.vue';
+
+import SSearch from '../components/tags/form/simple/search.vue';
+
+
+
+
+import HInput from '../components/tags/form/html5/input.vue';
+
+
+
+
+import DText from '../components/tags/data/text.vue';
+import DPagination from '../components/tags/data/pagination.vue';
+
+
+
+Vue.component('SInput', SInput);
+Vue.component('SRadio', SRadio);
+Vue.component('SCheckbox', SCheckbox);
+Vue.component('SSelect', SSelect);
+
+Vue.component('STextfield', STextfield);
+Vue.component('SPassword', SPassword);
+Vue.component('STextarea', STextarea);
+Vue.component('SSwitch', SSwitch);
+Vue.component('SSlider', SSlider);
+Vue.component('SInputNumber', SInputNumber);
+Vue.component('SRadioGroup', SRadioGroup);
+Vue.component('SCheckboxGroup', SCheckboxGroup);
+Vue.component('SCascader', SCascader);
+Vue.component('SUpload', SUpload);
+Vue.component('SRate', SRate);
+Vue.component('STransfer', STransfer);
+Vue.component('SColorPicker', SColorPicker);
+
+Vue.component('STimePicker', STimePicker);
+Vue.component('STimeSelect', STimeSelect);
+Vue.component('SDatePicker', SDatePicker);
+Vue.component('SDatetimePicker', SDatetimePicker);
+
+Vue.component('SSearch', SSearch);
+
+
+
+
+Vue.component('HInput', HInput);
+
+
+
+
+Vue.component('DText', DText);
+Vue.component('DPagination', DPagination);

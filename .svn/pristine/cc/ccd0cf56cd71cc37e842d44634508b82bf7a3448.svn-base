@@ -1,0 +1,38 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "sysprivilegeName":[
+            {
+                "type": "string",
+                "required": true,
+                "message" : "名称不能为空",
+                "trigger": "blur"
+            }
+        ],
+        "sysprivilegeDescription": [
+            {
+                "type": "string",
+                "required": true,
+                "message" : "描述不能为空",
+                "trigger": "change"
+            }
+        ],
+        "sysprivilegeUname": [
+            {
+               "type": "string",
+                "required": true,
+                "message" : "链接不能为空",
+                "trigger": "blur"
+            }
+        ],
+        "sysprivilegePid": [
+            {
+                "type": "string",
+                "required": true,
+                "message" : "父节点不能为空",
+                "trigger": "blur"
+            }
+        ]
+    }
+}

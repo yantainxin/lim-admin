@@ -1,0 +1,49 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+<el-form v-if="item != null && rules != null" :model="item" :rules="rules" ref="kefutimeForm" label-width="200px">
+  <el-form-item label="工作日" prop="kefutimeWorkdays">
+    {{item.kefutimeWorkdays}}
+    <s-buttonbox-group v-model="item.kefutimeWorkdays" :options="[{'value':1, 'label':'星期一'}, {'value':2, 'label':'星期二'}, {'value':3, 'label':'星期三'}, {'value':4, 'label':'星期四'}, {'value':5, 'label':'星期五'}, {'value':6, 'label':'星期六'}, {'value':7, 'label':'星期日'}]"></s-buttonbox-group>
+  </el-form-item>
+  <el-form-item label="下班时间是否接入新会话" prop="kefutimeIsdialog">
+    <s-switch v-model="item.kefutimeIsdialog"></s-switch>
+  </el-form-item>
+  <el-form-item label="下班时间是否释放排队访客" prop="kefutimeIsvisitor">
+    <s-switch v-model="item.kefutimeIsvisitor"></s-switch>
+  </el-form-item>
+  <el-form-item label="上班时间" required>
+    <el-col :span="11">
+    <el-form-item prop="kefutimeOnworktime"><s-time-select v-model="item.kefutimeOnworktime" :picker-options="{maxTime: item.kefutimeOffworktime,start: '08:30',step: '00:15',end: '18:00'}"></s-time-select></el-form-item>
+    </el-col>
+    <el-col class="text-center" :span="2">到</el-col>
+    <el-col :span="11">
+    <el-form-item prop="kefutimeOffworktime"><s-time-select v-model="item.kefutimeOffworktime" :picker-options="{minTime: item.kefutimeOnworktime,start: '08:30',step: '00:15',end: '18:00'}"></s-time-select></el-form-item>
+    </el-col>
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('kefutimeForm')">确认</el-button>
+    <el-button @click="formReset('kefutimeForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './setting/kefutime/kefutime',
+      rules: null,
+      item: null
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  }
+}
+</script>

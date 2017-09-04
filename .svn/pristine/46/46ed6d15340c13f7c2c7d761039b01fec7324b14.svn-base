@@ -1,0 +1,297 @@
+<template>
+  <div class="channel">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+          <span class="widget-caption">频道列表</span>
+        </div>
+        <div class="widget-body">
+          <el-row class="content-tools">              
+            <el-col :span="8">
+              <el-tooltip class="item" effect="dark" content="如检索网站域名，则填写“cloud.newyali.com”或“192.168.1.123”" placement="right">
+                <s-search routeName="channelManage"></s-search>
+              </el-tooltip>
+            </el-col>
+            <el-col :span="16" class="text-right">
+              <el-popover width="500" trigger="click" ref="popscript">
+                <el-form label-width="120px">
+                  <el-form-item label="渠道">
+                    <el-select v-if="items != null" @change="handleUrlScripts" v-model="channel.channelid" placeholder="请选择渠道">
+                      <el-option v-for="item in items" :key="item.channelId" :label="item.channelWebname" :value="item.channelId"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="客户端">
+                  <el-select @change="handleUrlScripts" v-model="channel.device" placeholder="请选择客户端">
+                    <el-option label="PC端" value="pc"></el-option>
+                    <el-option label="H5端" value="h5"></el-option>
+                    <el-option label="微信" value="wx"></el-option>
+                    <el-option label="安卓" value="android"></el-option>
+                    <el-option label="苹果" value="apple"></el-option>
+                    <el-option label="小程序" value="wxa"></el-option>
+                  </el-select>
+                  </el-form-item>
+                  <el-form-item label="用户类型">
+                  <el-select @change="handleUrlScripts" v-model="channel.usertype" placeholder="请选择用户类型">
+                    <el-option label="游客" value="tourist"></el-option>
+                    <el-option label="会员" value="member"></el-option>
+                    <el-option label="员工" value="staff"></el-option>
+                  </el-select>
+                  </el-form-item>
+                  <el-form-item label="简约模式">
+                    <el-switch @change="handleBoxScripts" v-model="channel.brief" :disabled="channel.usertype=='member'?false:true" ></el-switch>
+                  </el-form-item>
+                  <el-form-item label="渠道代码">
+                    <el-input v-model="channel.url" readonly placeholder="请先生成渠道码/SDK下载地址"></el-input>
+                  </el-form-item>
+                  <el-form-item class="text-center" label-width="0">
+                    <el-button v-if="channel.device=='pc'||channel.device=='h5'||channel.usertype=='wx'" class="fa fa-copy" @click="copyUrlScripts">复制渠道码</el-button>
+                    <el-button v-else @click="downUrlScripts">下载SDK</el-button>
+                  </el-form-item>
+                </el-form>
+              </el-popover>
+
+              <el-popover width="500" trigger="click" ref="popbox">
+                <el-form label-width="120px">
+                  <el-form-item label="提示">
+                    辅助工具给出的是WEB站的参考代码，您仍可以根据项目需要处行配置自定义样式。
+                  </el-form-item>
+                  <el-form-item label="技能组">
+                    <el-select v-if="skillItems != null" @change="handleBoxScripts" v-model="channel.skills" placeholder="请选择技能组"multiple>
+                      <el-option v-for="item in skillItems" :key="item.skillId" :label="item.skillName" :value="item.skillId"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="咨询框样式">
+                    <el-select @change="handleBoxScripts" v-model="channel.skin" placeholder="请选择样式">
+                      <el-option label="样式一" value="skin-type-1"></el-option>
+                      <el-option label="样式二" value="skin-type-2"></el-option>
+                      <el-option label="样式三" value="skin-type-3"></el-option>
+                      <el-option label="样式四" value="skin-type-4"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="按钮颜色">
+                    <el-select @change="handleBoxScripts" v-model="channel.color" placeholder="请选择样式">
+                      <table cellspacing="0" class="select-table" >
+                        <tr>
+                          <td><el-option value="button-color-1" label="浅蓝"><span class="button-color-1">1</span></el-option></td>
+                          <td><el-option value="button-color-2" label="橙色"><span class="button-color-2">2</span></el-option></td>
+                          <td><el-option value="button-color-3" label="深蓝"><span class="button-color-3">3</span></el-option></td>
+                          <td><el-option value="button-color-4" label="梅紫"><span class="button-color-4">4</span></el-option></td>
+                        </tr>    
+                        <tr> 
+                          <td><el-option value="button-color-5" label="绿色"><span class="button-color-5">5</span></el-option></td>
+                          <td><el-option value="button-color-6" label="橘黄"><span class="button-color-6">6</span></el-option></td>
+                          <td><el-option value="button-color-7" label="玫粉"><span class="button-color-7">7</span></el-option></td>
+                          <td><el-option value="button-color-8" label="大红"><span class="button-color-8">8</span></el-option></td>
+                        </tr>
+                      </table>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="按钮图标">
+                     <el-select @change="handleBoxScripts" v-model="channel.icon" placeholder="请选择样式">
+                      <table cellspacing="0" class="select-table" >
+                        <tr>
+                          <td><el-option value="&#xe606;"><i class="layui-icon icon-24 text-center">&#xe606;</i></el-option></td>
+                          <td><el-option value="&#xe661;"><i class="layui-icon icon-24 text-center">&#xe661;</i></el-option></td>
+                          <td><el-option value="&#xe660;"><i class="layui-icon icon-24 text-center">&#xe660;</i></el-option></td>
+                          <td><el-option value="&#xe734;"><i class="layui-icon icon-24 text-center">&#xe734;</i></el-option></td>
+                        </tr>
+                        <tr> 
+                          <td><el-option value="&#xe6b6;"><i class="layui-icon icon-24 text-center">&#xe6b6;</i></el-option></td>
+                          <td><el-option value="&#xe65d;"><i class="layui-icon icon-24 text-center">&#xe65d;</i></el-option></td>
+                          <td><el-option value="&#xe65c;"><i class="layui-icon icon-24 text-center">&#xe65c;</i></el-option></td>
+                          <td><el-option value="&#xe65a;"><i class="layui-icon icon-24 text-center">&#xe65a;</i></el-option></td>
+                        </tr>    
+                        <tr> 
+                          <td><el-option value="&#xe65e;"><i class="layui-icon icon-24 text-center">&#xe65e;</i></el-option></td>
+                          <td><el-option value="&#xe683;"><i class="layui-icon icon-24 text-center">&#xe683;</i></el-option></td>
+                          <td><el-option value="&#xe6d4;"><i class="layui-icon icon-24 text-center">&#xe6d4;</i></el-option></td>
+                          <td><el-option value="&#xe659;"><i class="layui-icon icon-24 text-center">&#xe659;</i></el-option></td>
+                        </tr>
+                      </table>
+                     </el-select>
+                  </el-form-item>
+                  <el-form-item label="隐藏开关">
+                    <el-switch @change="handleBoxScripts" on-value="yali-show" off-value="yali-hidden" v-model="channel.expand" ></el-switch>
+                  </el-form-item>
+                  <el-form-item label="坐标" >
+                    <el-slider @change="handleBoxScripts" v-model="channel.offset" :step="10"></el-slider>
+                  </el-form-item>
+                  <el-form-item label="咨询框代码">
+                    <el-input v-model="channel.box" readonly placeholder="请通过改变以上表单值生成咨询框代码"></el-input>
+                  </el-form-item>
+                  <el-form-item class="text-center" label-width="0">
+                    <el-button class="fa fa-copy" @click="previewBoxScripts">预览效果</el-button>
+                    <el-button class="fa fa-copy" @click="copyBoxScripts">复制咨询框代码</el-button>
+                  </el-form-item>
+                </el-form>
+                <div class="preview"></div>     
+              </el-popover>
+
+              <el-button-group>
+                <el-button type="primary" v-popover:popscript>生成渠道码/SDK</el-button>
+                <el-button type="primary" v-popover:popbox>咨询框生成辅助</el-button>
+              </el-button-group>
+              <el-button-group><d-privilege v-if="privileges != null" :options="privileges" ></d-privilege></el-button-group>
+
+            </el-col>
+          </el-row>
+          <el-form ref="channelForm" class="export" v-if="willShow" label-width="200px">
+            <hr>
+            <el-col :span="20">
+            <el-form-item label="用户自定义" prop="columnPid">
+            <s-checkbox-group name="options" v-model="property" :options="options"></s-checkbox-group>
+            </el-form-item>
+            </el-col>
+            <el-col :span="4">
+                <el-button type="submit" @click.native="exportExcel()">确定导出</el-button><iframe style="display:none"></iframe>
+            </el-col>
+          </el-form>
+          <hr>
+          <router-view></router-view>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default {
+  data() {
+    return {
+      path: './system/channel/channel',
+      items: null,
+      skillItems: null,
+      channel: {
+        channelid: null,
+        device: 'pc',
+        usertype: 'tourist',
+        brief: true,
+        channelUrl: '',
+        skin: 'skin-type-1',
+        skills: [],
+        color: 'button-color-1',
+        icon: '&#xe606;',
+        expand: 'yali-show',
+        offset: 30,
+        url:'',
+        box: '',
+        buttons: ''
+      },
+      privileges:null,
+      willShow:false,
+      property: [],
+      options: [{'value':'ID', 'label':'ID'}, {'value':'渠道号', 'label':'渠道号'}, {'value':'网站名称', 'label':'网站名称'},{'value':'网站链接', 'label':'网站链接'}],
+      exportPath:'/system/channel/channelExport.action',
+    }
+  },
+  computed:{
+  ...mapGetters({
+    personal: 'GET_PERSONAL',
+    tabItems: 'GET_TABS',
+    tabActive: 'GET_TAB_ACTIVE'
+  })
+},
+  mounted() {
+    this.getData('skillItems', './management/skill/skill-items.json?isConsult=1');
+    this.listItems();
+    this.getPrivilege({pos: 0});
+  },
+  methods: {
+    show:function(){
+      this.willShow = !this.willShow;
+    },
+    exportExcel(){
+      this.formExport();
+    },
+
+    getUrlScripts(code){
+      this.aesEncrypt(code, function(res) {
+          if ($.inArray(this.channel.device, ['pc', 'h5', 'wx']) != -1) {
+            this.channel.url = '<script id="yali-im" src="http://' + location.host + '/static/js/lim.' + this.channel.device + '.js?' + res + '"><\/script>';
+          } else {
+            this.channel.url = res;
+          }
+      });
+      
+    },
+    handleUrlScripts(){
+
+      if(this.channel.usertype == 'tourist') {
+        this.channel.brief = true;
+      } else if (this.channel.usertype == 'staff') {
+        this.channel.brief = false;
+      }
+      let code = {
+        companyid: this.personal.companyid,
+        channelid: this.channel.channelid,
+        device: this.channel.device,
+        usertype: this.channel.usertype,
+        brief: this.channel.brief
+      }
+      this.getUrlScripts(code);
+    },
+    copyUrlScripts(e) {
+
+      if (this.channel.url == '') {
+        layer.msg('请先通过改变以上表单生成渠道代码');
+      } else {
+        $(e.target).parents('.el-form-item').prev().find('input').select();
+        document.execCommand('Copy');
+        layer.msg('复制成功！可以粘贴到您要使用IM通讯的应用上');
+      }
+    },
+    downUrlScripts(){
+      if(this.channel.url == ''){
+        layer.msg('请先生成SDK下载地址');
+      } else {
+        layer.msg('正在更新中...')
+      }
+    },
+    getBoxScripts(code){
+      let content = '';
+      this.skillItems.forEach((skill) => {
+        if ($.inArray(skill.skillId, code.skills) != -1) {
+          content += '<li><button class="lim yali-btn-disabled ' + this.channel.color +'" data-skill="' + skill.skillId + '"><i class="layui-icon">'+ this.channel.icon+'</i> ' + skill.skillName + '</button></li>';
+        }
+      });
+
+      console.log(1111, content)
+      this.channel.buttons = '<ul class="yali-btn-group">' + content + '</ul>';
+
+      if(content == ''){
+        this.channel.box = this.channel.buttons = '';
+      } else {
+        this.channel.box = '<div class="yali-floater-box ' + this.channel.skin + '" style="bottom:' + this.channel.offset + '%;">' + this.channel.buttons + '<button class="yali-floater-colspan ' + this.channel.expand + '" ><i class="layui-icon">&#xe602;</i></button></div>';
+      }
+    },
+    handleBoxScripts() {
+      let code = {
+        skills: this.channel.skills,
+        style: this.channel.skin,
+        offset: this.channel.offset
+      }
+      this.getBoxScripts(code);
+
+    },
+    previewBoxScripts() {
+      layer.closeAll('page');
+      if(this.channel.buttons == ''){
+        layer.msg('请先通过改变以上表单生成咨询框代码');
+      } else {
+        $('.preview').html(this.channel.box.replace(/yali-btn-disabled/gi, '')).off('click');
+        $('.preview').on('click', '.yali-floater-colspan', function(){
+          $(this).parents('.yali-floater-box').toggleClass('colspan');
+        });
+      }
+    },
+    copyBoxScripts() {
+
+      if (this.channel.channelCode == '') {
+        layer.msg('请先通过改变以上表单生成咨询框代码');
+      } else {
+        $(e.target).parents('.el-form-item').prev().find('input').select();
+        document.execCommand('Copy');
+        layer.msg('复制成功！可以粘贴到您要使用IM通讯的应用上');
+      }
+    }
+  }
+}
+</script>

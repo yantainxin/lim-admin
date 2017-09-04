@@ -1,0 +1,117 @@
+<#assign d=JspTaglibs["/WEB-INF/data-tags.tld"]/>
+<@d.aesTag key="_q;,ym_@3:v+X8fd" value="${RequestParameters?keys[0]}"+"==" type="decrypt" />
+
+<#assign keys=secret?split("&") />
+<#assign touristId=keys[0] />
+<#assign host=keys[1] />
+<#assign touristName=keys[2] />
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>留言板</title>
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="/static/lib/layui/css/layui.css" />
+</head>
+
+<body>
+	<div id="messageBoard">
+		<form class="layui-form"  style="margin:20px 65px 0 0;">
+			<div class="layui-form-item">
+				<label class="layui-form-label">身份</label>
+				<div class="layui-input-block">
+					<input type="text" name="touristUname" class="layui-input" value="" id="touristUname" readonly="readonly">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">称谓</label>
+				<div class="layui-input-block">
+					<input type="text" name="touristName" lay-verify="username" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">电话</label>
+				<div class="layui-input-block">
+					<input type="tel" name="touristPhone" lay-verify="required|phone" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">邮箱</label>
+				<div class="layui-input-block">
+					<input type="text" name="touristEmail" lay-verify="email" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item layui-form-text">
+				<label class="layui-form-label">内容</label>
+				<div class="layui-input-block">
+					<textarea name="touristContent" class="layui-textarea"></textarea>
+				</div>
+			</div>
+			<input type="hidden" name="messageBoardStatus" value="0" />
+			<input hidden="hidden" style="display:none" name="touristId" value="" id="touristId" readonly="true"></input>
+			<input hidden="hidden" style="display:none" name="companyId" value="" id="companyId" readonly="true"></input>
+
+			<div class="layui-form-item">
+				 <div class="layui-input-block">
+					<button class="layui-btn" lay-submit="" lay-filter="msgboard_sub">提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			 </div>
+		</form>
+	</div>
+
+	<script src="/static/lib/layui/layui.js"></script>
+	<script>
+			layui.use(['form'],function() {
+				var form = layui.form(), layer = layui.layer, $ = layui.jquery;
+
+                $('#touristId').val("${touristId}");
+                $('#touristUname').val("${touristName}");
+                var touristId = "${touristId}";
+                $('#companyId').val(touristId.split("_")[1]);
+				//自定义验证规则
+				form.verify({
+					username : function(value, item) {
+						if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+							return '用户名不能有特殊字符';
+						}
+						if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+							return '用户名首尾不能出现下划线\'_\'';
+						}
+						if (/^\d+\d+\d$/.test(value)) {
+							return '用户名不能全为数字';
+						}
+					}
+				});
+			    var flag = true;
+				 form.on('submit(msgboard_sub)', function(data){
+				   if(flag){//防止重复提交
+					   var bodyData = JSON.stringify(data.field);
+					   console.log(bodyData);
+                       $.ajax({
+                           type: 'POST',
+                           url: 'http://192.168.1.123/api/lim/messageboard/messageboardSave.action',
+                           contentType : 'application/json; charset=UTF-8',
+                           dataType : 'json',
+                           data: bodyData,
+                           success: (function(res) {
+							   if(res.code==200){
+								   flag =false;
+							   }
+							  	layer.msg(res.msg);
+								return false;
+					       })
+                       })
+		           }else{
+		           		layer.msg("不能重复提交");
+		           		return false;
+		           }
+		            return false;
+				 });
+
+			});
+	</script>
+</body>
+</html>

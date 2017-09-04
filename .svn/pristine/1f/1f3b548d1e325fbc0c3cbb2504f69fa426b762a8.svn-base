@@ -1,0 +1,49 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="kefuForm" label-width="120px">
+	<el-form-item label="名称" prop="kefuUsername">
+	  <s-textfield v-model="item.kefuUsername"></s-textfield>
+	</el-form-item>
+  <el-form-item label="在线状态" prop="kefuIsstate">
+    <s-switch v-model="item.kefuIsstate"></s-switch>
+  </el-form-item>
+  <el-form-item label="等级" prop="kefuLevel">
+    <s-select v-model="item.kefuLevel" :options="[{'value':0, 'label':'客服'}, {'value':1, 'label':'客服组长'}, {'value':2, 'label':'客服班长'}]"></s-select>
+  </el-form-item>
+  <el-form-item label="移动电话" prop="kefuPhone">
+    <s-textfield v-model="item.kefuPhone"></s-textfield>
+  </el-form-item>
+  <el-form-item label="同时最大接单数" prop="kefuMaxoforder">
+    <s-input-number v-model="item.kefuMaxoforder"></s-input-number>
+  </el-form-item>
+  <el-form-item label="机器人状态" prop="kefuIsrobot">
+    <s-switch v-model="item.kefuIsrobot"></s-switch>
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('kefuForm')">确认</el-button>
+    <el-button @click="formReset('kefuForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './management/kefu/kefu',
+      route: 'kefuManage',
+      rules: null,
+      item: null
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+		  this.initItem();
+    }
+  }
+}
+</script>

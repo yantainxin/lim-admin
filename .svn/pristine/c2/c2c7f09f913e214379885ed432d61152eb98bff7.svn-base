@@ -1,0 +1,40 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-row class="item-detail">
+        <d-text label="ID">{{item.sysstaffId}}</d-text>
+        <d-text label="编号">{{item.sysstaffNo}}</d-text>
+        <d-text label="姓名">{{item.sysstaffRealname}}</d-text>
+        <d-text label="性别" v-if="item.sysstaffSex == 0">男</d-text>
+        <d-text label="性别" v-if="item.sysstaffSex == 1">女</d-text>
+        <d-text label="移动电话">{{item.sysstaffPhone}}</d-text>
+        <d-text label="邮箱">{{item.sysstaffEmail}}</d-text>
+        <d-text label="客服状态" v-if="item.sysstaffIskefu == 0">关闭</d-text>
+        <d-text label="客服状态" v-if="item.sysstaffIskefu == 1">开启</d-text>
+        <d-text label="状态" v-if="item.sysstaffStatus == 0">在职</d-text>
+        <d-text label="状态" v-if="item.sysstaffStatus == 1">停职</d-text>
+        <d-text label="所属部门">{{item.sectionid}}</d-text>
+    </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+    data() {
+        return{
+            loading:true,
+            path: './sysbasicinfo/sysstaff/sysstaff',
+            //url: 'http://www.newyali.cn/api/SysMessage/GetSysStaffDetail',
+            item: {}
+        } 
+    },
+    mounted(){
+        let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+        this.viewItem(url,{'uid':this.$route.query.id});
+    }
+}
+</script>

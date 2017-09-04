@@ -1,0 +1,55 @@
+<template>
+  <header class="page-head el-row bg-primary">
+    <div class="header-logo pull-left"><img width="165" class="img-responsive" src="../../../static/image/logo.png" alt="鸭梨LIM"></div>
+    <div class="header-menu pull-left cursor-pointer" @click="handleClick"><i class="iconfont icon-list"></i></div>
+    <div class="header-user pull-right">
+      <label>
+        <img v-if="personal.kefuPhoto" :src="personal.kefuPhoto" class="img-rounded">
+        <i v-else class="iconfont icon-admin"></i> {{personal.kefuRealname}}，欢迎您！
+      </label>
+<!--       <label>
+        <el-dropdown>
+          <span class="el-dropdown-link cursor-pointer">
+           <i class="fa fa-md fa-question-circle-o"></i> 帮助
+          </span>
+          <el-dropdown-menu slot="dropdown" class="help">
+            <el-dropdown-item ><i class="fa fa-md fa-newspaper-o"></i> 如何操作</el-dropdown-item>
+            <el-dropdown-item ><i class="fa fa-md fa-paint-brush"></i> 意见反馈</el-dropdown-item>
+            <el-dropdown-item ><i class="fa fa-md fa-send"></i> 鸭梨官网</el-dropdown-item>
+            <el-dropdown-item ><i class="fa fa-md fa-vcard"></i> 关于我们</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </label> -->
+      <label>
+        <el-button type="text" @click="userLogout()"><i class="iconfont icon-exit"></i> 注销</el-button>
+      </label>
+    </div>
+  </header>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+export default{
+  data() {
+    return {
+      path: './user/kefu',
+    }
+  },
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL',
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  methods: {
+     ...mapActions({
+      clearTabs: 'CLEAR_TABS',
+      clearPersonal: 'CLEAR_PERSONAL',      
+      clear: 'CLEAR'
+    }),
+    handleClick(){
+      $('.page-container').toggleClass('menu-compact');
+    }
+  }
+}
+</script>

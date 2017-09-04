@@ -1,0 +1,22 @@
+{
+	"code": 200,
+	"msg": "处理成功",
+	"count": 2,
+	"data": [
+		{
+			"messageboardId":1,
+			"touristname":"王王王王",
+			"touristemail":"aaaaaa@qq.com",
+			"touristcontent":"客服123123123",			
+			"messageboardStatus":"关闭"
+		}
+		,
+		{
+			"messageboardId":2,
+			"touristname":"asdasd",
+			"touristemail":"bbbbb@qq.com",
+			"touristcontent":"客服123123123",			
+			"messageboardStatus":"关闭"
+		}
+	]
+}

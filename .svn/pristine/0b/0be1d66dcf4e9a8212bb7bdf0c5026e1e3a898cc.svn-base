@@ -1,0 +1,42 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="companyId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="companyName" label="公司名称" sortable></el-table-column>
+    <el-table-column header-align="center" prop="companyWebsite" label="公司网站地址" sortable></el-table-column>
+    <el-table-column header-align="center" prop="companyGmname" label="公司管理员账号" sortable></el-table-column>
+    <el-table-column header-align="center" prop="companyKefuname" label="公司总客服账号" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+            <router-link class="el-button el-button--info el-button--small" :to="{name:'companyView', query:{id: scope.row.companyId}}" tag="button">
+                <i class="fa fa-edit"></i><span>编辑</span>
+            </router-link>
+        <el-button size="small" type="danger" icon="delete" @click="reomveItem(scope.row.companyId)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+export default{
+    data() {
+        return {
+            loading: true,
+            path: './sysbasicinfo/company/company',
+            count: 0,
+            items: []
+        } 
+    },
+    mounted(){
+        let url = this.config.userpath + this.path.substr(1) + '-items.action';
+        this.listItems(url); 
+    },
+    watch:{
+        $route(){
+            let url = this.config.userpath + this.path.substr(1) + '-items.action';
+            this.listItems(url);
+        }
+    }
+}
+</script>

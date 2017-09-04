@@ -1,0 +1,24 @@
+export const setPersonal = ({ dispatch }, obj) => {
+  dispatch('SET_PERSONAL', obj);
+}
+export const clearPersonal = ({ dispatch }, obj) => {
+  dispatch('CLEAR_PERSONAL', obj);
+}
+export const addTabs = ({ dispatch }, obj) => {
+  dispatch('ADD_TABS', obj);
+}
+export const removeTabs = ({ dispatch }, obj) => {
+  dispatch('REMOVE_TABS', obj);
+}
+export const clearTabs = ({ dispatch }, obj) => {
+  dispatch('CLEAR_TABS');
+}
+export const activeTabs = ({ dispatch }, obj) => {
+  dispatch('ACTIVE_TABS', obj);
+}
+export const getTabActive = ({ dispatch }, obj) => {
+  dispatch('GET_TAB_ACTIVE', obj);
+}
+export const refreshSession = ({dispatch}, items) => {
+	dispatch('REFRESH_SESSION', items);
+}

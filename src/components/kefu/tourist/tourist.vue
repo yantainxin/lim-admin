@@ -1,0 +1,28 @@
+<template>
+<div class="tourist">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+            <span class="widget-caption">客户中心</span>
+        </div>
+        <div class="widget-body">
+            <el-row class="content-tools">              
+                <el-col :span="8">
+                    <el-tooltip class="item" effect="dark" content="如检索IP或来源，则填写“192.168.1.123”或“im.newyali.com”" placement="right">
+                        <s-search routeName="touristManage"></s-search>
+                    </el-tooltip>
+                </el-col>
+                <el-col :span="16" class="text-right">
+                    <el-button-group>
+                        <router-link class="el-button" :to="{name:'touristManage'}" tag="button"><i class="iconfont icon-manage"></i><span>查看列表</span></router-link>
+                        
+                        <!-- <router-link class="el-button" :to="{name:'touristManage'}" tag="button"><i class="fa fa-sign-out"></i><span>导出</span></router-link> -->
+                
+                    </el-button-group>
+                </el-col>
+            </el-row>
+            <hr>
+            <router-view></router-view>
+        </div>
+    </div>
+</div>
+</template>

@@ -1,0 +1,27 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+    	"channelWebname": [
+            {
+                 "type": "string",
+                "required": true,
+                "message": "网站名称不能为空",
+                "trigger": "blur"
+            }
+        ],
+        "channelDomain": [
+            {
+                "type" : "string",
+                "required": true,
+                "message" : "网站链接不能为空",
+                "trigger": "blur"
+            },
+            {
+                "type" : "url",
+                "message" : "请输入正确的网址 ",
+                "trigger": "blur"
+            }
+        ]
+    }
+}

@@ -1,0 +1,26 @@
+<template>
+<div class="downloadcenter">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+            <span class="widget-caption">下载中心</span>
+        </div>
+        <div class="widget-body">
+            <el-row class="content-tools">              
+                <el-col :span="8">
+                    <s-search routeName="downloadcenterManage"></s-search>
+                </el-col>
+                <el-col :span="16" class="text-right">
+                    <el-button-group>
+                        <router-link class="el-button" :to="{name:'downloadcenterManage'}" tag="button"><i class="fa fa-list"></i><span>管理</span></router-link>
+
+                        <router-link class="el-button" :to="{name:'downloadcenterManage'}" tag="button"><i class="fa fa-sign-out"></i><span>导出</span></router-link>
+                
+                    </el-button-group>
+                </el-col>
+            </el-row>
+            <hr>
+            <router-view></router-view>
+        </div>
+    </div>
+</div>
+</template>

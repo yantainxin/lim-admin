@@ -1,0 +1,48 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "syskefutimeWorkdays" : [
+            {
+                "type": "array",
+                "required": true,
+                "message" : "工作日不能为空,至少要有一天",
+                "trigger": "change"
+            }
+        ],
+        "syskefutimeIsdialog" : [
+            {
+                "type": "enum",
+                "required": true,
+                "enum": [0,1],
+                "message" : "请选择下班时间是否接入新会话",
+                "trigger": "change"
+            }
+        ],
+        "syskefutimeIsvisitor" : [
+            {
+                "type": "enum",
+                "required": true,
+                "enum": [0, 1],
+                "message" : "请选择下班时间是否释放排队访客",
+                "trigger": "change"
+            }
+        ],
+        "syskefutimeOnworktime" :[
+            {
+                "type": "string",
+                "required": true,
+                "message" : "上班时间不能为空",
+                "trigger": "blur"
+            }
+        ],
+       "syskefutimeOffworktime" :[
+            {
+                "type": "string",
+                "required": true,
+                "message" : "下班时间不能为空",
+                "trigger": "blur"
+            }
+        ]       
+    }
+}

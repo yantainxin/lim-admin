@@ -1,0 +1,58 @@
+<template>
+<div class="page-side">
+	<el-menu @select="handleSelect" :default-active="tabActive" v-if="items != null">
+		<template v-for="item in items">
+		<template v-if="item.haschild === 0 && item.pid === 1">
+		<el-menu-item :index="item.name">
+			<i :class="item.icon"></i>{{item.title}}
+		</el-menu-item>
+	  </template>
+		<template v-else-if="item.haschild === 1 && item.pid === 1">
+		<el-submenu :index="item.name">
+	    <template slot="title">
+	    	<i :class="item.icon"></i><label class="menu-text">{{item.title}}</label>
+	    </template>
+	    <template v-for="child in items">
+	    <template v-if="child.pid === item.id">
+		  <el-menu-item :index="child.name">
+		  	{{child.title}}
+		  </el-menu-item>
+		  </template>
+		  </template>
+	  </el-submenu>
+		</template>
+		</template>
+	</el-menu>
+</div>
+</template>
+<script>
+import { mapGetters, mapActions } from 'vuex'
+export default {
+	data() {
+    return {
+      path: './menu',
+      items: null
+    } 
+  },
+  computed:{
+    ...mapGetters({
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  mounted() {
+    this.listItems();
+  },
+  methods: {
+    ...mapActions({
+      addTabs: 'ADD_TABS'
+    }),
+  	handleSelect(key, keyPath) {
+  		this.items.forEach((item) => {
+  			if(item.haschild === 0 && item.name === key){
+					this.addTabs(item);
+				}
+	  	});
+    }
+  }
+}
+</script>

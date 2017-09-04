@@ -1,0 +1,24 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+    	"robotQuestion" :[
+            {
+            	"type": "string",
+                "required": true,
+                "trim": true,
+                "message" : "问题不能为空",
+                "trigger": "blur"
+            }
+        ],
+        "robotAnswer" :[
+            {
+                "type": "string",
+                "required": true,
+                "trim": true,
+                "message" : "回答不能为空",
+                "trigger": "blur"
+            }
+        ]
+    }
+}

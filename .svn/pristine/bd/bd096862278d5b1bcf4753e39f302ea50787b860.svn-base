@@ -1,0 +1,6 @@
+layui.addcss('layui.css', function() {}, 'skinlayuicss').addcss('layui.plugs.css', function() {}, 'plugslayuicss');
+layui.define(['layim'], function(exports){
+  exports('yaliui', {
+    layim: layui.layim //WebIM
+  });
+});

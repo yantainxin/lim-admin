@@ -1,0 +1,4 @@
+layui.config({
+	dir: '/static/lib/layui/',
+  base: '/static/lib/' //假设这是test.js所在的目录
+});

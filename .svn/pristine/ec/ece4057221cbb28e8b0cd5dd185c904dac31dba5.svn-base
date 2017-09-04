@@ -1,0 +1,56 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+<el-form v-if="item != null && rules != null" :model="item" :rules="rules" ref="channelForm" label-width="200px">
+  <el-form-item label="渠道名称" prop="channelWebname">
+    <s-textfield v-model="item.channelWebname" placeholder="请填写渠道名称"></s-textfield>
+  </el-form-item>  
+  <el-form-item label="渠道域名" prop="channelDomain">
+    <el-tooltip content="请填写域名域名地址，不带“http://”，如：im.newyali.com，绑定多个请用英文“,”隔开。">
+    <s-textfield v-model="item.channelDomain" placeholder="请填写域名域名地址，不带“http://”，如：im.newyali.com，绑定多个请用英文“,”隔开。"></s-textfield>
+    </el-tooltip>
+  </el-form-item>
+  <el-form-item label="启用会员系统" prop="channelIsmember">
+    <s-switch v-model="item.channelIsmember"></s-switch>
+  </el-form-item>
+  <template v-if="item.channelIsmember == 1">
+    <el-form-item label="好友列表接口" prop="channelMemberurl">
+      <s-textfield v-model="item.channelMemberurl" placeholder="如果应用中使用到会员系统，好友列表接口"></s-textfield>
+    </el-form-item>
+    <el-form-item label="个人信息接口" prop="channelMemberinfourl">
+      <s-textfield v-model="item.channelMemberinfourl" placeholder="如果应用中使用到会员系统，请填写个人详细信息接口"></s-textfield>
+    </el-form-item>
+    <el-form-item label="在线状态接口" prop="channelMemberstatusurl">
+      <s-textfield v-model="item.channelMemberstatusurl" placeholder="如果应用中使用到会员系统，请填写修改在线状态接口"></s-textfield>
+    </el-form-item>
+    <el-form-item label="签名变更接口" prop="channelMembersignurl">
+      <s-textfield v-model="item.channelMembersignurl" placeholder="如果应用中使用到会员系统，请填写修改签名接口"></s-textfield>
+    </el-form-item>
+  </template>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('channelForm')">确认</el-button>
+    <el-button @click="formReset('channelForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './system/channel/channel',
+      route: 'channelManage',
+      rules: null,
+      item: null
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  }
+}
+</script>

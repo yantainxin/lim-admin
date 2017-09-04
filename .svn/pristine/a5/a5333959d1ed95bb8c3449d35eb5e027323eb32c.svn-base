@@ -1,0 +1,228 @@
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+
+import login from './login.vue';
+import main from './main.vue';
+import desk from './page-desk.vue';
+
+//坐席管理
+import sysskill from './management/sysskill/sysskill.vue';
+import sysskillManage from './management/sysskill/sysskill-manage.vue';
+import sysskillModify from './management/sysskill/sysskill-modify.vue';
+import sysskillImport from './management/sysskill/sysskill-import.vue';
+import sysskillView from './management/sysskill/sysskill-view.vue';
+
+import syskefu from './management/syskefu/syskefu.vue';
+import syskefuManage from './management/syskefu/syskefu-manage.vue';
+import syskefuModify from './management/syskefu/syskefu-modify.vue';
+import syskefuImport from './management/syskefu/syskefu-import.vue';
+import syskefuView from './management/syskefu/syskefu-view.vue';
+//系统管理
+import sysconfig from './system/sysconfig/sysconfig.vue';
+import sysconfigView from './system/sysconfig/sysconfig-view.vue';
+
+import config from './system/config/config.vue';
+import configManage from './system/config/config-manage.vue';
+import configView from './system/config/config-view.vue';
+
+import syschannel from './system/syschannel/syschannel.vue';
+import syschannelManage from './system/syschannel/syschannel-manage.vue';
+import syschannelModify from './system/syschannel/syschannel-modify.vue';
+import syschannelImport from './system/syschannel/syschannel-import.vue';
+import syschannelView from './system/syschannel/syschannel-view.vue';
+//工单查询
+import sysorder from './sysorder/sysorder.vue';
+import sysorderManage from './sysorder/sysorder-manage.vue';
+import sysorderModify from './sysorder/sysorder-modify.vue';
+import sysorderImport from './sysorder/sysorder-import.vue';
+import sysorderView from './sysorder/sysorder-view.vue';
+//导航管理
+import syscolumn from './navigation/syscolumn/syscolumn.vue';
+import syscolumnManage from './navigation/syscolumn/syscolumn-manage.vue';
+import syscolumnModify from './navigation/syscolumn/syscolumn-modify.vue';
+import syscolumnView from './navigation/syscolumn/syscolumn-view.vue';
+
+import sysprivilege from './navigation/sysprivilege/sysprivilege.vue';
+import sysprivilegeManage from './navigation/sysprivilege/sysprivilege-manage.vue';
+import sysprivilegeModify from './navigation/sysprivilege/sysprivilege-modify.vue';
+//权限管理
+import manager from './permissions/manager/manager.vue';
+import managerManage from './permissions/manager/manager-manage.vue';
+import managerModify from './permissions/manager/manager-modify.vue';
+import managerImport from './permissions/manager/manager-import.vue';
+import managerView from './permissions/manager/manager-view.vue';
+
+import sysrole from './permissions/sysrole/sysrole.vue';
+import sysroleManage from './permissions/sysrole/sysrole-manage.vue';
+import sysroleModify from './permissions/sysrole/sysrole-modify.vue';
+import sysroleView from './permissions/sysrole/sysrole-view.vue';
+//基础智库管理
+import fastreply from './thinktank/fastreply/fastreply.vue';
+import fastreplyManage from './thinktank/fastreply/fastreply-manage.vue';
+import fastreplyModify from './thinktank/fastreply/fastreply-modify.vue';
+import fastreplyImport from './thinktank/fastreply/fastreply-import.vue';
+import fastreplyView from './thinktank/fastreply/fastreply-view.vue';
+
+import robot from './thinktank/robot/robot.vue';
+import robotManage from './thinktank/robot/robot-manage.vue';
+import robotModify from './thinktank/robot/robot-modify.vue';
+import robotImport from './thinktank/robot/robot-import.vue';
+import robotView from './thinktank/robot/robot-view.vue';
+//基本信息
+import company from './sysbasicinfo/company/company.vue';
+import companyManage from './sysbasicinfo/company/company-manage.vue';
+import companyView from './sysbasicinfo/company/company-view.vue';
+
+import syscompany from './sysbasicinfo/syscompany/syscompany.vue';
+import syscompanyView from './sysbasicinfo/syscompany/syscompany-view.vue';
+
+import syssection from './sysbasicinfo/syssection/syssection.vue';
+import syssectionManage from './sysbasicinfo/syssection/syssection-manage.vue';
+import syssectionView from './sysbasicinfo/syssection/syssection-view.vue';
+
+import sysstaff from './sysbasicinfo/sysstaff/sysstaff.vue';
+import sysstaffManage from './sysbasicinfo/sysstaff/sysstaff-manage.vue';
+import sysstaffView from './sysbasicinfo/sysstaff/sysstaff-view.vue';
+//游客列表
+import tourist from './tourist/tourist.vue';
+import touristManage from './tourist/tourist-manage.vue';
+import touristView from './tourist/tourist-view.vue';
+//设置中心
+import syskefutime from './syssetting/syskefutime/syskefutime.vue';
+import syskefutimeModify from './syssetting/syskefutime/syskefutime-modify.vue';
+
+import sysgreeting from './syssetting/sysgreeting/sysgreeting.vue';
+import sysgreetingModify from './syssetting/sysgreeting/sysgreeting-modify.vue';
+
+import syssetting from './syssetting/syssetting/syssetting.vue';
+import syssettingModify from './syssetting/syssetting/syssetting-modify.vue';
+
+import sysorderattr from './syssetting/sysorderattr/sysorderattr.vue';
+import sysorderattrModify from './syssetting/sysorderattr/sysorderattr-modify.vue';
+//个人管理
+import sysperson from './sysperson/sysperson.vue';
+import syspersonModify from './sysperson/sysperson-modify.vue';
+
+import error from './error.vue';
+
+Vue.use(VueRouter);
+
+const routes = [  
+  {name: 'login', path: '/', component: login },
+  {name: 'main', path: '/main', component: main, children:[
+    {name: 'desk', path: '/desk', component: desk },
+    {name: 'sysskill', path: '/sysskill', component: sysskill, children:[
+      {name: 'sysskillManage', path: '/sysskill-manage', component: sysskillManage},
+      {name: 'sysskillModify', path: '/sysskill-modify', component: sysskillModify},
+      {name: 'sysskillImport', path: '/sysskill-import', component: sysskillImport},
+      {name: 'sysskillView', path: '/sysskill-view', component: sysskillView}
+    ]},
+    {name: 'syskefu', path: '/syskefu', component: syskefu, children:[
+      {name: 'syskefuManage', path: '/syskefu-manage', component: syskefuManage},
+      {name: 'syskefuModify', path: '/syskefu-modify', component: syskefuModify},
+      {name: 'syskefuImport', path: '/syskefu-import', component: syskefuImport},
+      {name: 'syskefuView', path: '/syskefu-view', component: syskefuView}
+    ]},
+	//系统管理
+    {name: 'sysconfig', path: '/sysconfig', component: sysconfig, children:[
+      {name: 'sysconfigView', path: '/sysconfig-view', component: sysconfigView}
+    ]},
+    {name: 'config', path: '/config', component: config, children:[
+      {name: 'configManage', path: '/config-manage', component: configManage},
+      {name: 'configView', path: '/config-view', component: configView}
+    ]},
+    {name: 'syschannel', path: '/syschannel', component: syschannel, children:[
+      {name: 'syschannelManage', path: '/syschannel-manage', component: syschannelManage},
+      {name: 'syschannelModify', path: '/syschannel-modify', component: syschannelModify},
+      {name: 'syschannelImport', path: '/syschannel-import', component: syschannelImport},
+      {name: 'syschannelView', path: '/syschannel-view', component: syschannelView}
+    ]},
+	//工单查询
+    {name: 'sysorder', path: '/sysorder', component: sysorder, children:[
+      {name: 'sysorderManage', path: '/sysorder-manage', component: sysorderManage},
+      {name: 'sysorderModify', path: '/sysorder-modify', component: sysorderModify},
+      {name: 'sysorderImport', path: '/sysorder-import', component: sysorderImport},
+      {name: 'sysorderView', path: '/sysorder-view', component: sysorderView}
+    ]},
+	//导航管理
+		{name: 'syscolumn', path: '/syscolumn', component: syscolumn, children:[
+		  {name: 'syscolumnManage', path: '/syscolumn-manage', component: syscolumnManage},
+		  {name: 'syscolumnModify', path: '/syscolumn-modify', component: syscolumnModify},
+		  {name: 'syscolumnView', path: '/syscolumn-view', component: syscolumnView}
+		]},
+		{name: 'sysprivilege', path: '/sysprivilege', component: sysprivilege, children:[
+		  {name: 'sysprivilegeManage', path: '/sysprivilege-manage', component: sysprivilegeManage},
+		  {name: 'sysprivilegeModify', path: '/sysprivilege-modify', component: sysprivilegeModify}
+		]},
+		//权限管理
+		{name: 'manager', path: '/manager', component: manager, children:[
+		  {name: 'managerManage', path: '/manager-manage', component: managerManage},
+		  {name: 'managerModify', path: '/manager-modify', component: managerModify},
+		  {name: 'managerImport', path: '/manager-import', component: managerImport},
+		  {name: 'managerView', path: '/manager-view', component: managerView}
+		]},
+		{name: 'sysrole', path: '/sysrole', component: sysrole, children:[
+		  {name: 'sysroleManage', path: '/sysrole-manage', component: sysroleManage},
+		  {name: 'sysroleModify', path: '/sysrole-modify', component: sysroleModify},
+		  {name: 'sysroleView', path: '/sysrole-view', component: sysroleView}
+		]},
+		//基础智库管理
+		{name: 'fastreply', path: '/fastreply', component: fastreply, children:[
+		  {name: 'fastreplyManage', path: '/fastreply-manage', component: fastreplyManage},
+		  {name: 'fastreplyModify', path: '/fastreply-modify', component: fastreplyModify},
+		  {name: 'fastreplyImport', path: '/fastreply-import', component: fastreplyImport},
+		  {name: 'fastreplyView', path: '/fastreply-view', component: fastreplyView}
+		]},
+		{name: 'robot', path: '/robot', component: robot, children:[
+		  {name: 'robotManage', path: '/robot-manage', component: robotManage},
+		  {name: 'robotModify', path: '/robot-modify', component: robotModify},
+		  {name: 'robotImport', path: '/robot-import', component: robotImport},
+		  {name: 'robotView', path: '/robot-view', component: robotView}
+		]},
+		//基本信息
+		{name: 'syscompany', path: '/syscompany', component: syscompany, children:[
+		   {name: 'syscompanyView', path: '/syscompany-view', component: syscompanyView}
+		]},
+		{name: 'syssection', path: '/syssection', component: syssection, children:[
+		  {name: 'syssectionManage', path: '/syssection-manage', component: syssectionManage},
+		  {name: 'syssectionView', path: '/syssection-view', component: syssectionView}
+		]},
+		{name: 'sysstaff', path: '/sysstaff', component: sysstaff, children:[
+		  {name: 'sysstaffManage', path: '/sysstaff-manage', component: sysstaffManage},
+		  {name: 'sysstaffView', path: '/sysstaff-view', component: sysstaffView}
+		]},
+		{name: 'company', path: '/company', component: company, children:[
+		  {name: 'companyManage', path: '/company-manage', component: companyManage},
+		  {name: 'companyView', path: '/company-view', component: companyView}
+		]},
+		//游客列表
+		{name: 'tourist', path: '/tourist', component: tourist, children:[
+		  {name: 'touristManage', path: '/tourist-manage', component: touristManage},
+		  {name: 'touristView', path: '/tourist-view', component: touristView}
+		]},
+		//设置中心
+		{name: 'syskefutime', path: '/syskefutime', component: syskefutime, children:[
+		  {name: 'syskefutimeModify', path: '/syskefutime-modify', component: syskefutimeModify}
+		]},
+		{name: 'sysgreeting', path: '/sysgreeting', component: sysgreeting, children:[
+		  {name: 'sysgreetingModify', path: '/sysgreeting-modify', component: sysgreetingModify}
+		]},
+		{name: 'syssetting', path: '/syssetting', component: syssetting, children:[
+		  {name: 'syssettingModify', path: '/syssetting-modify', component: syssettingModify}
+		]},
+		{name: 'sysorderattr', path: '/sysorderattr', component: sysorderattr, children:[
+		  {name: 'sysorderattrModify', path: '/sysorderattr-modify', component: sysorderattrModify}
+		]},
+		//个人管理
+		{name: 'sysperson', path: '/sysperson', component: sysperson, children:[
+		  {name: 'syspersonModify', path: '/sysperson-modify', component: syspersonModify}
+		]}
+		
+  	]},
+	{name: 'error', path: '*', component: error }
+]
+
+export default new VueRouter({
+   history:true, 
+   routes
+});

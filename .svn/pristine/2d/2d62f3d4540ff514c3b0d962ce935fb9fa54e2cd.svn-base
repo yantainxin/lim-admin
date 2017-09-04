@@ -1,0 +1,29 @@
+<template>
+	<div class="form-horizontal div-striped">
+		<s-text label="ID" :value="item.memberId"></s-text>
+		<s-text label="会员编号" :value="item.memberNo"></s-text>
+		<s-text label="会员账号" :value="item.memberUsername"></s-text>
+		<s-text label="会员邮箱" :value="item.memberEmail"></s-text>
+		<s-text label="移动电话" :value="item.memberPhone"></s-text>
+		<s-img label="会员头像" :value="item.memberPhoto" name="会员头像" alt="会员头像" :src="item.memberPhoto" width="90" height="90"></s-img>
+		<s-text label="地址" :value="item.memberAddress"></s-text>
+	</div>
+</template>
+<script>
+export default{
+	data() {
+	    return{
+			path: './basicinfo/member/member',
+			//url: 'http://www.newyali.cn/api/member/GetOneMember',
+			item: {},
+			personal:{}
+		} 
+	},
+	mounted(){
+		this.$http.get(this.config.host+'/user/getAdmin.action', {}).then(function(res) {
+            this.personal = res.body;
+        	this.viewItem({'web_id':res.body.companyid,'uid':this.$route.query.id});
+        });
+    }
+}
+</script>

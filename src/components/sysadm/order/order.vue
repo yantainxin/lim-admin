@@ -1,0 +1,86 @@
+<template>
+  <div class="order">
+    <div class="widget radius-bordered">
+      <div class="widget-header">
+        <span class="widget-caption">工单列表</span>
+      </div>
+      <div class="widget-body">
+      <el-row class="content-tools">              
+        <el-col :span="8">
+        <el-tooltip class="item" effect="dark" content="如检索时间，则填写“2017-06-25”或“20170625”" placement="right">
+          <s-search routeName="orderManage"></s-search>
+          </el-tooltip>
+        </el-col>
+        <el-col :span="16" class="text-right">
+          <el-dropdown @command="handleClick">
+            <el-button type="primary">
+              {{orderdetailStatus}} <i class="el-icon-caret-bottom el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="{'value':0, 'label':'待受理'}">待受理</el-dropdown-item>
+              <el-dropdown-item command="{'value':1, 'label':'已受理'}">已受理</el-dropdown-item>
+              <el-dropdown-item command="{'value':2, 'label':'已解决'}">已解决</el-dropdown-item>
+              <el-dropdown-item command="{'value':3, 'label':'已超时'}">已超时</el-dropdown-item>
+              <el-dropdown-item command="{'value':4, 'label':'已取消'}">已取消</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+          <el-button-group><d-privilege v-if="privileges != null" :options="privileges" ></d-privilege></el-button-group>
+        </el-col>
+      </el-row>
+      <el-form ref="orderForm" class="export" v-if="willShow" label-width="200px">
+        <hr>
+        <el-col :span="20">
+          <el-form-item label="用户自定义" prop="columnPid">
+            <s-checkbox-group name="options" v-model="property" :options="options"></s-checkbox-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-button type="submit" @click.native="exportExcel()">确定导出</el-button><iframe style="display:none"></iframe>
+        </el-col>
+      </el-form>
+        <hr>
+        <router-view></router-view>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default {
+  data() {
+    return {
+      privileges:null,
+      willShow:false,
+      property: [],
+      orderdetailStatus:'待受理',
+      options: [{'value':'ID', 'label':'ID'}, {'value':'工单主题', 'label':'工单主题'}, {'value':'创建时间', 'label':'创建时间'},{'value':'处理截止时间', 'label':'处理截止时间'}, {'value':'实际处理时间', 'label':'实际处理时间'}, {'value':'工单状态', 'label':'工单状态'}],
+      exportPath:'/order/orderExport.action',
+    }
+  },
+  computed:{
+  ...mapGetters({
+    tabItems: 'GET_TABS',
+    tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  mounted() {
+    this.getPrivilege({pos: 0});
+  },
+  methods: {
+    handleClick: function(str){
+      let query = null, status = JSON.parse(str.replace(/\'/gi, '\"'));
+      this.orderdetailStatus = status.label;
+      if(status.value >= 0) {
+        query = {'orderdetailStatus': status.value};
+      }
+      this.$router.push({name:'orderManage', query: query});
+    },
+    show:function(){
+      this.willShow = !this.willShow;
+    },
+    exportExcel(){
+      this.formExport();
+    }
+  }
+}
+</script>

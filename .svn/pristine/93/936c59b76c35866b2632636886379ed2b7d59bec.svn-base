@@ -1,0 +1,196 @@
+export default {
+    
+  install: function (Vue, options) {
+
+    Vue.prototype.getData = function(key, path, params) {
+      let url = this.config.userpath + path.substr(1);
+      if(typeof(params) === 'undefined') {
+        params = null;
+      }
+      this.$http.get(url, {params:params}).then(function(res) {
+        if(res.body.code == 200){
+          this[key] = res.body.data;
+        }
+      });
+    };
+
+    Vue.prototype.initItem = function() {
+      this.loading = true;
+      let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+      this.$http.get(url, {params:this.$route.query}).then(function(res) {
+        if(res.body.code == 200){
+          this.item = res.body.data;
+          this.loading = false;
+        }
+      });
+    }
+
+    Vue.prototype.initRules = function() {
+      this.loading = true;
+      //let url = '../static/validation' + this.path.substr(1) + '-validation.json';//这里是本地化校验文件配置，你可以测试一下。
+      let url = this.config.userpath + this.path.substr(1) + '-validation.json';
+
+      this.$http.get(url, {params:this.$route.query}).then(function(res) {
+        if(res.body.code == 200){
+          this.rules = res.body.data;
+          this.loading = false;
+        }
+      });
+    }
+
+    Vue.prototype.initForm = function() {
+      let url1 = '../static/validation'+ location.pathname.substr(0, location.pathname.indexOf('/', 1)) + this.path.substr(1) + '-validation.json';//这里是本地化校验文件配置，你可以测试一下。
+      //let url1 = this.config.userpath + this.path.substr(1) + '-validation.json';
+
+      let url2 = this.config.userpath + this.path.substr(1) + 'Init.action';
+      this.$http.get(url1, {params:this.$route.query}).then(function(res1) {
+        if(res1.body.code == 200){
+          this.rules = res1.body.data;
+          this.$http.get(url2, {params:this.$route.query}).then(function(res2) {
+            if(res2.body.code == 200){
+              this.item = res2.body.data;
+              this.loading = false;
+            }
+          });
+        }
+      });
+    }
+
+    Vue.prototype.listItems = function () {
+      this.listItems(null, null);
+    }
+
+    Vue.prototype.listItems = function (option) {
+      this.listItems(null, option);
+    }
+
+    Vue.prototype.listItems = function (url, option) {
+
+      this.loading = true;
+
+      if(url === null || typeof(url) == 'undefined') {
+        url = this.config.userpath + this.path.substr(1) + '-items.json';
+      }
+
+      let params = Object.assign(this.$route.query, option);
+
+      this.$http.get(url, {params:params}).then(function(res) {
+        if(res.body.code == 200) {
+          this.count = res.body.count;
+          this.items = res.body.data;
+          this.loading = false;
+        }
+      });
+    }
+
+    Vue.prototype.viewItem = function () {
+      this.viewItem(null, null);
+    }
+
+    Vue.prototype.viewItem = function (option) {
+      this.viewItem(null, option);
+    }
+
+    Vue.prototype.viewItem = function (url, option) {
+      this.loading = true;
+      if(url === null || typeof(url) == 'undefined') {
+        url = this.config.userpath + this.path.substr(1) + 'Init.action';
+      }
+
+      let params = Object.assign(this.$route.query, option);
+      this.$http.get(url, {params:params}).then(function(res) {
+        if(res.body.code == 200) {
+          this.item = res.body.data;
+          this.loading = false;
+        }
+      });
+    }
+
+    Vue.prototype.listTrees = function (url, option, index) {
+      this.loading = true;
+
+      if(url === null || typeof(url) == 'undefined') {
+        url = this.config.userpath + this.path.substr(1) + '-items.json';
+      }
+      let params = Object.assign(this.$route.query, option);
+
+      if(this.items[index].isopen == 0){
+        this.$http.get(url, {params:params}).then(function(res) {
+
+          let temp1 = this.items.slice(0, index + 1);
+          let temp2 = this.items.slice(index + 1);
+          this.items = temp1.concat(res.body.data).concat(temp2);
+          this.loading = false;
+        });
+        this.items[index].isopen = 1;
+
+      } else {
+        // let length = 0;
+        // this.items.forEach((item, i) => {
+        //   if(item.level > this.items[index].level){
+        //     length++;
+        //   } else {
+        //     return
+        //   }
+        // });
+        let length = 0;
+        for (let i = index + 1; i < this.items.length; i++) {
+            if(this.items[i].level <= this.items[index].level ){
+                break;
+            } else {
+                length++;
+            }
+        }
+
+        this.items.splice(index + 1, length);
+        this.items[index].isopen = 0;
+        this.loading = false;
+      }
+    }
+
+    Vue.prototype.mouldDownLoad = function () {
+        let obj = this;
+        let url = obj.config.host + window.location.pathname.substr(0, 7) + obj.path.substr(1)  +'Tmpl.action';
+        $('iframe').attr('src',url);
+    }
+
+    Vue.prototype.reomveItem = function (id) {
+      this.$http.get(this.config.userpath + this.path.substr(1) + 'Delete.action', {params:{'id': id}}).then(function(res) {
+        if(res.body.code == 200) {
+            if(!this.returnPageHasParams){
+                this.$http.get(this.config.userpath + this.path.substr(1) + '-items.json',{}).then(function(res) {
+                    if(res.body.code == 200) {
+                        this.count = res.body.count;
+                        this.items = res.body.data;
+                    }
+                })
+            } else {//删除后，需要返回带参数的列表页面
+                this.$http.get(this.config.userpath + this.path.substr(1) + '-items.json', {params:this.$route.query}).then(function(res) {
+                    if(res.body.code == 200) {
+                        this.count = res.body.count;
+                        this.items = res.body.data;
+                    }
+                })
+            }
+            layer.msg(res.body.msg);
+        }
+    }, function(res) {
+        layer.msg(res.body.msg);
+    });
+    }
+
+    Vue.prototype.getPrivilege = function () {
+      let obj = this;
+      this.$http.get(this.config.userpath +'/privilege-items.json?id='+this.columnId).then(function(res) {
+        if(res.body.code == 200){
+          $.each(res.body.data,function(idx,val){
+            if(val.privilegePosition == 1){
+              obj.privileges.push(val);
+            }
+          })
+        }
+      });
+    }
+    
+  }
+};

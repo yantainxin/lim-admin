@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>lim-admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="./static/lib/layui/css/layui.css"/>
+    <link rel="stylesheet" href="./static/lib/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="./static/lib/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="./static/css/index.css"/>
+    <link rel="stylesheet" href="./static/lib/swiper/swiper-3.4.2.min.css">
+  </head>
+  <body>
+    <div class="helpapi">
+      <div class="container-fluid header">
+        <div class="row">
+          <div class="col-md-5 col-sm-3 col-xs-5">
+            <img class="img-responsive_login" src="./static/image/newlogo1.png">
+          </div>
+          <div class="col-md-7 col-sm-9 col-xs-12 headerRight">
+            <a class="product" href="./index.html">产品</a>
+            <a class="product" href="./funion.html">功能</a>
+            <a class="product-1" href="./helpAPI.html">帮助文档</a>
+            <a class="product" href="">鸭梨社区</a>
+            <button type="button" class="btn btn-primary prod">登录</button>
+            <button type="button" class="btn btn-default prod">注册</button> 
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid header1"></div>
+      
+      <div class="container-fluid conthead"><p>帮助文档</p></div>
+      <div class="content">
+        <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-6 sidebarLt">
+           <div class="sidebar-menu">
+               <a href="#userMeun" class="nav-header menu-first collapsed userMeun" data-toggle="collapse"><i class="fa fa-clock-o fa-2x"></i><span> 新手上路</span></a>
+              <ul id="userMeun" class="nav nav-list collapse menu-second">
+                  <li><a href="#">鸭梨IM客服平台</a></li>
+                  <li><a href="#">体验指南</a></li>
+                  <li><a href="#">快速上手</a></li>
+                  <li><a href="#">网页接入</a></li>
+                  <li><a href="#">微信接入</a></li>
+              </ul>
+              <a href="#introduceMenu" class="nav-header menu-first collapsed introduceMenu" data-toggle="collapse"><i class="fa fa-clone fa-2x"></i><span> 功能介绍</span></a>
+              <ul id="introduceMenu" class="nav nav-list collapse menu-second">
+                  <li><a href="#">坐席管理</a></li>
+                  <li><a href="#">导航管理</a></li>
+                  <li><a href="#">权限管理</a></li>
+                  <li><a href="#">工单管理</a></li>
+                  <li><a href="#">个人管理</a></li>
+                  <li><a href="#">渠道设置</a></li>
+                  <li><a href="#">基本信息</a></li>
+                  <li><a href="#">基础智库管理</a></li>
+              </ul>
+              <a href="#channelMenu" class="nav-header menu-first collapsed channelMenu" data-toggle="collapse"><i class="fa fa-share-alt-square fa-2x"></i><span> 多渠道集成</span></a>
+              <ul id="channelMenu" class="nav nav-list collapse menu-second">
+                  <li><a href="#">网页渠道集成</a></li>
+                  <li><a href="#">微信渠道集成</a></li>
+              </ul>
+              <a href="#updateNewsMenu" class="nav-header menu-first collapsed updateNewsMenu" data-toggle="collapse"><i class="fa fa-rotate-right fa-2x"></i><span> 更新信息</span></a>
+              <ul id="updateNewsMenu" class="nav nav-list collapse menu-second">
+                  <li><a href="#">网页更新</a></li>
+                  <li><a href="#">微信更新</a></li>
+              </ul>
+              <a href="#freqAskMenu" class="nav-header menu-first collapsed freqAskMenu" data-toggle="collapse"><i class="fa fa-wrench fa-2x"></i><span> 常见问题</span></a>
+              <ul id="freqAskMenu" class="nav nav-list collapse menu-second">
+                  <li><a href="#">帮助</a></li>
+              </ul>
+            </div>
+        </div>
+        <div class="col-md-9 col-sm-6 col-xs-6">
+            <div class="contentRt">
+                <h2>鸭梨IM客服平台</h2>
+                <hr>
+                <h3>鸭梨简介</h3>
+                <hr>
+            </div>
+        </div>
+
+
+        </div>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <div class="row">
+        <div class="col-md-4 serve">
+          <h4>开发者服务</h4>
+          <hr>
+          <h6><a>技术支持</a></h6>
+          <h6><a>立刻体验</a></h6>
+        </div>
+        <div class="col-md-4 col-md-offset-4">
+          <div class="twoDcode">
+              <img class="twoDpic" src="./static/image/2Dcode.png" />
+              <p>鸭梨公众微信 ：服务号</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+    <script src="./static/lib/jquery-2.1.4.min.js"></script>
+    <script src="./static/lib/bootstrap/bootstrap.js"></script>
+    <script src="./static/lib/swiper/swiper-3.4.2.jquery.min.js"></script>
+    <script src="http://192.168.1.123:8080/static/lib/layui/layui.js"></script>
+    <!-- <script src="http://192.168.1.123:8080/static/lib/layui/lim.js?5f1c27b5e2d4e957"></script> -->
+  </body>
+</html>
+
+<style>
+#lb1{background-image: url(./static/image/lb1.png) !important;}
+#lb2{background-image: url(./static/image/lb2.png) !important;}
+ 
+
+ #lb1,#lb2{
+  background-size: 100%;
+  height: 583px;
+  max-height: 100%;
+  background-repeat:no-repeat;
+ }
+ </style>

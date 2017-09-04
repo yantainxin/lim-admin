@@ -1,0 +1,53 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="客服接单上限">{{item.sysorderKefumax}}</d-text>
+    <d-text label="工单创建时间上限">{{item.sysorderCreatelimit}}</d-text>
+    <d-text label="客服受理工单时间上限">{{item.sysorderSeizedlimit}}</d-text>
+    <d-text label="超时提示语">{{item.sysorderOvertimetip}}</d-text>
+    <d-text label="用户上传附件" v-if="item.sysorderIsupload == 0">关闭</d-text>
+    <d-text label="用户上传附件" v-if="item.sysorderIsupload == 1">开启</d-text>
+    <d-text label="离线客服参与系统派单" v-if="item.sysorderIsaccept == 0">关闭</d-text>
+    <d-text label="离线客服参与系统派单" v-if="item.sysorderIsaccept == 1">开启</d-text>
+    <d-text label="工单超时是否提醒客服" v-if="item.sysorderIswarnkefu == 0">否</d-text>
+    <d-text label="工单超时是否提醒客服" v-if="item.sysorderIswarnkefu == 1">是</d-text>
+    <d-text label="工单超时是否提醒组长" v-if="item.sysorderIswarnchargeman == 0">否</d-text>
+    <d-text label="工单超时是否提醒组长" v-if="item.sysorderIswarnchargeman == 1">是</d-text>
+    <d-text label="工单超时是否提醒班长" v-if="item.sysorderIswarnmonitor == 0">否</d-text>
+    <d-text label="工单超时是否提醒班长" v-if="item.sysorderIswarnmonitor == 1">是</d-text>
+    <d-text label="处理超时是否提醒客服" v-if="item.sysorderIshandlewarnkefu == 0">否</d-text>
+    <d-text label="处理超时是否提醒客服" v-if="item.sysorderIshandlewarnkefu == 1">是</d-text>
+    <d-text label="处理超时是否提醒组长" v-if="item.sysorderIshandlewarnchargeman == 0">否</d-text>
+    <d-text label="处理超时是否提醒组长" v-if="item.sysorderIshandlewarnchargeman == 1">是</d-text>
+    <d-text label="处理超时是否提醒班长（早晚班班长）" v-if="item.sysorderIshandlewarnmonitor == 0">否</d-text>
+    <d-text label="处理超时是否提醒班长（早晚班班长）" v-if="item.sysorderIshandlewarnmonitor == 1">是</d-text>
+    <d-text label="工单关闭后是否允许编辑" v-if="item.sysorderIsedit == 0">否</d-text>
+    <d-text label="工单关闭后是否允许编辑" v-if="item.sysorderIsedit == 1">是</d-text>
+    <d-text label="批量导出工单时，是否导出工单备注" v-if="item.sysorderIsexportremarks == 0">否</d-text>
+    <d-text label="批量导出工单时，是否导出工单备注" v-if="item.sysorderIsexportremarks == 1">是</d-text>
+    <d-text label="重要工单是否标记" v-if="item.sysorderImportantsign == 0">否</d-text>
+    <d-text label="重要工单是否标记" v-if="item.sysorderImportantsign == 1">是</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+	data() {
+		return {
+			loading:true,
+			path: './syssetting/sysorderattr/sysorderattr',
+			item: null
+		} 
+	},
+	mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {id:this.$route.query.id}); 
+  }
+}
+</script>

@@ -1,0 +1,10 @@
+var url = document.getElementById('yali-im').src;
+var regex = /^((?:\w+):\/\/([^\/:]*)(?::\d+)?)\/([^?]*)(?:\?(.*))?$/gi;
+var host = url.replace(regex, '$1');
+layui.config({
+	dir: host + '/static/lib/layui/',
+});
+layui.addcss('layui.css', function(){
+}, 'skinlayuicss');
+layui.addcss('layui.plugs.css', function(){
+}, 'plugslayuicss');

@@ -1,0 +1,90 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="roleForm" label-width="120px">
+    <el-form-item label="角色名称" prop="roleName">
+      <s-textfield v-model="item.roleName"></s-textfield>
+    </el-form-item>
+    <el-form-item label="角色权限" prop="roleColumnIds">
+      <el-tree ref="roleColumn" :data="columnJson" node-key="id" :props="{label: 'name', children: 'children'}" show-checkbox :default-checked-keys="item.roleColumnIds" @check-change="handleCheckChange" :render-content="renderContent"></el-tree>
+    </el-form-item>
+    <el-form-item label="角色描述" prop="roleDescription">
+      <s-textarea v-model="item.roleDescription"></s-textarea>
+    </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('roleForm')">确认</el-button>
+    <el-button @click="formReset('roleForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './permissions/role/role',
+      route: 'roleManage',
+      rules: null,
+      item: null,
+      columnJson: null
+    }
+  },
+  mounted() {
+    this.getData('columnJson', './navigation/privilege/privilege-nodes.json');
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  },
+  methods: {
+    handleCheckChange(data, checked, indeterminate){
+      if(data.hasOwnProperty('privileges')) {
+        if(checked) {
+          this.item.roleColumnIds.push(data.id);
+          data.privileges.forEach((node) => {
+            this.item.rolePrivilegeIds.push(node.id);
+          });
+        } else {
+          let index = $.inArray(data.id, this.item.roleColumnIds);
+          if(index != -1){
+            this.item.roleColumnIds.splice(index, 1);
+          }
+          data.privileges.forEach((node) => {
+            let index = $.inArray(node.id, this.item.rolePrivilegeIds);
+            if(index != -1){
+              this.item.rolePrivilegeIds.splice(index, 1);
+            }
+          })
+        }
+      }
+    },
+    handleRenderCheckChange(e, data, node){
+      let checked = e.target.checked, val = parseInt(e.target.value);
+      if(checked){
+        this.item.rolePrivilegeIds.push(val);
+        if($.inArray(data.id, this.item.roleColumnIds) === -1){
+          this.item.roleColumnIds.push(data.id);
+          this.$refs.roleColumn.setChecked(data.id, true);
+        }
+      } else {
+        let index = $.inArray(val, this.item.rolePrivilegeIds);
+        if(index != -1){
+          this.item.rolePrivilegeIds.splice(index, 1);
+        }
+      }
+    },
+    renderContent(h, { node, data, store }) {
+      return (
+        <span>
+          {node.label}
+          {
+            data.children?'': (<s-buttonbox-group on-change={ () => this.handleRenderCheckChange(event, data, node) } class="pull-right" size="small" value={this.item.rolePrivilegeIds} options={data.privileges} props={{label:'name', value:'id'}}></s-buttonbox-group>)
+          }
+        </span>
+      )
+    }
+  }
+}
+</script>

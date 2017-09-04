@@ -1,0 +1,30 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="名称">{{item.syscolumnName}}</d-text>
+    <d-text label="路由">{{item.syscolumnUname}}</d-text>
+    <d-text label="描述">{{item.syscolumnDescription}}</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+	data() {
+		return {
+			loading:true,
+			path: './navigation/syscolumn/syscolumn',
+			item: null
+		} 
+	},
+	mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {id:this.$route.query.id}); 
+  }
+}
+</script>

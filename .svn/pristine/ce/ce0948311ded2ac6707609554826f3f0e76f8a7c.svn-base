@@ -1,0 +1,65 @@
+<#include "/static/common/items_head.html" />
+
+<#assign usertype=RequestParameters.type!"tourist" />
+<#assign username="游客" />
+<#assign avatar=RequestParameters.avatar! />
+<#assign id=RequestParameters.id! />
+<#assign host=RequestParameters.host!"" />
+<#assign JS=RequestParameters.JS!""/>
+
+<#assign brief = "true"/>
+<#assign tool>[{"alias" : "msgboard", "title" : "留言板", "icon" : "&#xe60e;"},{"alias" :"think","title":"评价","icon":"&#xe600;"}]</#assign>
+<#assign init>{"mine":{"username":"${username}", "id": "${id}","avatar": "${avatar}"}}</#assign>
+
+<#if usertype == "staff">
+	<#assign tool>[]</#assign>
+	<#assign brief = "false"/>
+	<#assign init>{	"url" : "${host}/httpClient/ajaxInit.action;jsessionid=${JS}", "type" : "get", "data" : {}	}</#assign>
+<#elseif usertype == "kefu">
+	<#assign brief = "false"/>
+	<#assign tool>[{"alias" : "code", "title" : "代码", "icon" : "&#xe64e;"}, {"alias" : "rebroad", "title" : "呼叫转移", "icon" : "&#xe606;"}, {"alias" : "finish", "title" : "已解决", "icon" : "&#xe627;"}]</#assign>
+	<#assign init>{	"url" : "${host}/httpClient/ajaxInit.action;jsessionid=${JS}", "type" : "get", "data" : {}	}</#assign>
+<#elseif usertype == "sysstaff">
+	<#assign brief = "false"/>
+	<#assign tool>[]</#assign>
+	<#assign init>{	"url" : "${host}/httpClient/ajaxInit.action;jsessionid=${JS}", "type" : "get", "data" : {}	}</#assign>
+<#elseif usertype == "syskefu">
+	<#assign brief = "false"/>
+	<#assign tool>[{"alias" : "code", "title" : "代码", "icon" : "&#xe64e;"}, {"alias" : "rebroad", "title" : "呼叫转移", "icon" : "&#xe606;"}, {"alias" : "finish", "title" : "已解决", "icon" : "&#xe627;"}]</#assign>
+	<#assign init>{	"url" : "${host}/httpClient/ajaxInit.action;jsessionid=${JS}", "type" : "get", "data" : {}	}</#assign>
+<#elseif usertype == "member">
+	<#assign brief = "false"/>
+	<#assign tool>[]</#assign>
+	<#assign init>{	"url" : "${host}/httpClient/ajaxInit.action;jsessionid=${JS}", "type" : "get", "data" : {}	}</#assign>
+<#else>
+	<#assign brief = "true"/>
+	<#assign tool>[{"alias" : "msgboard", "title" : "留言板", "icon" : "&#xe60e;"},{"alias" :"think","title":"评价","icon":"&#xe600;"}]</#assign>
+	<#assign init>{"mine":{"username":"${username}", "id": "${id}","avatar": "${avatar}"}}</#assign>
+</#if>
+
+{
+	"code":"200",
+	"data":{
+		"brief": ${brief},
+		"init" : ${init},
+		"members" : {
+			"url" : "${host}/httpClient/ajaxMembers.action;jsessionid=${JS}",
+			"type" : "get",
+			"data" : {}
+		},
+		"uploadImage" : {
+			"url" : "${host}/library/ajaxUpload.action;jsessionid=${JS}",
+			"type" : "post"
+		},
+		"uploadFile" : {
+			"url" : "${host}/library/ajaxUpload.action;jsessionid=${JS}",
+			"type" : "post"
+		},
+		"title" : "我的IM",
+		"msgbox" : "${host}/socket/msgbox.html",
+		"chatLog" : "${host}/chatlog/showChatlog.action;jsessionid=${JS}",
+		"tool" : ${tool},
+		"isAudio" : true,
+		"copyright" : true
+	}
+}

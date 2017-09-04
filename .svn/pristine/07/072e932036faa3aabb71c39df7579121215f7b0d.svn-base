@@ -1,0 +1,68 @@
+<template>
+  <el-form-item label="活动名称" prop="name">
+    <el-input
+        v-bind="$props"
+        :autocomplete="autoComplete"
+        :value="value"
+        ref="input"
+        @input="handleInput"
+        @focus="handleFocus"
+        @blur="handleBlur"
+    ></el-input>
+  </el-form-item>
+</template>
+<script>
+export default{
+	props: {
+	  label:String,
+	  model:String,
+      value: [String, Number],
+      placeholder: String,
+      size: String,
+      resize: String,
+      readonly: Boolean,
+      autofocus: Boolean,
+      icon: String,
+      disabled: Boolean,
+      type: {
+        type: String,
+        default: 'text'
+      },
+      name: String,
+      autosize: {
+        type: [Boolean, Object],
+        default: false
+      },
+      rows: {
+        type: Number,
+        default: 2
+      },
+      autoComplete: {
+        type: String,
+        default: 'off'
+      },
+      form: String,
+      maxlength: Number,
+      minlength: Number,
+      max: {},
+      min: {},
+      step: {},
+      validateEvent: {
+        type: Boolean,
+        default: true
+      },
+      onIconClick: Function
+    },
+    methods: {
+      handleBlur(event) {
+        this.$emit('blur', event);
+      },
+      handleFocus(event) {
+        this.$emit('focus', event);
+      },
+      handleInput(value) {
+        this.$emit('input', value);
+      }      
+    }
+}	
+</script>

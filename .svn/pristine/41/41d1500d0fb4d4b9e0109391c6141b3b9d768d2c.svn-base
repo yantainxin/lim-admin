@@ -1,0 +1,24 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "sysskillName" :[
+            {
+                "type": "string",
+                "required": true,
+                "min": 1,
+                "max": 10,
+                "message": "名称长度在 1 到 10 个字符",
+                "trigger": "blur"
+            }
+        ],
+        "sysskillDescription" :[
+            {
+                "type": "string",
+                "required": true,
+                "message" : "回答不能为空",
+                "trigger": "blur"
+            }
+        ]
+    }
+}

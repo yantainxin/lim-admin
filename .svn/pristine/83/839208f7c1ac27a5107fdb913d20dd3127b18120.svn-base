@@ -1,0 +1,29 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "skillName" :[
+            {
+                "type": "string",
+                "required": true,
+                "message":"名称不能为空",
+                "trigger": "blur"
+            },
+            {
+                "type": "string",
+                "min": 2,
+                "max": 10,
+                "message" : "名称长度在 2 到 10 个字符",
+                "trigger": "blur"
+            }
+        ],
+        "skillDescription" :[
+            {
+                "type": "string",
+                "required": true,
+                "message" : "描述不能为空",
+                "trigger": "blur"
+            }
+        ]
+    }
+}

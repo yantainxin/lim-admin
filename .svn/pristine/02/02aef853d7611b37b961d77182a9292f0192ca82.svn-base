@@ -1,0 +1,17 @@
+// const ip = '127.0.0.1';
+const ip = '192.168.1.123'
+
+const host = 'http://' + ip + ':8080';
+const httphost = 'http://' + ip + ':8080';
+const wshost = 'ws://' + ip + ':9321';
+// const host = '';
+const userpath = host + location.pathname.substr(0, location.pathname.indexOf('/', 1));
+// const host = '';
+const aesKey = 'abcdefgabcdefg12';
+export default{
+  host,
+  httphost,
+  wshost,
+  userpath,
+  aesKey
+};

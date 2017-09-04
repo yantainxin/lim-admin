@@ -1,0 +1,440 @@
+<template>
+<div class="chat">
+    <div class="widget radius-bordered">
+      <div class="widget-header">
+          <span class="widget-caption">在线客服</span>
+      </div>
+      <div class="widget-body">
+				<div class="layui-box layui-layim" id="layui-layim"></div>
+				<div class="layui-box layui-layim-panel">
+			  <el-card class="box-card">
+          <span>接待情况</span>
+          <hr>
+			  	<div>今日接待：{{receve.today}} (人次)</div>
+			  	<div>当前接待: {{receve.current}} (人次)</div>
+				</el-card>
+  			<el-tabs type="border-card" value="fastreply">
+			    <el-tab-pane label="快捷回复" name="fastreply">
+						  <ul>
+						    <li v-for="(item, index) in fastreplyItems" @click="handleClick(index)">{{item.fastreplyContent}}</li>
+						  </ul>
+			    </el-tab-pane>
+			    <el-tab-pane label="用户信息" name="userinfo">
+		    		<ul v-if="toUser != null">
+					    <li><label>用户名：</label> {{toUser.touristName + toUser.touristId}}</li>
+					    <li><label>所属地区：</label> {{toUser.touristZone}}</li>
+					    <li><label>IP地址：</label> {{toUser.touristIp}}</li>
+					    <li><label>用户来源：</label> {{toUser.touristFrom}}</li>
+					    <li><label>系统：</label> {{toUser.operatingSystem}}</li>
+					    <li><label>浏览器：</label> {{toUser.browser}}</li>
+					  </ul>
+			    </el-tab-pane>
+			  </el-tabs>
+			  </div>
+				<div class="layui-box layui-layim-chat layer-anim" id="layui-layim-chat">
+					
+				</div>
+      </div>
+    </div>
+</div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+
+export default{
+	data() {
+		return {
+			layim: null,
+			receve: {today:0, current:0},
+			setting: null,
+			fastreplyItems: null,
+			mine: null,
+			to: null,
+			toUser: null,
+			userconfig: {
+		    init: {url: this.config.host + '/kefu/kefuInit.action', type : 'get', data : {}},
+		    members: {url: this.config.host + '/kefu/kefuMembers.action', type: 'get', data: {}},
+		    uploadImage: {url: this.config.host + '/kefu/kefuUploadImage.action', type: 'post'},
+		    uploadFile: {url: this.config.host + '/kefu/kefuUploadFile.action', type: 'post'},
+		    tool: [
+		    	{"alias" : "order", "title" : "工单提交", "icon" : "&#xe63c;"},
+		    	{"alias" : "rebroad", "title" : "会话转接", "icon" : "&#xe606;"},
+		    	{"alias" : "finish", "title" : "完成咨询", "icon" : "&#xe627;"},
+		    ],
+		    title : "我的IM",
+				copyright : true,
+		    msgbox: this.config.host + '/static/lib/layui/msgbox.html?wshost=' + this.config.wshost,
+		    chatLog: this.config.host + '/static/lib/layui/chatlog.html'
+	  	}
+		}
+	},
+  computed:{
+    ...mapGetters({
+      isReload: 'IS_RELOAD',
+      personal: 'GET_PERSONAL'
+    })
+  },
+
+	mounted(){
+		let $this = this;
+		let socket, kefuStatus, msgboxCount = 0;
+
+		$this.getData('fastreplyItems', './thinktank/fastreply/fastreply-items.json');
+		$this.getData('skillItems', './management/skill/skill-items.json');
+		$this.getData('setting', './setting/setting/settingInit.action');
+
+		layui.use(['layer', 'layim', 'laytpl', 'form'], function(){
+			let $ = layui.jquery;
+			let layer = layui.layer;
+			let layim = layui.layim;
+			let laytpl = layui.laytpl;
+			let form = layui.form();
+			$this.layim = layim;
+			var timer = setInterval(function(){
+				if($this.setting != null){
+					clearInterval(timer);		
+					if ($this.setting.settingIsimage == 0) {
+						$this.userconfig.uploadImage = null;
+					}
+					if ($this.setting.settingIsfile == 0) {
+						$this.userconfig.uploadFile = null;
+					}
+				}
+			}, 30)
+
+
+		  layim.config($this.userconfig);
+
+		 
+			if (layim.cache().mine && layim.cache().mine.hasOwnProperty('id')) {
+				$this.mine = layim.cache().mine;
+				$this.userconfig.chatLog += '?id=' + $this.mine.id;
+				socket = new WebSocket($this.config.wshost + '?key=' + $this.mine.id);
+			}
+
+			socket.onopen = function() {
+
+				$this.$http.get($this.config.host + '/chatlog/countChatlog.action', {params:{id: $this.mine.id}}).then(function(res){
+					if (Number(res.body) > 0) {
+						msgboxCount = res.body;
+						layim.msgbox(msgboxCount);
+					}
+					console.log('通信连接成功');
+				});
+			};
+
+			socket.onclose = function(res) {
+				console.log('通信连接已关闭');
+			};
+			socket.onerror = function(res) {
+				console.log('通信发生异常');
+			};
+
+				// 监听收到的消息
+			socket.onmessage = function(res) {
+				let obj = JSON.parse(res.data);
+				if (obj != null && obj.hasOwnProperty('type') && obj.hasOwnProperty('data')) {
+					let tempTo = obj.data;
+
+					switch (obj.type) {
+						case 'statusMessage':
+							layim.setFriendStatus(tempTo.id, tempTo.content);
+							break;
+						case 'chatMessage':
+						case 'systemMessage':
+							layim.getMessage(tempTo);
+							break;
+						case 'rebroadMessage':
+						case 'chatKefuMessage':
+							tempTo.groupid = 0;
+							layim.addList(tempTo);
+							layim.getMessage(tempTo);
+							break;
+						case 'kefuStatusMessage':
+							$this.receve.current = tempTo.receving || 0;
+							break;
+						case 'closeMessage':
+							layer.open({
+								title: '系统提醒',
+								content: tempTo.content,
+								end: function() {
+									layim.closeChat();
+									socket.close();
+								}
+							});
+							break;
+						case 'promptMessage':
+							layer.open({
+								title: '系统提醒',
+								content: tempTo.content,
+								offset: 'rb',
+								shade: 0,
+								time: 10000
+							});
+							break;
+						default:
+							layim.getMessage(tempTo);
+					}
+
+				} else {
+					console.log('接受到的消息为空');
+				}
+			};
+
+			layim.on('chatChange', function(res) {
+				let url = '', elem = res.elem;
+				$this.to = res.data;
+
+				
+				if ($this.to.id.indexOf('_type_tourist_') > 0) {
+					url = $this.config.host + '/api/lim/tourist/touristInfo.action';
+
+					$this.getSource(url, {id: $this.to.id}, function(res) {
+						$this.toUser = res.data;
+					});
+					// $(elem).find('.layim-tool-order, .layim-tool-rebroad, .layim-tool-finish').show();
+				} else if ($this.to.id.indexOf('_type_member_') > 0) {
+
+					// $(elem).find('.layim-tool-order, .layim-tool-rebroad, .layim-tool-finish').show();
+				} else {
+					$this.toUser = null;
+					$(elem).find('.layim-tool-order, .layim-tool-rebroad, .layim-tool-finish').hide();
+				}
+
+			});
+
+			//监听发送消息
+			layim.on('sendMessage', function(res) {
+				socket.send(JSON.stringify({
+					type : 'chatMessage',
+					data : res
+				}));
+			});
+
+			// 状态切换
+			layim.on('online', function(status) {
+				if (status == 'online') { // 除非选在在线状态，其他状态全部是离线
+					socket.send(JSON.stringify({
+						type : 'statusMessage', // 随便定义，用于在服务端区分消息类型
+						data : {
+							id : $this.mine.id,
+							type : 'friend',
+							content : 'online'
+						}
+					}));
+				} else { // 如果是隐身或者离线，同一提示为离线
+					socket.send(JSON.stringify({
+						type : 'statusMessage', // 随便定义，用于在服务端区分消息类型
+						data : {
+							id : $this.mine.id,
+							system : true,
+							type : 'friend',
+							content : 'offline'
+						}
+					}));
+				}
+			});
+
+			//修改个性签名
+			layim.on('sign', function(value) {
+				$this.$http.post($this.config.host + '/httpClient/ajaxUpateSign.action', {
+					'id': $this.mine.id,
+					'sign': value
+				}, function(res) {
+					if(res.body.code != 0){
+						layer.msg(res.body.msg);
+					}
+				});
+			});
+
+			layim.on('tool(order)', function(insert, send, obj) {
+				let tempTo = obj.data;
+				let tpl = ['<form class="layui-form" action="">',
+				  '<div class="layui-form-item">',
+				   ' <label class="layui-form-label">用户名称</label>',
+				    '<div class="layui-input-block"><div class="layui-form-mid">{{d.to.username}}</div></div>',
+				  '</div>',
+				  '<div class="layui-form-item layui-form-text">',
+				    '<label class="layui-form-label">工单标题</label>',
+				    '<div class="layui-input-block">',
+				      '<input name="orderdetailTitle" lay-verify="required" placeholder="请输入标题" class="layui-input">',
+				    '</div>',
+				  '</div>',
+				  '<div class="layui-form-item layui-form-text">',
+				    '<label class="layui-form-label">优先级</label>',
+				    '<div class="layui-input-block">',
+				      '<input type="radio" name="orderdetailPriority" value="0" title="低" checked>',
+				      '<input type="radio" name="orderdetailPriority" value="1" title="中">',
+				      '<input type="radio" name="orderdetailPriority" value="2" title="高">',
+				    '</div>',
+				  '</div>',
+				  '<div class="layui-form-item layui-form-text">',
+				    '<label class="layui-form-label">技能组</label>',
+				    '<div class="layui-input-block">',
+				      '<select name="orderdetailSkillgroupid" lay-verify="required">',
+							  '<option value="">请选择处理的技能组</option>',
+							  '{{#  layui.each(d.skillItems, function(index, item){ }}',
+								  '<option value="{{item.skillId}}">{{item.skillName}}</option>',
+								'{{#  }); }}',
+							'</select>',
+				    '</div>',
+				  '</div>',
+				  '<div class="layui-form-item layui-form-text">',
+				    '<label class="layui-form-label">工单内容</label>',
+				    '<div class="layui-input-block">',
+				      '<textarea name="orderdetailContent" lay-verify="required" placeholder="请输入内容" class="layui-textarea"></textarea>',
+				    '</div>',
+				  '</div>',
+				'</form>'].join('');
+
+				layer.open({
+					area: '600px',
+				  title: '工单提交',
+				  btn: ['确认', '取消'],
+				  content: laytpl(tpl).render({to:tempTo, skillItems: $this.skillItems}),
+				  success:function(index, layero){
+				  	form.render();
+				  },
+				  yes: function(index, layero) {
+
+				  	let orderdetail = {};
+				  	orderdetail.kefu = {}
+
+				  	orderdetail.orderdetailTitle = layero.find('input[name="orderdetailTitle"]').val();
+				  	orderdetail.orderdetailPriority = layero.find('input[name="orderdetailPriority"]:checked').val();
+				  	orderdetail.orderdetailSkillgroupid = layero.find('select[name="orderdetailSkillgroupid"]').val();
+				  	orderdetail.orderdetailSkillgroupname = layero.find('select[name="orderdetailSkillgroupid"]').find("option:selected").text();
+				  	orderdetail.orderdetailContent = layero.find('textarea[name="orderdetailContent"]').val();
+
+						orderdetail.orderdetailCustomerid = tempTo.id.split('_')[5];
+						orderdetail.orderdetailCustomertype = tempTo.id.split('_')[3];
+						orderdetail.orderdetailCustomername = tempTo.username;
+						orderdetail.kefu.kefuId = $this.personal.kefuId;
+
+				  	$this.$http.post($this.config.host + '/api/lim/order/orderCommit.action',
+							JSON.stringify(orderdetail),
+							{headers: {'Content-Type': 'application/json; charset=utf-8'}}).then(function(res) {
+							if(res.body.code == 200){
+								layer.msg(res.body.msg);
+								layer.close(index);
+		        	} else {
+								layer.msg(res.body.msg);		        		
+		        	}
+				    }, function(res) {
+				      layer.msg(res.body.msg);
+				    });
+
+				  }
+				});
+			});
+
+			/* 将客户呼叫转移给其他客服 */
+			layim.on('tool(rebroad)', function(insert, send, obj) {
+				let tempTo = obj.data;
+				if (tempTo.hasOwnProperty('groupid') || tempTo.groupid === 0) {
+					let tpl = '<form class="layui-form" action=""><ul class="item-ul">{{# if(d.list.length === 0){ }}<li>当前无在线客服</li>{{# } else { layui.each(d.list, function(index, item){ }}<li><input type="radio" name="id" id="{{ item.id }}" value="{{ item.id }}" title="{{ item.username }}"></li>{{# }); } }}</ul></form>'
+					let list = new Array();
+					$.each(layim.cache().friend[3].list, function(index, item) {
+						if (item.status == 'online') {
+							list.push(item);
+						}
+					});
+
+					if (list.length === 0) {
+						layer.msg('当前无在线客服');
+					} else {
+						layer.open({
+							title: '选择目标客服',
+							content: laytpl(tpl).render({
+								list: list
+							}),
+							success: function(index, layero) {
+								form.render();
+							},
+							yes: function(index, layero) {
+								let tempMine = $this.mine;
+								$.each(list, function(index, item) {
+									if (item.id === layero.find('input[name="id"]:checked').val()) {
+										tempMine.content = item.id;
+									}
+								});
+
+								socket.send(JSON.stringify({
+									type: 'rebroadMessage', // 随便定义，用于在服务端区分消息类型
+									data: {
+										to: tempTo,
+										mine: tempMine
+									}
+								}));
+								tempTo.groupid = 2;
+								layim.addList(tempTo);
+
+								layer.close(index); //如果设定了yes回调，需进行手工关闭			    
+							}
+						});
+
+					}
+				} else {
+					layer.msg('对不起，您只能转移属于自己客户');
+				}
+			});
+
+			/* 完成客户咨询 */
+			layim.on('tool(finish)', function(insert, send, obj) {
+				let tempTo = obj.data;
+				if (tempTo.hasOwnProperty('groupid') || tempTo.groupid === 0) {
+					layer.confirm('确定完成咨询？', function(index) {
+						socket.send(JSON.stringify({
+							type: 'finishChatKefu',
+							data: {
+								to: tempTo,
+								mine: $this.mine
+							}
+						}));
+						tempTo.groupid = 1;
+						layim.removeList({
+							type: 'friend',
+							id: tempTo.id
+						}).addList(tempTo);
+						layer.close(index);
+					});
+				} else {
+					layer.msg('对不起，您只能改变属于自己客户的用户状态');
+				}
+
+			});
+
+			// window.onbeforeunload = function() {
+			// 	return '离开本页可能导致数据丢失，确定要刷新页面吗？';
+			// }
+		});
+
+
+	},
+	methods:{
+		aesEncrypt(content) {
+			let key = CryptoJS.enc.Utf8.parse($this.config.aesKey);
+			let srcs = CryptoJS.enc.Utf8.parse(content);
+			let encrypted = CryptoJS.AES.encrypt(srcs, key, {
+				mode : CryptoJS.mode.ECB,
+				padding : CryptoJS.pad.Pkcs7
+			});
+			return encrypted.toString();
+		},
+		aesDecrypt(content) {
+			content = content.replace(/\s/g,'+');//由于地址栏接收到的加密串存在+号回被自动转为空格。需要替换回来。
+			let key = CryptoJS.enc.Utf8.parse($this.config.aesKey);
+			let decrypt = CryptoJS.AES.decrypt(content, key, {
+				mode : CryptoJS.mode.ECB,
+				padding : CryptoJS.pad.Pkcs7
+			});
+			return CryptoJS.enc.Utf8.stringify(decrypt).toString();
+		},
+		handleClick(index){
+			this.layim.insert(this.fastreplyItems[index].fastreplyContent);
+		}
+	}
+
+}
+</script>

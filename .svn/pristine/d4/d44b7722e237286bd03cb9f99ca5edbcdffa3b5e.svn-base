@@ -1,0 +1,42 @@
+<template>
+  <el-input
+    v-bind="$props"
+    v-model="keywords"
+    >
+    <template slot="prepend">{{label}}</template>
+  </el-input>
+</template>
+<script>
+
+export default{
+  data(){
+    return {
+      keywords: this.$route.query.keywords || ''
+    }
+  },
+  props: {
+    routeName: {
+      type:String,
+      default:''
+    },
+    placeholder: String,
+    icon: {
+      type:String,
+      default:'search'
+    },
+    disabled: Boolean,
+    label: {
+      type:String,
+      default:'搜索'
+    },
+    name: String
+  },
+  watch: {
+    keywords() {
+      let query = $.extend({}, this.$route.query);
+      query.keywords = this.keywords;
+      this.$router.push({name:this.routeName, query:query});
+    }
+  }
+}
+</script>

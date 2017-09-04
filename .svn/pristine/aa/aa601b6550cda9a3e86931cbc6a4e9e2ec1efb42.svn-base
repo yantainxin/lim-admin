@@ -1,0 +1,167 @@
+<template>
+<div class="page-tabs">
+  <el-row>  
+      <div class="navbar">        
+        <el-dropdown class="navbar-menu" @command="haddleCommand">
+          <el-button size="small"><i class="fa fa-list"></i></el-button>
+          <el-dropdown-menu slot="dropdown">
+            <template v-for="(item, index) in tabItems">
+              <el-dropdown-item v-if="tabActive === item.name" class="is-active" :command="item.name">
+              {{item.title}}
+              </el-dropdown-item>  
+              <el-dropdown-item v-else :command="item.name">{{item.title}}</el-dropdown-item>             
+            </template>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <el-tabs class="navbar-section" v-model="tabActive" type="card" @tab-click="handleClick" @tab-remove="haddleRemove">        
+          <el-row class="navbar-toolbar">
+            <div class="pull-right">
+              <el-tooltip content="切换菜单栏">
+                <el-button class="tool tool-toggler" type="text" size="large"><i class="fa fa-arrows-h"></i></el-button>
+              </el-tooltip>
+              <el-tooltip content="刷新页面">
+                <el-button class="tool tool-refresh" type="text" size="large" @click="_refresh()"><i class="fa fa-refresh"></i></el-button>
+              </el-tooltip>
+                <el-tooltip content="全屏">
+                <el-button class="tool tool-fullscreen" type="text" size="large" @click="_fullscreen()"><i class="fa fa-arrows-alt"></i></el-button>
+              </el-tooltip>
+            </div>
+          </el-row>
+          <template v-for="(item, index) in tabItems">
+            <el-tab-pane v-if="index === 0" :key="item.id" :name="item.name" :label="item.title"></el-tab-pane>
+            <el-tab-pane v-else :key="item.id" :name="item.name" :label="item.title" closable></el-tab-pane> 
+          </template>
+        </el-tabs>
+      </div>
+  </el-row>
+  <div class="document-class">
+    <ul>
+        <li @click="cacheClear()"><a href="www.baidu.com">关闭所有标签</a></li>
+        <li><a>关闭其他标签</a></li>
+    </ul>
+  </div>
+</div>
+</template>
+<script>
+import { mapGetters, mapActions } from 'vuex'
+import '../../common/rightClick.js'
+export default {
+  data(){
+    return{
+      fullscreen:false
+    }
+  },
+  computed:{
+    ...mapGetters({
+      tabActive: 'GET_TAB_ACTIVE',
+      tabItems: 'GET_TABS'
+    })
+  },
+  methods: {
+    ...mapActions({
+      activeTabs: 'ACTIVE_TABS',
+      removeTabs: 'REMOVE_TABS',
+      clearTabs: 'CLEAR_TABS'
+    }),
+    haddleRemove(name) {
+      this.removeTabs({name: name});
+    },
+    handleClick(tab, e) {
+      this.haddleCommand(tab.name);
+      $.mouseMoveShow('.document-class');
+    },
+    haddleCommand(name) {
+      if(name != this.tabActive){
+        this.activeTabs({name: name});
+      }
+    },
+    cacheClear() {
+      let obj = this;
+      layer.open({
+        icon: 3,
+        shade:0.3,
+        title: '清除缓存',
+        btn: ['确定', '取消'], 
+        content: '清除缓存,将会关掉您所打开的标签',
+        yes: function(index, layero){
+          obj.clearTabs();
+          layer.msg("已清除缓存")
+          layer.close(index);
+        }
+      });
+    },
+    _refresh:function(){
+      location.reload();
+    },
+    _fullscreen:function(){
+      this.fullscreen = !this.fullscreen;
+      if(this.fullscreen == true){
+        var docElm = document.documentElement;  
+        //W3C   
+        if (docElm.requestFullscreen) {   
+          docElm.requestFullscreen();   
+        }  
+        //FireFox   
+        else if (docElm.mozRequestFullScreen) {   
+          docElm.mozRequestFullScreen();   
+        }  
+        //Chrome等   
+        else if (docElm.webkitRequestFullScreen) {   
+          docElm.webkitRequestFullScreen();   
+        }  
+        //IE11  
+        else if (elem.msRequestFullscreen) {  
+          elem.msRequestFullscreen();  
+        }
+      }else{       //退出全屏
+        //W3C
+        if (document.exitFullscreen) {   
+          document.exitFullscreen();   
+        }
+        //FireFox   
+        else if (document.mozCancelFullScreen) {   
+          document.mozCancelFullScreen();   
+        }
+        //Chrome等浏览器   
+        else if (document.webkitCancelFullScreen) {   
+          document.webkitCancelFullScreen();   
+        }
+        //IE11    
+        else if (document.msExitFullscreen) {   
+          document.msExitFullscreen();   
+        }   
+      }
+    }
+  }
+}
+</script>
+<style>
+.document-class {
+  width:150px;
+  border: 1px solid #CCCCCC;
+  border-radius: 3px;
+  position: absolute;
+  display: none;
+  background: #ffffff;
+  z-index: 9999;
+}
+
+.document-class ul {
+  padding: 0px;
+  margin: 0px;
+  list-style: none;
+}
+
+.document-class ul li {
+  cursor:pointer;
+  line-height: 30px;
+  text-indent: 30px;
+}
+.document-class ul li:hover {
+  background-color: rgba(54, 162, 235, 0.2)
+}
+.document-class ul li a {
+  color: #000000;
+  text-decoration: none;
+}
+</style>

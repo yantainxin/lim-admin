@@ -1,0 +1,95 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "vue-bus",
+        "scope": null,
+        "escapedName": "vue-bus",
+        "name": "vue-bus",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "D:\\vueSpace\\lim-admin"
+    ]
+  ],
+  "_cnpm_publish_time": 1478857939334,
+  "_from": "vue-bus",
+  "_hasShrinkwrap": false,
+  "_id": "vue-bus@0.3.0",
+  "_location": "/vue-bus",
+  "_nodeVersion": "7.0.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/vue-bus-0.3.0.tgz_1478857937243_0.5338305591139942"
+  },
+  "_npmUser": {
+    "name": "yangmingshan",
+    "email": "y.mingshan3@gmail.com"
+  },
+  "_npmVersion": "3.10.8",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "vue-bus",
+    "scope": null,
+    "escapedName": "vue-bus",
+    "name": "vue-bus",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "http://registry.npm.taobao.org/vue-bus/download/vue-bus-0.3.0.tgz",
+  "_shasum": "811d979606a72fea3e6edd5cebeee5de97670201",
+  "_shrinkwrap": null,
+  "_spec": "vue-bus",
+  "_where": "D:\\vueSpace\\lim-admin",
+  "author": {
+    "name": "Yang Mingshan",
+    "email": "y.mingshan3@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/yangmingshan/vue-bus/issues"
+  },
+  "dependencies": {},
+  "description": "A event bus for Vue.js",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "811d979606a72fea3e6edd5cebeee5de97670201",
+    "size": 2213,
+    "noattachment": false,
+    "tarball": "http://registry.npm.taobao.org/vue-bus/download/vue-bus-0.3.0.tgz"
+  },
+  "gitHead": "1660fb50c87780cf3f32f4e02e61daa1d8d4a0b5",
+  "homepage": "https://github.com/yangmingshan/vue-bus#readme",
+  "keywords": [
+    "vue",
+    "events",
+    "bus"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "yangmingshan",
+      "email": "y.mingshan3@gmail.com"
+    }
+  ],
+  "name": "vue-bus",
+  "optionalDependencies": {},
+  "publish_time": 1478857939334,
+  "readme": "# vue-bus\nA event bus for Vue.js, support both Vue 1.0 and 2.0. See Vue [documentation](http://vuejs.org/v2/guide/migration.html#Events) for more detail.\n\n## Installation\n```\n$ npm install vue-bus\n```\nWhen used with a module system, you must explicitly install the bus via Vue.use():\n```\nimport Vue from 'vue';\nimport VueBus from 'vue-bus';\n\nVue.use(VueBus);\n```\nYou don't need to do this when using global script tags.\n\n## Usage\n#### Listen and clean\n```\n// ...\ncreated() {\n  this.$bus.on('add-todo', this.addTodo);\n  this.$bus.once('once', () => console.log('This listener will only fire once'));\n},\nbeforeDestroy() {\n  this.$bus.off('add-todo', this.addTodo);\n},\nmethods: {\n  addTodo(newTodo) {\n    this.todos.push(newTodo);\n  }\n}\n```\n#### Trigger\n```\n// ...\nmethods: {\n  addTodo() {\n    this.$bus.emit('add-todo', { text: this.newTodoText });\n    this.$bus.emit('once');\n    this.newTodoText = '';\n  }\n}\n```\n*Note: `$bus.on` `$bus.once` `$bus.off` `$bus.emit` are aliases for `$bus.$on` `$bus.$once` `$bus.$off` `$bus.$emit`. See the [API](http://vuejs.org/v2/api/#Instance-Methods-Events) for more detail.*\n\n## License\n[MIT](http://opensource.org/licenses/MIT)\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yangmingshan/vue-bus.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.3.0"
+}

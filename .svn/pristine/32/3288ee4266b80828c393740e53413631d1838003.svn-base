@@ -1,0 +1,40 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+<el-form v-if="item != null && rules != null" :model="item" :rules="rules" ref="robotForm" label-width="200px">
+    <el-form-item label="关键字" prop="robotKeyword">
+      <s-textarea v-model="item.robotKeyword" placeholder="请填写机器人回复的关键字"></s-textarea>
+    </el-form-item>
+    <el-form-item label="问题" prop="robotQuestion">
+      <s-textarea v-model="item.robotQuestion" placeholder="请填写机器人回复的问题"></s-textarea>
+    </el-form-item>
+    <el-form-item label="回答" prop="robotAnswer">
+      <s-textarea v-model="item.robotAnswer" placeholder="请填写机器人回复的答案"></s-textarea>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="formSubmit('robotForm')">确认</el-button>
+      <el-button @click="formReset('robotForm')">重置</el-button>
+    </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './thinktank/robot/robot',
+      route: 'robotManage',
+      rules: null,
+      item: null
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  }
+}
+</script>

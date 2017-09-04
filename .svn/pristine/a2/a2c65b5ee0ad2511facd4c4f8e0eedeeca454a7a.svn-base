@@ -1,0 +1,30 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="ID">{{item.sysroleId}}</d-text>
+    <d-text label="角色名称">{{item.sysroleName}}</d-text>
+    <d-text label="角色权限">{{item.sysroleColumnIds}}</d-text>
+    <d-text label="角色描述">{{item.sysroleDescription}}</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data() {
+    return {
+      loading:true,
+      path: './permissions/sysrole/sysrole',
+      item: null
+    } 
+  },
+  mounted() {
+    this.viewItem();
+  }
+}
+</script>

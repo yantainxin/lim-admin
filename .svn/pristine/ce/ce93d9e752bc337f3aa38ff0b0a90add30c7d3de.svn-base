@@ -1,0 +1,222 @@
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+
+import login from './login.vue';
+import main from './main.vue';
+import desk from './page-desk.vue';
+
+//坐席管理
+import skill from './management/skill/skill.vue';
+import skillManage from './management/skill/skill-manage.vue';
+import skillModify from './management/skill/skill-modify.vue';
+import skillImport from './management/skill/skill-import.vue';
+import skillView from './management/skill/skill-view.vue';
+
+import kefu from './management/kefu/kefu.vue';
+import kefuManage from './management/kefu/kefu-manage.vue';
+import kefuModify from './management/kefu/kefu-modify.vue';
+import kefuImport from './management/kefu/kefu-import.vue';
+import kefuView from './management/kefu/kefu-view.vue';
+
+//系统管理
+import config from './system/config/config.vue';
+import configView from './system/config/config-view.vue';
+
+import channel from './system/channel/channel.vue';
+import channelManage from './system/channel/channel-manage.vue';
+import channelModify from './system/channel/channel-modify.vue';
+import channelImport from './system/channel/channel-import.vue';
+import channelView from './system/channel/channel-view.vue';
+//工单查询
+import order from './order/order.vue';
+import orderManage from './order/order-manage.vue';
+import orderModify from './order/order-modify.vue';
+import orderImport from './order/order-import.vue';
+import orderView from './order/order-view.vue';
+//导航管理
+import column from './navigation/column/column.vue';
+import columnManage from './navigation/column/column-manage.vue';
+import columnModify from './navigation/column/column-modify.vue';
+import columnView from './navigation/column/column-view.vue';
+
+import privilege from './navigation/privilege/privilege.vue';
+import privilegeManage from './navigation/privilege/privilege-manage.vue';
+import privilegeModify from './navigation/privilege/privilege-modify.vue';
+//权限管理
+import admin from './permissions/admin/admin.vue';
+import adminManage from './permissions/admin/admin-manage.vue';
+import adminModify from './permissions/admin/admin-modify.vue';
+import adminImport from './permissions/admin/admin-import.vue';
+import adminView from './permissions/admin/admin-view.vue';
+
+import role from './permissions/role/role.vue';
+import roleManage from './permissions/role/role-manage.vue';
+import roleModify from './permissions/role/role-modify.vue';
+import roleView from './permissions/role/role-view.vue';
+//基础智库管理
+import fastreply from './thinktank/fastreply/fastreply.vue';
+import fastreplyManage from './thinktank/fastreply/fastreply-manage.vue';
+import fastreplyModify from './thinktank/fastreply/fastreply-modify.vue';
+import fastreplyImport from './thinktank/fastreply/fastreply-import.vue';
+import fastreplyView from './thinktank/fastreply/fastreply-view.vue';
+
+import robot from './thinktank/robot/robot.vue';
+import robotManage from './thinktank/robot/robot-manage.vue';
+import robotModify from './thinktank/robot/robot-modify.vue';
+import robotImport from './thinktank/robot/robot-import.vue';
+import robotView from './thinktank/robot/robot-view.vue';
+//基本信息
+import company from './basicinfo/company/company.vue';
+import companyView from './basicinfo/company/company-view.vue';
+
+import section from './basicinfo/section/section.vue';
+import sectionManage from './basicinfo/section/section-manage.vue';
+import sectionView from './basicinfo/section/section-view.vue';
+
+import staff from './basicinfo/staff/staff.vue';
+import staffManage from './basicinfo/staff/staff-manage.vue';
+import staffView from './basicinfo/staff/staff-view.vue';
+
+import member from './basicinfo/member/member.vue';
+import memberManage from './basicinfo/member/member-manage.vue';
+import memberView from './basicinfo/member/member-view.vue';
+//游客列表
+import tourist from './tourist/tourist.vue';
+import touristManage from './tourist/tourist-manage.vue';
+import touristView from './tourist/tourist-view.vue';
+//设置中心
+import kefutime from './setting/kefutime/kefutime.vue';
+import kefutimeModify from './setting/kefutime/kefutime-modify.vue';
+
+import greeting from './setting/greeting/greeting.vue';
+import greetingModify from './setting/greeting/greeting-modify.vue';
+
+import setting from './setting/setting/setting.vue';
+import settingModify from './setting/setting/setting-modify.vue';
+
+import orderattr from './setting/orderattr/orderattr.vue';
+import orderattrModify from './setting/orderattr/orderattr-modify.vue';
+//个人管理
+import person from './person/person.vue';
+import personModify from './person/person-modify.vue';
+
+import error from './error.vue';
+
+Vue.use(VueRouter);
+
+const routes = [  
+  {name: 'login', path: '/', component: login },
+  {name: 'main', path: '/main', component: main, children:[
+    {name: 'desk', path: '/desk', component: desk },
+    
+    {name: 'skill', path: '/skill', component: skill, children:[
+    	{name: 'skillManage', path: '/skill-manage', component: skillManage },
+    	{name: 'skillModify', path: '/skill-modify', component: skillModify },
+      {name: 'skillImport', path: '/skill-import', component: skillImport },
+      {name: 'skillView', path: '/skill-view', component: skillView }
+    ]},
+    {name: 'kefu', path: '/kefu', component: kefu, children:[
+      {name: 'kefuManage', path: '/kefu-manage', component: kefuManage},
+      {name: 'kefuModify', path: '/kefu-modify', component: kefuModify},
+      {name: 'kefuImport', path: '/kefu-import', component: kefuImport},
+      {name: 'kefuView', path: '/kefu-view', component: kefuView }
+    ]},
+    //系统管理
+    {name: 'config', path: '/config', component: config, children:[
+      {name: 'configView', path: '/config-view', component: configView}
+    ]},
+    {name: 'channel', path: '/channel', component: channel, children:[
+      {name: 'channelManage', path: '/channel-manage', component: channelManage},
+      {name: 'channelModify', path: '/channel-modify', component: channelModify},
+      {name: 'channelImport', path: '/channel-import', component: channelImport},
+      {name: 'channelView', path: '/channel-view', component: channelView}
+    ]},
+    //工单查询
+    {name: 'order', path: '/order', component: order, children:[
+      {name: 'orderManage', path: '/order-manage', component: orderManage},
+      {name: 'orderModify', path: '/order-modify', component: orderModify},
+      {name: 'orderImport', path: '/order-import', component: orderImport},
+      {name: 'orderView', path: '/order-view', component: orderView}
+    ]},
+    //导航管理
+    {name: 'column', path: '/column', component: column, children:[
+      {name: 'columnManage', path: '/column-manage', component: columnManage},
+      {name: 'columnModify', path: '/column-modify', component: columnModify},
+      {name: 'columnView', path: '/column-view', component: columnView}
+    ]},
+    {name: 'privilege', path: '/privilege', component: privilege, children:[
+      {name: 'privilegeManage', path: '/privilege-manage', component: privilegeManage},
+      {name: 'privilegeModify', path: '/privilege-modify', component: privilegeModify}
+    ]},
+    //权限管理
+    {name: 'admin', path: '/admin', component: admin, children:[
+      {name: 'adminManage', path: '/admin-manage', component: adminManage},
+      {name: 'adminModify', path: '/admin-modify', component: adminModify},
+      {name: 'adminImport', path: '/admin-import', component: adminImport},
+      {name: 'adminView', path: '/admin-view', component: adminView}
+    ]},
+    {name: 'role', path: '/role', component: role, children:[
+      {name: 'roleManage', path: '/role-manage', component: roleManage},
+      {name: 'roleModify', path: '/role-modify', component: roleModify},
+      {name: 'roleView', path: '/role-view', component: roleView}
+    ]},
+    //基础智库管理
+    {name: 'fastreply', path: '/fastreply', component: fastreply, children:[
+      {name: 'fastreplyManage', path: '/fastreply-manage', component: fastreplyManage},
+      {name: 'fastreplyModify', path: '/fastreply-modify', component: fastreplyModify},
+      {name: 'fastreplyImport', path: '/fastreply-import', component: fastreplyImport},
+      {name: 'fastreplyView', path: '/fastreply-view', component: fastreplyView}
+    ]},
+    {name: 'robot', path: '/robot', component: robot, children:[
+      {name: 'robotManage', path: '/robot-manage', component: robotManage},
+      {name: 'robotModify', path: '/robot-modify', component: robotModify},
+      {name: 'robotImport', path: '/robot-import', component: robotImport},
+      {name: 'robotView', path: '/robot-view', component: robotView}
+    ]},
+    //基本信息
+    {name: 'company', path: '/company', component: company, children:[
+      {name: 'companyView', path: '/company-view', component: companyView}
+    ]},
+    {name: 'section', path: '/section', component: section, children:[
+      {name: 'sectionManage', path: '/section-manage', component: sectionManage},
+      {name: 'sectionView', path: '/section-view', component: sectionView}
+    ]},
+    {name: 'staff', path: '/staff', component: staff, children:[
+      {name: 'staffManage', path: '/staff-manage', component: staffManage},
+      {name: 'staffView', path: '/staff-view', component: staffView}
+    ]},
+    {name: 'member', path: '/member', component: member, children:[
+      {name: 'memberManage', path: '/member-manage', component: memberManage},
+      {name: 'memberView', path: '/member-view', component: memberView}
+    ]},
+    //游客列表
+    {name: 'tourist', path: '/tourist', component: tourist, children:[
+      {name: 'touristManage', path: '/tourist-manage', component: touristManage},
+      {name: 'touristView', path: '/tourist-view', component: touristView}
+    ]},
+    //设置中心
+    {name: 'kefutime', path: '/kefutime', component: kefutime, children:[
+      {name: 'kefutimeModify', path: '/kefutime-modify', component: kefutimeModify}
+    ]},
+    {name: 'greeting', path: '/greeting', component: greeting, children:[
+      {name: 'greetingModify', path: '/greeting-modify', component: greetingModify}
+    ]},
+    {name: 'setting', path: '/setting', component: setting, children:[
+      {name: 'settingModify', path: '/setting-modify', component: settingModify}
+    ]},
+    {name: 'orderattr', path: '/orderattr', component: orderattr, children:[
+      {name: 'orderattrModify', path: '/orderattr-modify', component: orderattrModify}
+    ]},
+    //个人管理
+    {name: 'person', path: '/person', component: person, children:[
+      {name: 'personModify', path: '/person-modify', component: personModify}
+    ]}
+
+  ]},
+  {name: 'error', path: '*', component: error }
+];
+
+export default new VueRouter({
+   history:true, 
+   routes
+});

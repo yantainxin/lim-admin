@@ -1,0 +1,48 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="touristId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="touristName" label="游客名" sortable></el-table-column>
+    <el-table-column header-align="center" prop="touristIp" label="访问IP地址" sortable></el-table-column>
+    <el-table-column header-align="center" prop="touristNicaddress" label="网卡地址" sortable></el-table-column>
+    <el-table-column header-align="center" prop="touristFrom" label="来源地址" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+      <template scope="scope">
+        <d-privilege v-if="privileges != null" :options="privileges" :query="{id: scope.row.touristId}" size="small" :isLabel="false"></d-privilege>
+      </template>
+    </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  data() {
+    return {
+      loading: true,
+      path: './tourist/tourist',
+      count: 0,
+      items: []
+    } 
+  },
+  computed:{
+  ...mapGetters({
+    tabItems: 'GET_TABS',
+    tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  mounted(){
+    this.listItems();
+    this.getPrivilege({pos: 1});
+    this.$bus.$on('touristDelete', (option) => {
+      this.reomveItem(option);
+    });
+  },
+  watch:{
+    $route(){
+      this.listItems();
+    }
+  }
+}
+</script>

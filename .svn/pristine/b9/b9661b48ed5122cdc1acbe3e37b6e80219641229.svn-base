@@ -1,0 +1,37 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="sysroleId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="sysroleName" label="角色名称" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+            <router-link class="el-button el-button--info el-button--small" :to="{name:'sysroleModify', query:{id: scope.row.sysroleId}}" tag="button">
+                <i class="fa fa-edit"></i><span>编辑</span>
+            </router-link>
+        <el-button size="small" type="danger" icon="delete" @click="reomveItem(scope.row.sysroleId)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+export default{
+    data() {
+        return {
+            loading: true,
+            path: './permissions/sysrole/sysrole',
+            count: 0,
+            items: []
+        } 
+    },
+    mounted(){
+        this.listItems(); 
+    },
+    watch:{
+        $route(){
+            this.listItems();
+        }
+    }
+}
+</script>

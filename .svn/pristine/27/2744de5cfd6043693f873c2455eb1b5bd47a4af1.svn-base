@@ -1,0 +1,69 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "syspersonPwd": [
+            {
+                "type": "string",
+                "required": true,
+                "message" : "密码不能为空",
+                "trigger": "blur"
+            },
+            {
+                "type" : "string",
+                "min" : "6",
+                "max" : "20",
+                "message" : "请输入6-20位密码",
+                "trigger": "change"
+            }, 
+            {
+                "type" : "regex",
+                "expression" : "^[a-zA-Z0-9_\\s]+$",
+                "message" : "请输入6-20位密码，可由数字、字母、字符组成"
+            }
+        ],
+        "syspersonNewPwd": [
+            {
+                "type": "string",
+                "required": true,
+                "message" : "新密码不能为空",
+                "trigger": "blur"
+            },
+            {
+                "type" : "string",
+                "min" : "6",
+                "max" : "20",
+                "message" : "请输入6-20位密码"
+            },
+            {
+                "type" : "regex",
+                "expression" : "^[a-zA-Z0-9_\\s]+$",
+                "message" : "请输入6-20位密码，可由数字、字母、字符组成"
+            }
+        ],
+        "syspersonRepwd": [        
+            {
+                "type": "string",
+                "required": true,
+                "message" : "确认密码不能为空",
+                "trigger": "blur"
+            },
+            {
+                "type" : "string",
+                "min" : "6",
+                "max" : "20",
+                "message" : "请输入6-20位密码"
+            },
+            {
+                "type" : "regex",
+                "expression" : "^[a-zA-Z0-9_\\s]+$",
+                "message" : "请输入6-20位密码，可由数字、字母、字符组成"
+            },
+            {
+                "type" : "fieldexpression",
+                "expression" : "{syspersonNewPwd} == {syspersonRepwd}",
+                "message" : "两次输入的密码不一致"
+            }
+        ]
+    }
+}

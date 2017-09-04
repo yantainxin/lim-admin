@@ -1,0 +1,24 @@
+<template>
+<div class="sysrole">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+            <span class="widget-caption">角色列表</span>
+        </div>
+        <div class="widget-body">
+            <el-row class="content-tools">              
+                <el-col :span="8">
+                    <s-search routeName="sysroleManage"></s-search>
+                </el-col>
+                <el-col :span="16" class="text-right">
+                    <el-button-group>
+                        <router-link class="el-button" :to="{name:'sysroleManage'}" tag="button" title="管理"><i class="fa fa-list"></i><span class="hidden-xs">管理</span></router-link>
+                        <router-link class="el-button" :to="{name:'sysroleModify'}" tag="button" title="添加"><i class="fa fa-plus"></i><span class="hidden-xs">添加</span></router-link>
+                    </el-button-group>
+                </el-col>
+            </el-row>
+            <hr>
+            <router-view></router-view>
+        </div>
+    </div>
+</div>
+</template>

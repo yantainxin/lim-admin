@@ -1,0 +1,27 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "syspersonPwd": [
+            {
+                "type": "string",
+                "required": true,
+                "trim": true,
+                "message" : "密码不能为空",
+                "trigger": "blur"
+            },
+            {
+                "min" : 6,
+                "max" : 20,
+                "trim" : true,
+                "message" : "请输入6-20位密码",
+                "trigger": "blur"
+            },
+            {
+                "pattern": "^[a-zA-Z0-9_\\s]+$",
+                "message": "请输入6-20位密码，可由数字、字母、字符组成",                
+                "trigger": "change"
+            }
+        ]
+    }
+}

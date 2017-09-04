@@ -1,0 +1,57 @@
+<template>
+<div class="robot">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+            <span class="widget-caption">机器人问答列表</span>
+        </div>
+        <div class="widget-body">
+            <el-row class="content-tools">              
+                <el-col :span="8">
+                    <s-search routeName="robotManage"></s-search>
+                </el-col>
+                <el-col :span="16" class="text-right">
+                    <el-button-group>
+                        <router-link class="el-button" :to="{name:'robotManage'}" tag="button" title="管理"><i class="fa fa-list"></i><span class="hidden-xs">管理</span></router-link>
+                        <router-link class="el-button" :to="{name:'robotModify'}" tag="button" title="添加"><i class="fa fa-plus"></i><span class="hidden-xs">添加</span></router-link>
+                        <router-link class="el-button" :to="{name:'robotImport'}" tag="button" title="导入"><i class="fa fa-sign-in"></i><span class="hidden-xs">导入</span></router-link>
+                        <a class="el-button" @click="show()" tag="button" title="导出"><i class="fa fa-sign-out"></i><span class="hidden-xs">导出</span></a>
+                    </el-button-group>
+                </el-col>
+            </el-row>
+            <el-form ref="robotForm" class="export" v-if="willShow" label-width="160px">
+                <hr>
+                <el-col :span="20">
+                <el-form-item label="用户自定义" prop="columnPid">
+                <s-checkbox-group name="options" v-model="property" :options="options"></s-checkbox-group>
+                </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-button type="submit" @click.native="exportExcel()">确定导出</el-button><iframe style="display:none"></iframe>
+                </el-col>
+            </el-form>
+            <hr>
+            <router-view></router-view>
+        </div>
+    </div>
+</div>
+</template>
+<script>
+export default {
+    data() {
+        return {
+            willShow:false,
+            property: [],
+            options: [{'value':'ID', 'label':'ID'}, {'value':'问题', 'label':'问题'}, {'value':'答案', 'label':'答案'}],
+            exportPath:'/thinktank/robot/robotExport.action',
+        }
+    },
+    methods: {
+        show:function(){
+          this.willShow = !this.willShow;
+        },
+        exportExcel(){
+            this.formExport();
+        }
+    }
+}
+</script>

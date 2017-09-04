@@ -1,0 +1,36 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="ID">{{item.sysorderdetailId}}</d-text>
+    <d-text label="编号">{{item.sysorderdetailNo}}</d-text>
+    <d-text label="工单主题">{{item.sysorderdetailTitle}}</d-text>
+    <d-text label="处理截止时间">{{item.sysorderdetailLasttime}}</d-text>
+    <d-text label="实际处理时间">{{item.sysorderdetailSolvetime}}</d-text>
+    <d-text label="工单状态" v-if="item.sysorderdetailStatus == 0">待受理</d-text>
+    <d-text label="工单状态" v-if="item.sysorderdetailStatus == 1">已受理</d-text>
+    <d-text label="工单状态" v-if="item.sysorderdetailStatus == 2">已解决</d-text>
+    <d-text label="工单状态" v-if="item.sysorderdetailStatus == 3">已超时</d-text>
+    <d-text label="工单状态" v-if="item.sysorderdetailStatus == 4">已取消</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data() {
+    return {
+      loading:true,
+      path: './sysorder/sysorder',
+      item: null
+    } 
+  },
+  mounted() {
+    this.viewItem();
+  }
+}
+</script>

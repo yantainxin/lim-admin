@@ -1,0 +1,56 @@
+<template>
+	<span>
+		<template v-for="priR in privileges">
+		
+		  <router-link  v-if="priR.privilegeName == '详细'"
+			  class="el-button el-button--info el-button--small" 
+			  :to="{name:priR.privilegeUname, query:objViewid}" 
+			  tag="button" :title="priR.privilegeName">
+			  <i :class="priR.privilegeIcon"></i>
+			  <!-- <span class="hidden-xs">{{priR.privilegeName}}</span> -->
+		  </router-link>
+
+			<router-link v-if="priR.privilegeName == '编辑'"
+				class="el-button el-button--info el-button--small" 
+				:to="{name:priR.privilegeUname, query:objId}" 
+				tag="button" :title="priR.privilegeName">
+				<i :class="priR.privilegeIcon"></i>
+				<!-- <span class="hidden-xs">{{priR.privilegeName}}</span> -->
+			</router-link>
+
+			<a v-if="priR.privilegeName == '删除'"
+				class="el-button el-button--danger el-button--small"
+				@click="reomveItem(objId)" :title="priR.privilegeName">
+				<i :class="priR.privilegeIcon"></i>
+				<!-- <span class="hidden-xs">{{priR.privilegeName}}</span> -->
+			</a>
+
+		</template>
+	</span>
+</template>
+<script>
+export default {
+  	data() {
+	    return {
+	    	privileges:[]
+	    }
+  	},
+    props:['columnId','objId','objViewid','path'],
+  	mounted() {
+  		let obj = this;
+      this.$http.get(this.config.userpath +'/privilege-items.json?id='+this.columnId).then(function(res) {
+        if(res.body.code == 200){
+          $.each(res.body.data,function(idx,val){
+          	if(val.privilegePosition == 1){
+          		obj.privileges.push(val);
+          	}
+          })
+        }
+      });
+  	}
+}
+	
+</script>
+<style>
+	a{text-decoration: none;}
+</style>

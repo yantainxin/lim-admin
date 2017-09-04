@@ -1,0 +1,45 @@
+<template>
+  <el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+    <el-form :model="item" :rules="rules" ref="privilegeFrom" label-width="120px">
+      <el-form-item label="父节点" prop="columnId">
+        <s-cascader v-model="item.columnPid" :options="columnJson" :props="{label:'columnName', value:'columnId', children:'columns'}" :show-all-levels="false" change-on-select></s-cascader>
+      </el-form-item>
+      <el-form-item label="名称" prop="privilegeName">
+        <s-textfield v-model="item.privilegeName"></s-textfield>
+      </el-form-item>
+      <el-form-item label="链接" prop="privilegeUrl">
+        <s-textfield v-model="item.privilegeUrl"></s-textfield>
+      </el-form-item>
+      <el-form-item label="描述" prop="privilegeDescription">
+        <s-textarea v-model="item.privilegeDescription"></s-textarea>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="formSubmit('privilegeFrom')">确认</el-button>
+        <el-button @click="formReset('privilegeFrom')">重置</el-button>
+      </el-form-item>
+    </el-form>
+  </el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './navigation/privilege/privilege',
+      route: 'columnManage',
+      rules: null,
+      item: null,
+      columnJson: null
+    }
+  },
+  mounted() {
+    this.getData('columnJson', './navigation/column/column-nodes.json');
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  }
+}
+</script>

@@ -1,0 +1,78 @@
+<template>
+<div class="kefu">
+	<div class="widget radius-bordered">
+		<div class="widget-header">
+			<span class="widget-caption">人工坐席</span>
+		</div>
+		<div class="widget-body">
+			<el-row class="content-tools">				
+				<el-col :span="8">
+					<s-search routeName="kefuManage"></s-search>
+				</el-col>
+				<el-col :span="16" class="text-right">
+					<el-button-group>
+						<router-link class="el-button" :to="{name:'kefuManage'}" tag="button" title="管理"><i class="fa fa-list"></i><span class="hidden-xs">管理</span></router-link>
+		        		<router-link class="el-button" :to="{name:'kefuModify'}" tag="button" title="添加"><i class="fa fa-plus"></i><span class="hidden-xs">添加</span></router-link>
+		        		<router-link class="el-button" :to="{name:'kefuImport'}" tag="button" title="导入"><i class="fa fa-sign-in"></i><span class="hidden-xs">导入</span></router-link>
+		        		<a class="el-button" @click="show()" tag="button" title="导出"><i class="fa fa-sign-out"></i><span class="hidden-xs">导出</span></a>
+					</el-button-group>
+				</el-col>
+			</el-row>
+			
+			<el-form ref="kefuForm" class="export" v-if="willShow" label-width="160px" method="post" @submit.prevent="exportExcel">
+				<hr>
+				<el-col :span="20">
+                <el-form-item label="用户自定义" prop="columnPid">
+				<s-checkbox-group v-model="property" :options="options" @getValue="getValue"></s-checkbox-group>
+				</el-form-item>
+				</el-col>
+				<el-col :span="4">
+					<el-button type="submit">确定导出</el-button><iframe style="display:none"></iframe>
+				</el-col>
+			</el-form>
+			<hr>
+			<router-view></router-view>
+		</div>
+	</div>
+</div>
+</template>
+<script>
+export default {
+  	data() {
+	    return {
+	    	willShow:false,
+	    	property: [],
+	    	options: [{'value':0, 'label':'ID'}, {'value':1, 'label':'昵称'}, {'value':2, 'label':'在线状态'},{'value':3, 'label':'工号'}, {'value':4, 'label':'等级'}, {'value':5, 'label':'同时最大接单数'},{'value':6, 'label':'机器人服务'}, {'value':7, 'label':'评价平均分'}, {'value':8, 'label':'移动电话'}],
+	    	columnsNames:[],
+	    	exportPath:'/management/kefu/kefuExport.action',
+	    }
+  	},
+  	methods: {
+  		show:function(){
+          this.willShow = !this.willShow;
+        },
+        getValue:function(name, val){
+            this.columnsNames = val;
+        },
+        exportExcel(){
+            let obj = this;
+            if(obj.columnsNames.length>0){
+               let str = 'columns='+obj.columnsNames.join('&columns=');
+               layer.confirm('需要导出:'+obj.columnsNames.join(',')+'？', {
+                    btn: ['确定','取消']
+                }, function(index, layero){
+                    $('iframe').attr('src', obj.config.host + window.location.pathname.substr(0, 7)+obj.exportPath+'?'+str);
+                    layer.close(index);
+                });
+            }else{
+                layer.confirm('您还未选择需要导出的列,是否需要全部导出？', {
+                    btn: ['确定','取消']
+                }, function(index, layero){
+                    $('iframe').attr('src',obj.config.host + window.location.pathname.substr(0, 7)+obj.exportPath);
+                    layer.close(index);
+                });
+            }
+        }
+    }
+}
+</script>

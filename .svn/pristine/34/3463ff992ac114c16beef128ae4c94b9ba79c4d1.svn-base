@@ -1,0 +1,23 @@
+<template>
+<div class="messageboard">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+            <span class="widget-caption">留言管理</span>
+        </div>
+        <div class="widget-body">
+            <el-row class="content-tools">              
+                <el-col :span="8">
+                    <s-search routeName="messageboardManage"></s-search>
+                </el-col>
+                <el-col :span="16" class="text-right">
+                    <el-button-group>
+                        <router-link class="el-button" :to="{name:'messageboardManage'}" tag="button"><i class="iconfont icon-manage"></i><span>查看列表</span></router-link>
+                    </el-button-group>
+                </el-col>
+            </el-row>
+            <hr>
+            <router-view></router-view>
+        </div>
+    </div>
+</div>
+</template>

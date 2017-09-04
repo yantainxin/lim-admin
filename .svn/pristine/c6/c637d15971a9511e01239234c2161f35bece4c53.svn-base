@@ -1,0 +1,52 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="managerFrom" label-width="120px">
+  <el-form-item label="用户名" prop="managerUsername">
+    <s-textfield v-model="item.managerUsername"></s-textfield>
+  </el-form-item>
+  <el-form-item label="真实姓名" prop="managerRealname">
+    <s-textfield v-model="item.managerRealname"></s-textfield>
+  </el-form-item>
+  <el-form-item label="性别" prop="managerSex">
+  <s-radio-group v-model="item.managerSex" :options="sexOptions"></s-radio-group>
+  </el-form-item>
+  <el-form-item label="移动电话" prop="managerPhone">
+    <s-textfield v-model="item.managerPhone"></s-textfield>
+  </el-form-item>
+  <el-form-item label="邮箱" prop="managerEmail">
+    <s-textarea v-model="item.managerEmail"></s-textarea>
+  </el-form-item>
+  <el-form-item label="角色" prop="managerRoleIds">
+    <s-transfer v-if="sysroles != null" v-model="item.managerRoleIds" :options="sysroles" :titles="['备选项', '已选项']" :props="{key: 'sysroleId', label: 'sysroleName'}"></s-transfer>
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('managerFrom')">确认</el-button>
+    <el-button @click="formReset('managerFrom')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './permissions/manager/manager',
+      route: 'managerManage',
+      sexOptions: [{'value':0, 'label':'男'}, {'value':1, 'label':'女'}],
+      rules: null,
+      item: null,
+      sysroles: null
+    }
+  },
+  mounted() {
+    this.getData('sysroles', './permissions/sysrole/sysrole-items.json');
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+          this.initItem();
+    }
+  }
+}
+</script>

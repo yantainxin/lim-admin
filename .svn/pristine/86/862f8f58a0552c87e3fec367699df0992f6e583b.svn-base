@@ -1,0 +1,77 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="roleForm" label-width="120px">
+    <el-form-item label="角色名称" prop="roleName">
+      <s-textfield v-model="item.roleName"></s-textfield>
+    </el-form-item>
+    <el-form-item label="角色权限" prop="roleColumnIds">
+      <el-tree :data="columnJson"  node-key="id" :props="{label: 'name', children: 'children'}" show-checkbox :default-checked-keys="[7,46,54]"  :render-content="renderContent"></el-tree>
+    </el-form-item>
+    <el-form-item label="角色描述" prop="roleDescription">
+      <s-textarea v-model="item.roleDescription"></s-textarea>
+    </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('roleForm')">确认</el-button>
+    <el-button @click="formReset('roleForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './permissions/role/role',
+      route: 'roleManage',
+      rules: null,
+      item: null,
+      columnJson: null,
+      //value: [1,2,3,4,5,54,55],
+    }
+  },
+  create(){
+    // this.$on('model-change', function(modelValue) {
+    //   this.value.push(modelValue);
+    // });
+  },
+  mounted() {
+    this.getData('columnJson', './navigation/privilege/privilege-nodes.json');
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  },
+  methods: {
+    clickHandler(){
+      console.log('111111111');
+    },
+    renderContent(h, { node, data, store }) {
+      if(data.children){//有子集
+        return (
+          <span>
+            <span>
+              <span>{node.label}</span>
+            </span>
+          </span>
+        )
+      } 
+      else{//没有子集的情况data.privileges，相当于工单查询、游客管理和技能组、坐席管理的细粒度
+        return (
+          <span>
+            <span>
+              <span>{node.label}</span>
+            </span>
+            <span style="float: right; margin-right: 20px">
+
+            <s-checkbox-group value={this.item.rolePrivilegeIds} on-change={ () => this.clickHandler() } options={data.privileges} props={{label:'name', value:'id'}}></s-checkbox-group>
+            </span>
+          </span>
+        )
+      }
+    }
+  }
+}
+</script>

@@ -1,0 +1,15 @@
+var url = document.getElementById('yali-im').src;
+var regex = /^((?:\w+):\/\/([^\/:]*)(?::\d+)?)\/([^?]*)(?:\?(.*))?$/gi;
+var host = url.replace(regex, '$1');
+yaliui.config({
+	dir: host + '/static/lib/layui/',
+	base: host + '/static/lib/layui/plugins/'
+}).extend({
+	yaliui: 'layui.config.h5',
+	yaliim: 'yaliim'
+});
+yaliui.use(['yaliim'], function() {
+	'use strict';
+	var yaliim = yaliui.yaliim;
+	yaliim.init();
+});

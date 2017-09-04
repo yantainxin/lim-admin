@@ -1,0 +1,103 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="items != null">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="channelId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="channelWebname" label="网站名称" sortable></el-table-column>
+    <el-table-column header-align="center" prop="channelDomain" label="网站域名" sortable></el-table-column>
+    <el-table-column align="center" label="渠道代码">
+      <template scope="scope">                
+        <el-popover width="500" trigger="click">
+            <el-form label-width="120px">
+            <el-form-item label="渠道域名">
+            <el-input v-model="scope.row.channelDomain" placeholder="渠道域名" readonly></el-input>
+            </el-form-item>
+            <el-form-item label="客户端">
+            <el-select v-model="scope.row.device" placeholder="请选择客户端">
+              <el-option label="PC端" value="pc"></el-option>
+              <el-option label="H5端" value="h5"></el-option>
+              <el-option label="微信" value="wx"></el-option>
+              <el-option label="安卓" value="android"></el-option>
+              <el-option label="苹果" value="apple"></el-option>
+              <el-option label="小程序" value="wxa"></el-option>
+            </el-select>
+            </el-form-item>
+            <el-form-item label="用户类型">
+            <el-select v-model="scope.row.usertype" placeholder="请选择用户类型">
+              <el-option label="游客" value="tourist"></el-option>
+              <el-option label="会员" value="member"></el-option>
+              <el-option label="员工" value="staff"></el-option>
+            </el-select>
+            </el-form-item>
+            <el-form-item label="渠道代码">
+            <el-input v-model="scope.row.channelUrl" readonly></el-input>
+            </el-form-item>
+            <el-form-item class="text-center">
+              <el-button class="fa fa-copy" @click="handleCreateClick($event, scope.$index)" title="生成渠道码">生成渠道码</el-button>
+              <el-button class="fa fa-copy" @click="handleCopyClick($event, scope.$index)" title="复制渠道码">复制渠道码</el-button>
+            </el-form-item>
+            </el-form>
+            
+          </el-input>
+          <el-button size="small"  slot="reference">生成通讯渠道码</el-button>
+        </el-popover>        
+      </template>
+      </el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+        <d-privilege v-if="privileges != null" :options="privileges" :query="{id: scope.row.channelId}" size="small" :isLabel="false"></d-privilege>
+      </template>
+    </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  data() {
+      return {
+          loading: true,
+          path: './system/channel/channel',
+          count: 0,
+          items: null,
+          privileges:null
+      } 
+  },
+  computed:{
+    ...mapGetters({
+      tabItems: 'GET_TABS',
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  mounted(){
+    this.listItems();
+    this.getPrivilege({pos: 1});
+    this.$bus.$on('channelDelete', (option) => {
+      this.reomveItem(option);
+    });
+  },
+  watch:{
+      $route(){
+          this.listItems();
+      }
+  },
+  methods:{
+    handleCreateClick(e, index){
+      let item = this.items[index];
+      let code = {
+        channelId: item.channelId,
+        channelDomain: item.channelDomain,
+        companyid: item.companyid,
+        device: item.device,
+        usertype: item.usertype
+      }      
+      console.log(index, code);
+    },
+    handleCopyClick(e, index){
+      $(e.target).parent().prev('input').select();
+      document.execCommand('Copy');
+      layer.msg('复制成功！可以粘贴到您要使用IM通讯的应用上', {time:5000});
+    }
+  }
+}
+</script>

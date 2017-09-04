@@ -1,0 +1,9 @@
+// const host = 'http://192.168.1.70:8081';
+const host = 'http://192.168.1.123:8080';
+// const host = '';
+const userpath = host + location.pathname.substr(0, location.pathname.indexOf('/', 1));
+// const host = '';
+export default{
+    host,
+    userpath
+};

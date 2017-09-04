@@ -1,0 +1,70 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="settingForm" label-width="200px">
+  <el-form-item label="会话闲置时间" prop="settingSessionidletime">
+    <s-textfield v-model="item.settingSessionidletime"></s-textfield>
+  </el-form-item>
+  <el-form-item label="超时结束提示语" prop="settingOvertimetip">
+    <s-textfield v-model="item.settingOvertimetip"></s-textfield>
+  </el-form-item>
+  <el-form-item label="评价邀请语" prop="settingInvitationmsg">
+    <s-textfield v-model="item.settingInvitationmsg"></s-textfield>
+  </el-form-item>
+  <el-form-item label="评价感谢语" prop="settingThanksmsg">
+    <s-textfield v-model="item.settingThanksmsg"></s-textfield>
+  </el-form-item>
+  <el-form-item label="客服接待设置" prop="settingReceive">
+    <s-switch v-model="item.settingReceive"></s-switch>
+  </el-form-item>
+  <el-form-item label="会话转接设置" prop="settingIstransfer">
+    <s-switch v-model="item.settingIstransfer"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否客服设置头像功能" prop="settingIsavatar">
+    <s-switch v-model="item.settingIsavatar"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启发送文件功能" prop="settingIsfile">
+    <s-switch v-model="item.settingIsfile"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启截屏/截图功能" prop="settingIsprintscreen">
+    <s-switch v-model="item.settingIsprintscreen"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启发送文件功能" prop="settingIsemotion">
+    <s-switch v-model="item.settingIsemotion"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启发送语音功能" prop="settingIsvoice">
+    <s-switch v-model="item.settingIsvoice"></s-switch>
+  </el-form-item>
+  <el-form-item label="预知访客消息" prop="settingIsmessage">
+    <s-switch v-model="item.settingIsmessage"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启敏感词感知功能" prop="settingIssensitive">
+    <s-switch v-model="item.settingIssensitive"></s-switch>
+  </el-form-item>
+
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('settingForm')">确认</el-button>
+    <el-button @click="formReset('settingForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './setting/setting/setting',
+      rules: null,
+      item: null
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+        this.initItem();
+    }
+  }
+}
+</script>

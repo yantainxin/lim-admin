@@ -1,0 +1,118 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+<el-form v-if="item != null && rules != null" :model="item" :rules="rules" ref="sensitivewordForm" label-width="200px">
+  <el-form-item label="替换词汇" prop="sensitivewordReplace">
+    <s-textfield v-model="item.sensitivewordReplace" placeholder="请填写替换敏感字的词汇"></s-textfield>
+  </el-form-item>
+  <el-form-item label="敏感词" prop="sensitivewordKeys">
+    <el-tag
+  :key="item.id"
+  v-for="tag in item.sensitivewordKeys"
+  :closable="true"
+  :close-transition="false"
+  @close="handleClose(tag)"
+  type="primary"
+>
+{{tag}}
+</el-tag>
+<el-input
+  class="input-new-tag"
+  v-if="inputVisible"
+  v-model="inputValue"
+  ref="saveTagInput"
+  placeholder="回车或点击空白处即可"
+  @keyup.enter.native="handleInputConfirm"
+  @blur="handleInputConfirm"
+>
+</el-input>
+<el-button v-else class="button-new-tag" size="small" @click="showInput">新增敏感词</el-button>
+<el-input
+  type="textarea"
+  class="input-new-tag"
+  v-if="textareaVisible"
+  v-model="textareaValue"
+  ref="saveTagTextarea"
+  placeholder="请填写敏感词,并用英文逗号隔开,且不能有空格"
+  @keyup.enter.native="handleTextareaConfirm"
+  @blur="handleTextareaConfirm"
+>
+</el-input>
+<el-button v-else class="button-new-tag" size="small" @click="showTextarea">新增多个敏感词</el-button>
+<el-button v-if="item.sensitivewordKeys && item.sensitivewordKeys !=''" class="button-clear-tag" size="small" @click="clearAll">清空所有敏感词</el-button>
+<!-- <s-textarea v-model="item.sensitivewordKeys" placeholder="请填写敏感词,敏感词用逗号隔开,且不能有空格"></s-textarea> -->
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('sensitivewordForm')">确认</el-button>
+    <el-button @click="formReset('sensitivewordForm')">重置</el-button>
+  </el-form-item>
+  
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+        loading: true,
+        path: './setting/sensitiveword/sensitiveword',
+        rules: null,
+        item: null,
+        route:'sensitivewordView',
+        inputVisible: false,
+        inputValue: '',
+        textareaVisible: false,
+        textareaValue: ''
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+        this.initItem();
+    }
+  },
+  methods: {
+      handleClose(tag) {
+        this.item.sensitivewordKeys.splice(this.item.sensitivewordKeys.indexOf(tag), 1);
+      },
+
+      showInput() {
+        this.inputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+      showTextarea() {
+        this.textareaVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagTextarea.$refs.textarea.focus();
+        });
+      },
+
+      handleInputConfirm() {
+        let inputValue = this.inputValue;
+        if (inputValue) {
+          this.item.sensitivewordKeys.push(inputValue);
+        }
+        this.inputVisible = false;
+        this.inputValue = '';
+      },
+      handleTextareaConfirm() {
+        let textareaValue = this.textareaValue,obj = this;
+        if (textareaValue) {
+          textareaValue.split(',').forEach(function(t,i){
+              if (t.trim() != '') {
+                obj.item.sensitivewordKeys.push(t);
+              }
+          })
+        }
+        this.textareaVisible = false;
+        this.textareaValue = '';
+      },
+      clearAll(){
+        this.item.sensitivewordKeys = [];
+      }
+    }
+}
+</script>

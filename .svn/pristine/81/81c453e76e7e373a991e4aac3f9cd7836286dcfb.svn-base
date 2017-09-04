@@ -1,0 +1,41 @@
+html #layuicss-plugslayuicss{display:none; position: absolute; width:1989px;}
+/** 初始化 **/
+
+.yali-im ul{padding: 20px; list-style: none;}
+.yali-im button { vertical-align: middle; padding: 12px; border: 1px solid #EEE; border-radius: 2px; margin: 2px; width: 150px; font-size: 14px; text-align: left;}
+.yali-im button i{font-size: 24px;}
+
+.lim {cursor: pointer;}
+.lim.yali-btn-disabled, .lim.yali-disabled, .lim.disabled { border: 1px solid #e6e6e6; background-color: #FBFBFB; color: #C9C9C9;  cursor: not-allowed;}
+
+.color-inline-1, .color-inline-2, .color-block-1, .color-block-2 {padding: 20px; box-shadow:  none;}
+.color-inline-1 .yali-im li, .color-inline-2 .yali-im li{display: inline-block;}
+.color-block-1 .yali-im li, .color-block-2 .yali-im li{display: block;}
+.color-inline-1 .yali-im, .color-block-1 .yali-im {background: #666666; border: 1px solid #F2F2F2;}
+.color-inline-2 .yali-im, .color-block-2 .yali-im {background: #F2F2F2; border: 1px solid #EEEEEE;}
+.color-inline-1 .yali-im button, .color-block-1 .yali-im button {background: #FFF; color:#333; }
+.color-inline-2 .yali-im button, .color-block-2 .yali-im button {background: #333; color:#FFF; }
+
+
+
+.layim-chat .layim-chat-textarea {margin-right: 10px; height: 122px;}
+.layim-chat .layui-layim-audio, .layim-chat .layui-layim-video, .layim-chat .layui-layim-file {max-width: 85px; display: inline-block; overflow: hidden; max-height: 120px; overflow: hidden;}
+.layim-chat .layui-layim-photos {max-height: 80%; display: inline-block; overflow: hidden; cursor: pointer}
+.layim-chat .layim-chat-send {right: 10px;}
+.layim-chat .layim-chat-tool {color: #888;}
+
+
+/*layim 外挂CSS 评分*/
+.layui-layim-marking {margin: 10px 0; padding: 10px; background: #FFF; text-align: left; border-radius: 10px;}
+.layui-layim-marking i {padding-right:5px; cursor: pointer; font-size: 24px;}
+.layui-layim-marking cite {display: block; line-height: 30px;}
+
+
+.box-padding {padding: 10px;}
+.box-margin {margin: 10px;}
+
+.box-padding-20 {padding: 20px;}
+.box-margin-20 {margin: 20px;}
+
+.text-danger{color:#FF4747}
+.text-right {text-align: right;}

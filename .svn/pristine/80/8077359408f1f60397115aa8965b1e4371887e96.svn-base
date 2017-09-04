@@ -1,0 +1,42 @@
+<template>
+<div class="item-box">
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+  <el-row v-if="item != null"class="item-detail">
+    <d-text label="ID">{{item.adminId}}</d-text>
+    <d-text label="用户名">{{item.adminUsername}}</d-text>
+    <d-text label="真实姓名">{{item.adminRealname}}</d-text>
+    <d-text label="性别">      
+        <d-maps v-model="item.adminSex" :options="[{'value':0, 'label':'男'}, {'value':1, 'label':'女'}]"></d-maps>
+    </d-text>
+    <d-text label="移动电话">{{item.adminPhone}}</d-text>
+    <d-text label="邮箱">{{item.adminEmail}}</d-text>
+ <!--    <d-text label="角色">{{item.adminRoleIds}}</d-text>
+    <d-text label="角色" v-if="item.adminRoleIds == 1">普通管理员</d-text>
+    <d-text label="角色" v-if="item.adminRoleIds == 14&&item.adminRoleIds == 1">客服</d-text>
+    <d-text label="角色" v-if="item.adminRoleIds == 15">清洁员</d-text>
+    <d-text label="角色" v-if="item.adminRoleIds == 16">大老板</d-text> -->
+  </el-row>
+</el-row>
+</div>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data() {
+    return {
+      loading:true,
+      path: './permissions/admin/admin',
+      item: null
+    } 
+  },
+  mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {id:this.$route.query.id});
+  }
+}
+</script>

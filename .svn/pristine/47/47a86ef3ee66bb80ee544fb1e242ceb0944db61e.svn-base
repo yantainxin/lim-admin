@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>lim-admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="./static/lib/layui/css/layui.css"/>
+  </head>
+  <body>
+    <a class="layui-btn layui-btn-normal" href="./sysadm/index.html" target="_blank">子公司用户入口</a>
+    <a class="layui-btn layui-btn-warm" href="./sysmgr/index.html" target="_blank">总公司用户入口</a>
+    <a class="layui-btn layui-btn-danger" href="./kefu/index.html" target="_blank">客服入口</a>
+    <button class="layui-btn site-demo-layim" data-type="chatKefu">咨询客服</button>
+    <script src="./static/lib/layui/layui.js"></script>  
+  </body>
+</html>

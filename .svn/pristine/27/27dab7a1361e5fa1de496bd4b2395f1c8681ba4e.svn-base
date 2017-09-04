@@ -1,0 +1,125 @@
+{
+	"code": 200,
+    "msg": "处理成功",
+    "data": {
+	    "settingSessionidletime" : [
+	        {
+	            "type": "string",
+	            "required": true,
+	            "message": "会话闲置时间不能为空",
+	            "trigger": "blur"
+	        },
+	        {
+	        	"type" : "integer",
+	        	"min" : 1,
+	        	"max" : 720,
+	        	"message" : "请输入1-720分钟以内的整数"
+	        }
+	    ],
+		"settingOvertimetip": [
+			{
+				"type": "string",
+				"required": true,
+				"message": "超时结束提示语不能为空",
+				"trigger": "blur"
+			}
+		],
+		"settingInvitationmsg": [
+			{
+				"type": "string",
+				"required": true,
+				"message": "评价邀请语不能为空",
+				"trigger": "blur"
+			}
+		],
+		"settingThanksmsg": [
+			{
+				"type": "string",
+				"required": true,
+				"message": "评价感谢语不能为空",
+				"trigger": "blur"
+			}
+		],
+		"settingReceive": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请设置客服接待设置",
+	            "trigger": "change"
+			}
+		],
+		"settingIstransfer": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请设置会话转接设置",
+	            "trigger": "change"
+			}
+		],
+		"settingIsavatar": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择是否客服设置头像功能",
+	            "trigger": "change"
+			}
+		],
+		"settingIsfile": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择是否开启发送文件功能",
+	            "trigger": "change"
+			}
+		],
+		"settingIsprintscreen": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择是否开启截屏/截图功能",
+	            "trigger": "change"
+			}
+		],
+		"settingIsemotion": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择是否开启发送表情功能",
+	            "trigger": "change"
+			}
+		],
+		"settingIsvoice": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择是否开启发送语音功能",
+	            "trigger": "change"
+			}
+		],
+		"settingIsmessage": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择是否开启预知访客消息",
+	            "trigger": "change"
+			}
+		],
+		"settingIssensitive": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择是否开启敏感词感知功能",
+	            "trigger": "change"
+			}
+		]
+	}
+}

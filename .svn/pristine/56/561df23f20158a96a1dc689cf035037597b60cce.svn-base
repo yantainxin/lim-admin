@@ -1,0 +1,37 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="ID">{{item.syskefuId}}</d-text>
+    <d-text label="昵称">{{item.syskefuUsername}}</d-text>
+    <d-text label="在线状态" v-if="item.syskefuIsstate == 0">离线</d-text>
+    <d-text label="在线状态" v-if="item.syskefuIsstate == 0">在线</d-text>
+    <d-text label="等级" v-if="item.syskefuLevel == 0">客服</d-text>
+    <d-text label="等级" v-if="item.syskefuLevel == 1">客服组长</d-text>
+    <d-text label="等级" v-if="item.syskefuLevel == 2">客服班长</d-text>
+    <d-text label="移动电话">{{item.syskefuPhone}}</d-text>
+    <d-text label="同时最大接单数">{{item.syskefuMaxoforder}}</d-text>
+    <d-text label="机器人状态" v-if="item.syskefuIsrobot == 0">关闭</d-text>
+    <d-text label="机器人状态" v-if="item.syskefuIsrobot == 1">开启</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+	data() {
+		return {
+			loading:true,
+			path: './management/syskefu/syskefu',
+			item: null
+		} 
+	},
+	mounted() {
+    this.viewItem();
+  }
+}
+</script>

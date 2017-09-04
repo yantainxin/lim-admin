@@ -1,0 +1,51 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="adminFrom" label-width="120px">
+  <el-form-item label="用户名" prop="adminUsername">
+    <s-textfield v-model="item.adminUsername"></s-textfield>
+  </el-form-item>
+  <el-form-item label="真实姓名" prop="adminRealname">
+    <s-textfield v-model="item.adminRealname"></s-textfield>
+  </el-form-item>
+  <el-form-item label="性别" prop="adminSex">
+    <s-radio-group v-model="item.adminSex" :options="[{'value':0, 'label':'男'}, {'value':1, 'label':'女'}]"></s-radio-group>
+  </el-form-item>
+  <el-form-item label="移动电话" prop="adminPhone">
+    <s-textfield v-model="item.adminPhone"></s-textfield>
+  </el-form-item>
+  <el-form-item label="邮箱" prop="adminEmail">
+    <s-textarea v-model="item.adminEmail"></s-textarea>
+  </el-form-item>
+  <el-form-item label="角色" prop="adminRoleIds">
+    <s-transfer v-if="roles != null" v-model="item.adminRoleIds" :options="roles" :titles="['备选项', '已选项']" :props="{key: 'roleId', label: 'roleName'}"></s-transfer>
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('adminFrom')">确认</el-button>
+    <el-button @click="formReset('adminFrom')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './permissions/admin/admin',
+      route: 'adminManage',
+      rules: null,
+      item: {},
+      roles: null
+    }
+  },
+  mounted() {
+    this.getData('roles', './permissions/role/role-items.json');
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+          this.initItem();
+    }
+  }
+}
+</script>

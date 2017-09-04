@@ -1,0 +1,29 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+    	"syschannelWebname": [
+            {
+                "type" : "string",
+                "required": true,
+                "trim": true,
+                "message" : "网站名称不能为空",
+                "trigger": "blur"
+            }
+        ],
+        "syschannelUrl": [
+            {
+                "type" : "url",
+                "required": true,
+                "trim": true,
+                "message" : "网站链接不能为空",
+                "trigger": "blur"
+            },
+            {
+                "type": "url",
+                "message": "请输入合法的网址",                
+                "trigger": "change"
+            }
+        ]
+    }
+}

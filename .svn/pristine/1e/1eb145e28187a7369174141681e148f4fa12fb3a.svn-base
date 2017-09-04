@@ -1,0 +1,27 @@
+<template>
+    <div class="form-horizontal div-striped">
+        <s-text label="ID" :value="item.sectionId"></s-text>
+        <s-text label="名称" :value="item.sectionName"></s-text>
+        <s-text label="功能描述" :value="item.sectionDescription"></s-text>
+        <s-text label="上级部门" :value="item.sectionPid"></s-text>
+    </div>
+</template>
+
+<script>
+export default{
+    data() {
+        return{
+            path: './basicinfo/section/section',
+            //url: 'http://www.newyali.cn/api/SonMessage/getSonOneDept',
+            item: {},
+            personal:{}
+        } 
+    },
+    mounted(){
+        this.$http.get(this.config.host+'/user/getAdmin.action', {}).then(function(res) {
+            this.personal = res.body;
+            this.viewItem({'web_id':res.body.companyid,'dept_id':this.$route.query.id});
+        });
+    }
+}
+</script>

@@ -1,0 +1,201 @@
+<template>
+<div class="desk">
+  <div class="widget radius-bordered">
+    <div class="widget-header">
+      <span class="widget-caption">桌面</span>
+    </div>
+    <div class="widget-body">
+    <el-row :gutter="15">
+      <el-col :span="16">
+        <el-row :xs="24" :sm="24" :md="24" :lg="24">
+          <div class="Chart">
+            <!-- <center><h5>工单状态</h5></center> -->
+            <el-row :gutter="10">
+              <template v-for="order in orderdata">
+                <el-col :xs="6" :sm="6" :md="6" :lg="6" class="wRight" :style="'background:'+order.background"><a><h4><b>{{order.count}}</b></h4><h6>{{order.orderdetailStatu}}</h6><i :class="order.icon"></i></a></el-col>
+              </template>
+            </el-row>
+          </div>
+        </el-row>
+
+      <el-row>
+        <el-col :span="24">
+          <div class="Chart"><center><h5>访问量</h5></center><canvas class="lineChar"></canvas></div>
+        </el-col>
+      </el-row>
+      </el-col>
+      <el-col :span="8">
+        <el-row :span="24">
+          <el-col>
+            <div class="Chart">
+              <label id="dateTime"></label> 
+            </div>
+          </el-col>
+          <!-- </template> -->
+        </el-row>
+        <el-row :span="24">
+          <template v-for="kefu in kefudata">
+          <el-col><div class="Chart1"><h5>{{kefu.kefuIsstate}}&nbsp;|&nbsp;{{kefu.count}}</h5></div></el-col>
+          </template>
+        </el-row>
+        <el-row>
+          <el-col :xs="24" :sm="24" :md="24" :lg="24">
+          <div class="Chart">
+            <h5>最近访客<span><a href="./index.html#/desk" class="more pull-right">更多访客详情</a></span></h5>
+            <el-row>
+              <template v-for="tourist in touristdata">
+                <el-col :xs="5" :sm="5" :md="3" :lg="3"><a href=""><img :src="tourist.touristPhoto"></a></el-col>
+                <el-col :xs="7" :sm="7" :md="5" :lg="5" class="visRight"><a href="">&nbsp;{{tourist.touristName}}</a><br>&nbsp;{{tourist.touristCreatetime}}</el-col>
+              </template>
+            </el-row>
+          </div>
+        </el-col>
+        </el-row>
+      </el-col>
+      </el-row>
+    </div>
+  </div>
+</div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+import LineExample from './LineChart.js'
+export default {
+  components: {
+    LineExample
+  },
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data(){
+    return{
+      kefudata:{},
+      orderdata:{},
+      touristdata:{}
+
+    }
+  },
+  mounted(){
+    var slidint;
+    newTimer();  
+    function newTimer() {
+      var today = new Date();
+      var str = "  "+today.toLocaleDateString() + "<br>";
+      str += "  " + week();
+      str += "  " + today.toLocaleTimeString();
+      var dt ;
+      if(dt= document.getElementById("dateTime")){
+        dt.innerHTML = str;
+      }
+      slidint = setTimeout(newTimer, 1000); 
+    }
+    function stopit() {
+      clearTimeout(slidint);   
+    }
+    function week() {
+      var d, day, x, s = " ";  
+      var x = new Array("星期日", "星期一", "星期二","星期三", "星期四", "星期五","星期六");
+      d = new Date();
+      day = d.getDay();
+      return (s += x[day]);
+    }
+
+    let obj = this;
+    /*---------游客访问量--------------*/
+    let arr =  [{"months":"3","count":"50"}, {"months":"5","count":"142"}, {"months":"6","count":"115"},{"months":"7","count":"138"}];
+    let months = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+    let month=[];
+    let counts=[0,0,0,0,0,0,0,0,0,0,0,0];
+    let count=[];
+    $.each(arr,function(idx,item){
+      month.push(item.months);
+      count.push(item.count);
+      counts[parseInt(item.months)-1]= item.count;
+
+    });
+    this.lineChar({'month': months, 'count':counts});
+
+    /*----------客服状态数-------------------------*/
+    this.$http.get(this.config.userpath +'/diagram/kefu-statuSum.json', {}).then(function(res) {
+      this.kefudata = res.body.data;
+    });
+
+    /*-----------工单状态---------------------------*/
+    this.$http.get(this.config.userpath + '/diagram/order-statuSum.json', {}).then(function(res) {
+      this.orderdata = res.body.data;
+    });
+
+    /*-----------游客访问-------------------------------*/
+    this.$http.get(this.config.userpath + '/diagram/tourist-newly.json', {}).then(function(res) {
+      this.touristdata = res.body.data;
+    });        
+  }
+}
+</script>
+ <style>
+    .container {
+      max-width: 800px;
+      margin:  0 auto;
+    }
+    .Chart {
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0px 2px 15px rgba(25, 25, 25, 0.27);
+      margin:  5px 0;
+      padding:15px;
+    }
+    .Chart1 {
+      border-radius: 5px;
+      background:#fff;
+      box-shadow: 0px 2px 15px rgba(25, 25, 25, 0.27); 
+      margin:  6px 0;
+      padding:5px;
+    }
+    .Chart h5 {
+      margin-top: 0;
+      padding: 5px 0;
+      color:  rgba(255, 0,0, 0.5);
+      border-bottom: 1px solid #E8E8E8;
+    }
+    #dateTime{
+      font-size: 16px;
+      color:#333;
+    }
+    .smallchar{
+      max-width: 400px;
+    }
+
+    .lineChar{
+      padding:10px;
+    }
+    .fa-lg{
+      padding: 10px 0;
+      color: #fff;
+    }
+
+    .wRight{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis; 
+      text-align: center;
+      border:1px solid #E8E8E8; 
+      background: #fff;
+    }
+    .wRight a{
+      color: #fff;
+      text-decoration: none;
+    }
+    .wRight a:hover{
+      color: #fff;
+    }
+    
+    .visRight{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+</style>

@@ -1,0 +1,24 @@
+<template>
+<div class="syscolumn">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+            <span class="widget-caption">权限细粒度列表</span>
+        </div>
+        <div class="widget-body">
+            <el-row class="content-tools">              
+                <el-col :span="8">
+                </el-col>
+                <el-col :span="16" class="text-right">
+                <h-privilege-top></h-privilege-top>
+                <!--<el-button-group>
+                        <router-link class="el-button" :to="{name:'syscolumnManage'}" tag="button" title="管理"><i class="fa fa-list"></i><span class="hidden-xs">管理</span></router-link>
+                        <router-link class="el-button" :to="{name:'syscolumnModify'}" tag="button" title="添加"><i class="fa fa-plus"></i><span class="hidden-xs">添加</span></router-link>
+                    </el-button-group> -->
+                </el-col>
+            </el-row>
+            <hr>
+            <router-view></router-view>
+        </div>
+    </div>
+</div>
+</template>

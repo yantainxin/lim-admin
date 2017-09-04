@@ -1,0 +1,35 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+    <el-row class="item-detail">
+		<d-text label="公司编号">{{item.syscompanyId}}</d-text>
+		<d-text label="公司名称">{{item.syscompanyName}}</d-text>
+        <d-text label="地址">{{item.syscompanyAddress}}</d-text>
+		<d-text label="邮箱">{{item.syscompanyEmail}}</d-text>
+		<d-text label="公司网站地址">{{item.syscompanyWebsite}}</d-text>
+		<d-text label="公司管理员账号">{{item.syscompanyGmname}}</d-text>
+		<d-text label="公司总客服账号">{{item.syscompanyKefuname}}</d-text>
+    </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+    computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+    data() {
+        return {
+            loading:true,
+            path: './sysbasicinfo/syscompany/syscompany',
+            //url: 'http://www.newyali.cn/api/SysMessage/GetSysComInfo',
+            item: null,
+        } 
+    },
+    mounted(){
+        let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+        this.viewItem(url, {web_id: this.personal.companyid});
+    }
+}
+</script>

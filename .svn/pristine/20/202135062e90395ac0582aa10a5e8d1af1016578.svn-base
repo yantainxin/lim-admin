@@ -1,0 +1,36 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "roleName" :[
+            {
+                "type": "string",
+                "required": true,
+                "trim": true,
+                "message": "名称不能为空",
+                "trigger": "change"
+            },
+            {
+                "pattern" : "^[\u4E00-\u9FA5A-Za-z0-9]+$",
+                "message" : "格式有误,不能输入数字或符号"
+            }
+        ],
+        "roleDescription" :[
+            {
+                "type": "string",
+                "required": true,
+                "trim": true,
+                "message" : "描述不能为空",
+                "trigger": "change"
+            }
+        ],
+       "roleColumnIds" : [
+            {
+                "type": "array",
+                "required": true,
+                "message" : "角色权限不能为空",
+                "trigger": "change"
+            }
+       ]
+    }
+}

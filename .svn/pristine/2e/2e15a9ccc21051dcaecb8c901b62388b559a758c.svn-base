@@ -1,0 +1,49 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="syskefuForm" label-width="120px">
+    <el-form-item label="昵称" prop="syskefuUsername">
+      <s-textfield v-model="item.syskefuUsername"></s-textfield>
+    </el-form-item>
+  <el-form-item label="在线状态" prop="syskefuIsstate">
+    <s-switch v-model="item.syskefuIsstate"></s-switch>
+  </el-form-item>
+  <el-form-item label="等级" prop="syskefuLevel">
+    <s-select v-model="item.syskefuLevel" :options=" [{'value':0, 'label':'客服'}, {'value':1, 'label':'客服组长'}, {'value':2, 'label':'客服班长'}]"></s-select>
+  </el-form-item>
+  <el-form-item label="移动电话" prop="syskefuPhone">
+    <s-textfield v-model="item.syskefuPhone"></s-textfield>
+  </el-form-item>
+  <el-form-item label="同时最大接单数" prop="syskefuMaxoforder">
+    <s-input-number v-model="item.syskefuMaxoforder"></s-input-number>
+  </el-form-item>
+  <el-form-item label="机器人状态" prop="syskefuIsrobot">
+    <s-switch v-model="item.syskefuIsrobot"></s-switch>
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('syskefuForm')">确认</el-button>
+    <el-button @click="formReset('syskefuForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './management/syskefu/syskefu',
+      route: 'syskefuManage',
+      rules: null,
+      item: {}
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+          this.initItem();
+    }
+  }
+}
+</script>

@@ -1,0 +1,47 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+  <el-table v-if="items != null" :data="items" border stripe>
+  <el-table-column align="center" prop="fastreplyId" label="ID" sortable width="100"></el-table-column>
+  <el-table-column header-align="center" prop="fastreplyContent" label="内容" sortable></el-table-column>
+  <el-table-column align="center" label="操作" width="180">
+    <template scope="scope">
+        <d-privilege v-if="privileges != null" :options="privileges" :query="{id: scope.row.fastreplyId}" size="small" :isLabel="false"></d-privilege>
+      </template>
+  </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  data() {
+      return {
+          loading: true,
+          path: './thinktank/fastreply/fastreply',
+          count: 0,
+          items: null,
+          privileges:null
+      } 
+  },
+  computed:{
+    ...mapGetters({
+      tabItems: 'GET_TABS',
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  mounted(){
+    this.listItems();
+    this.getPrivilege({pos: 1});
+    this.$bus.$off('fastreplyDelete');
+    this.$bus.$on('fastreplyDelete', (option) => {
+      this.reomveItem(option);
+    });
+  },
+  watch:{
+    $route(){
+      this.listItems();
+    }
+  }
+}
+</script>

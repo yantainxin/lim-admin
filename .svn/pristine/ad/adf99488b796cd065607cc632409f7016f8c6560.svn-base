@@ -1,0 +1,302 @@
+<template>
+<div class="chat">
+    <div class="widget radius-bordered">
+      <div class="widget-header">
+          <span class="widget-caption">在线客服</span>
+      </div>
+      <div class="widget-body">
+				<div class="layui-box layui-layim" id="layui-layim"></div>
+  			<el-tabs class="layui-box layui-layim-panel"  type="border-card" value="fastreply">
+			    <el-tab-pane label="快捷回复" name="fastreply">
+						  <ul>
+						    <li v-for="(item, index) in items" @click="handleClick(index)">{{item.fastreplyContent}}</li>
+						  </ul>
+			    </el-tab-pane>
+			    <el-tab-pane label="用户信息" name="userinfo">
+			    	用户详细信息............
+			    </el-tab-pane>
+			  </el-tabs>
+				<div class="layui-box layui-layim-chat layer-anim" id="layui-layim-chat">
+					<div class="layui-unselect layim-chat-list"></div>
+					<div class="layim-chat-box">
+						<div class="layui-unselect layim-chat-title"></div>
+						<div class="layim-chat-main"></div>
+						<div class="layim-chat-footer">
+							<div class="layui-unselect layim-chat-tool"></div>
+							<div class="layim-chat-textarea"><div class="textarea"></div></div>
+							<div class="layim-chat-bottom"></div>
+						</div>
+					</div>
+				</div>
+      </div>
+    </div>
+</div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+
+export default{
+	data() {
+		return {
+			setting: null,
+			items: null,
+			userconfig: {
+		    init: {url: this.config.host + '/kefu/kefuInit.action', type : 'get', data : {}},
+		    members: {url: this.config.host + '/kefu/kefuMembers.action', type: 'get', data: {}},
+		    uploadImage: {url: this.config.host + '/kefu/kefuUploadImage.action', type: 'post'},
+		    uploadFile: {url: this.config.host + '/kefu/kefuUploadFile.action', type: 'post'},
+		    tool: [
+		    	{"alias" : "order", "title" : "工单提交", "icon" : "&#xe63c;"},
+		    	{"alias" : "rebroad", "title" : "会话转接", "icon" : "&#xe606;"},
+		    	{"alias" : "finish", "title" : "完成咨询", "icon" : "&#xe627;"},
+		    ],
+		    title : "我的IM",
+		    isAudio : true,
+				copyright : true,
+		  //   msgbox: $this.config.host + '/socket/msgbox.html',
+		    chatLog: this.config.host + '/kefu/chatlog/chatlog.html'
+	  	}
+		}
+	},
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+
+	mounted(){
+
+		this.getData('items', './thinktank/fastreply/fastreply-items.json');
+		this.getData('setting', './setting/setting/settingInit.action');
+
+		let $this = this;
+		let mine, socket, kefuStatus, msgboxCount = 0, recevingCount = 0;
+
+		layui.use(['jquery', 'layer', 'layim', 'laytpl', 'form'], function(){
+			let $ = layui.jquery;
+			let layer = layui.layer;
+			let layim = layui.layim;
+			let laytpl = layui.laytpl;
+			let form = layui.form;
+
+			console.log($this.setting);
+
+
+			var timer = setInterval(function(){
+				if($this.setting != null){
+					clearInterval(timer);		
+					if ($this.setting.settingIsimage == 0) {
+						$this.userconfig.uploadImage = null;
+					}
+					if ($this.setting.settingIsfile == 0) {
+						$this.userconfig.uploadFile = null;
+					}
+				}
+			}, 30)
+
+
+		  layim.config($this.userconfig);
+
+			if (layim.cache().mine && layim.cache().mine.hasOwnProperty('id')) {
+				mine = layim.cache().mine;
+				socket = new WebSocket($this.config.wshost + '?key=' + mine.id);
+			}
+
+			layim.on('chatChange', function(res) {
+				if(res.data.id.indexOf('_type_tourist_') === -1){
+					$('.layim-tool-order, .layim-tool-rebroad, .layim-tool-finish').remove();
+				}
+			});
+
+			//监听发送消息
+			layim.on('sendMessage', function(res) {
+				socket.send(JSON.stringify({
+					type : 'chatMessage',
+					data : res
+				}));
+			});
+
+				// 监听收到的消息
+			socket.onmessage = function(res) {
+				let obj = JSON.parse(res.data);
+				if (obj != null && obj.hasOwnProperty('type') && obj.hasOwnProperty('data')) {
+					let to = obj.data;
+					switch(obj.type) {
+						case 'online':
+						case 'offline':
+							layim.setFriendStatus(to.id, type);
+							break;
+						case 'chatMessage':
+						case 'crossMessage':
+							layim.getMessage(to);
+							break;
+						case 'rebroadMessage':
+							to.groupid = 0;
+							layim.addList(to);
+	          	layim.getMessage(to);
+							break;
+						case 'chatKefuMessage':
+							layim.addList(to);
+	          	layim.getMessage(to);
+							break;
+						case 'kefuStatusMessage':
+							if (to.content.length > 0) {
+								kefuStatus = to.content;
+							}
+							if (to.receving > 0) {
+								recevingCount = to.receving;
+							}
+							break;
+						case 'systemTip':
+							layer.open({
+								title: '系统提醒',
+								content: to.systemTip,
+								offset: 'rb',
+								shade: 0,
+								time :10000
+							});
+							break;
+					}
+
+				} else {
+					console.log('接受到的消息为空');
+				}
+			};
+
+			// 状态切换
+			layim.on('online', function(status) {
+				if (status == 'online') { // 除非选在在线状态，其他状态全部是离线
+					socket.send(JSON.stringify({
+						type : 'memberStatusMessage', // 随便定义，用于在服务端区分消息类型
+						data : {
+							id : mine.id,
+							type : 'friend',
+							content : 'online'
+						}
+					}));
+				} else { // 如果是隐身或者离线，同一提示为离线
+					socket.send(JSON.stringify({
+						type : 'memberStatusMessage', // 随便定义，用于在服务端区分消息类型
+						data : {
+							id : mine.id,
+							system : true,
+							type : 'friend',
+							content : 'offline'
+						}
+					}));
+				}
+			});
+
+			layim.on('tool(order)', function(insert, send, obj) {
+				let to = obj.data;
+				let tpl = ['<form class="layui-form" action="">',
+									  '<div class="layui-form-item">',
+									   ' <label class="layui-form-label">用户ID</label>',
+									    '<div class="layui-input-block">{{d.to.username}}</div>',
+									  '</div>',
+									  '<div class="layui-form-item">',
+									   ' <label class="layui-form-label">用户类型</label>',
+									    '<div class="layui-input-block">{{d.to.type}}</div>',
+									  '</div>',
+									  '<div class="layui-form-item layui-form-text">',
+									    '<label class="layui-form-label">工单内容</label>',
+									    '<div class="layui-input-block">',
+									      '<textarea name="orderContent" placeholder="请输入内容" class="layui-textarea"></textarea>',
+									    '</div>',
+									  '</div>',
+									'</form>'].join('');
+
+				layer.open({
+					area: '600px',
+				  title: '工单提交',
+				  content: laytpl(tpl).render({to:to}),
+				  yes: function(index, layero) {
+				  		    
+				  }
+				});
+			});
+
+			/* 将客户呼叫转移给其他客服 */
+			layim.on('tool(rebroad)', function(insert, send, obj) {
+				let to = obj.data;
+				let tpl = '<ul class="item-ul">{{# layui.each(d.list, function(index, item){ }}<li><label><input type="radio" name="id" id="{{ item.id }}" value="{{ item.id }}" title="{{ item.username }}">{{ item.username }}</label></li>{{# }); }}</ul>'
+				let list = new Array();
+				$.each(layim.cache().friend[3].list, function(index, item){
+					if(item.status == 'online'){
+						list.push(item);
+					}
+				});
+
+				layer.open({
+				  title: '选择目标客服',
+				  content: laytpl(tpl).render({list:list}),
+				  yes: function(index, layero) {
+				  	let temp = mine;
+				  	$.each(list, function(index, item){
+				  		if(item.id === layero.find('input[name="id"]:checked').val()){
+				  			temp = item;
+				  		}
+				  	});
+
+				  	if(to.groupid === 0) {
+							socket.send(JSON.stringify({
+								type : 'rebroadMessage', // 随便定义，用于在服务端区分消息类型
+								data : {to: to, mine: temp}
+							}));
+							to.groupid = 2;
+							layim.addList(to);
+				  	} else {
+				  		layer.msg('对不起，您只能转移属于自己客户');
+				  	}
+				    layer.close(index); //如果设定了yes回调，需进行手工关闭			    
+				  }
+				});
+
+			});
+
+			/* 完成客户咨询 */
+			layim.on('tool(finish)', function(insert, send, obj) {			
+				let to = obj.data;
+				layer.confirm('确定完成咨询？', function(index){
+					to.groupid = 1;
+					layim.removeList({ type: 'friend', id: to.id}).addList(to);
+					socket.send(JSON.stringify({
+						type : 'finishChatKefu',
+						data : {to: to, mine : mine}
+					}));
+					recevingCount = recevingCount - 1;
+					layer.close(index);
+				});
+
+
+			});
+		});
+
+	},
+	methods:{
+		aesEncrypt(content) {
+			let key = CryptoJS.enc.Utf8.parse(this.config.aesKey);
+			let srcs = CryptoJS.enc.Utf8.parse(content);
+			let encrypted = CryptoJS.AES.encrypt(srcs, key, {
+				mode : CryptoJS.mode.ECB,
+				padding : CryptoJS.pad.Pkcs7
+			});
+			return encrypted.toString();
+		},
+		aesDecrypt(content) {
+			content = content.replace(/\s/g,'+');//由于地址栏接收到的加密串存在+号回被自动转为空格。需要替换回来。
+			let key = CryptoJS.enc.Utf8.parse(this.config.aesKey);
+			let decrypt = CryptoJS.AES.decrypt(content, key, {
+				mode : CryptoJS.mode.ECB,
+				padding : CryptoJS.pad.Pkcs7
+			});
+			return CryptoJS.enc.Utf8.stringify(decrypt).toString();
+		},
+		handleClick(index){
+			$('.layim-chat-friend.layui-show').find('.textarea').append(this.items[index].fastreplyContent);
+		}
+	}
+
+}
+</script>

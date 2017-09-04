@@ -1,0 +1,76 @@
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+
+import error from '../error.vue';
+import login from './login.vue';
+import main from './main.vue';
+import desk from './page-desk.vue';
+//在线客服
+// import chat from './chat/chat.vue';
+
+//留言管理
+import messageboard from './messageboard/messageboard.vue';
+import messageboardManage from './messageboard/messageboard-manage.vue';
+import messageboardView from './messageboard/messageboard-view.vue';
+//下载中心
+import downloadcenter from './downloadcenter/downloadcenter.vue';
+import downloadcenterManage from './downloadcenter/downloadcenter-manage.vue';
+import downloadcenterView from './downloadcenter/downloadcenter-view.vue';
+//工单中心
+import order from './order/order.vue';
+import orderManage from './order/order-manage.vue';
+import orderModify from './order/order-modify.vue';
+//import orderView from './order/order-view.vue';
+//历史记录
+import history from './history/history.vue';
+import historyManage from './history/history-manage.vue';
+import historyView from './history/history-view.vue';
+
+//游客中心
+import tourist from './tourist/tourist.vue';
+import touristManage from './tourist/tourist-manage.vue';
+import touristView from './tourist/tourist-view.vue';
+
+Vue.use(VueRouter);
+
+const routes = [
+	{name: 'error', path: '*', component: error },
+  	{name: 'login', path: '/', component: login },
+  	{name: 'main', path: '/main', component: main, children:[
+      {name: 'desk', path: '/desk', component: desk },
+      //在线客服
+      // {name: 'chat', path: '/chat', component: chat},
+      //留言管理
+      {name: 'messageboard', path: '/messageboard', component: messageboard, children:[
+        {name: 'messageboardManage', path: '/messageboard-manage', component: messageboardManage},
+        {name: 'messageboardView', path: '/messageboard-view', component: messageboardView}
+      ]},
+      //下载中心
+     {name: 'downloadcenter', path: '/downloadcenter', component: downloadcenter, children:[
+        {name: 'downloadcenterManage', path: '/downloadcenter-manage', component: downloadcenterManage},
+        {name: 'downloadcenterView', path: '/downloadcenter-view', component: downloadcenterView}
+      ]},
+      //工单中心
+      {name: 'order', path: '/order', component: order, children:[
+        {name: 'orderManage', path: '/order-manage', component: orderManage},
+        {name: 'orderModify', path: '/order-modify', component: orderModify},
+      //  {name: 'orderView', path: '/order-view', component: orderView}
+      ]},
+      //历史记录
+      {name: 'history', path: '/history', component: history, children:[
+        {name: 'historyManage', path: '/history-manage', component: historyManage},
+        {name: 'historyView', path: '/history-view', component: historyView}
+      ]},
+      //客户中心
+      {name: 'tourist', path: '/tourist', component: tourist, children:[
+        {name: 'touristManage', path: '/tourist-manage', component: touristManage},
+        {name: 'touristView', path: '/tourist-view', component: touristView}
+      ]}
+    ]
+  }
+];
+
+export default new VueRouter({
+   history:true, 
+   routes
+});

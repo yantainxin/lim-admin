@@ -1,0 +1,41 @@
+<template>
+	<span>
+		<template v-for="priR in privileges">
+		  <router-link  v-if="priR.privilegeName == '详细'"
+			  class="el-button el-button--default el-button--small" 
+			  :to="{name:priR.privilegeUname, query:objViewid}" 
+			  tag="button" :title="priR.privilegeName">
+			  <i :class="priR.privilegeIcon"></i>
+			  <!-- <span class="hidden-xs">{{priR.privilegeName}}</span> -->
+		  </router-link>
+			<router-link v-if="priR.privilegeName == '编辑'"
+				class="el-button el-button--info el-button--small" 
+				:to="{name:priR.privilegeUname, query:objId}" 
+				tag="button" :title="priR.privilegeName">
+				<i :class="priR.privilegeIcon"></i>
+				<!-- <span class="hidden-xs">{{priR.privilegeName}}</span> -->
+			</router-link>
+			<a v-if="priR.privilegeName == '删除'"
+				class="el-button el-button--danger el-button--small"
+				@click.prevent="removeObj(objId.id)" :title="priR.privilegeName">
+				<i :class="priR.privilegeIcon"></i>
+				<!-- <span class="hidden-xs">{{priR.privilegeName}}</span> -->
+			</a>
+		</template>
+	</span>
+</template>
+<script>
+export default {
+  props:['privileges','objId','objViewid'],
+  methods:{
+  	removeObj(id){
+  	//调用这个方法的原因是，如果模板直接调用公共方法this.removeItem(id),它返回的this.items不在这个组件(而是在manage的组件里)，所以导致删除成功了，但是页面更新不了item的值
+  		this.$emit('reomve', id);
+  	}
+  }
+}
+	
+</script>
+<style>
+	a{text-decoration: none;}
+</style>

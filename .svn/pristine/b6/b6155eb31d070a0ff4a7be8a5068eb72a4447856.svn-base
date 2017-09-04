@@ -1,0 +1,41 @@
+[
+	{"syscolumnId":1,"syscolumnName":"坐席管理","syscolumnUrl":"/#","syscolumnIcon":"menu-icon fa fa-user-circle","children":[
+		{"syscolumnId":2,"syscolumnName":"技能组管理","syscolumnUrl":"/sysskill-manage","syscolumnIcon":""},
+	    {"syscolumnId":3,"syscolumnName":"人工坐席","syscolumnUrl":"/syskefu-manage","syscolumnIcon":""}
+	]},
+	{"syscolumnId":4,"syscolumnName":"系统管理","syscolumnUrl":"/#","syscolumnIcon":"menu-icon fa fa-tasks","children":[
+		{"syscolumnId":5,"syscolumnName":"网站基本配置","syscolumnUrl":"/sysconfig-view","syscolumnIcon":""},
+		{"syscolumnId":6,"syscolumnName":"子公司网站配置","syscolumnUrl":"/config-manege","syscolumnIcon":""},
+		{"syscolumnId":7,"syscolumnName":"渠道设置","syscolumnUrl":"/syschannel-manage","syscolumnIcon":""}
+
+	]},
+	{"syscolumnId":8,"syscolumnName":"工单查询","syscolumnUrl":"/sysorder-manage","syscolumnIcon":"menu-icon fa fa-newspaper-o"},
+	{"syscolumnId":9,"syscolumnName":"导航管理","syscolumnUrl":"/#","syscolumnIcon":"menu-icon fa fa-th","children":[
+		{"syscolumnId":10,"syscolumnName":"栏目","syscolumnUrl":"/syscolumn-manage","syscolumnIcon":""},
+		{"syscolumnId":11,"syscolumnName":"细粒度","syscolumnUrl":"/sysprivilege-manage","syscolumnIcon":""}
+	]},
+	{"syscolumnId":12,"syscolumnName":"权限管理","syscolumnUrl":"/#","syscolumnIcon":"menu-icon fa fa-key","children":[
+		{"syscolumnId":13,"syscolumnName":"用户管理","syscolumnUrl":"/manager-manage","syscolumnIcon":""},
+		{"syscolumnId":14,"syscolumnName":"角色管理","syscolumnUrl":"/sysrole-manage","syscolumnIcon":""}
+	]},
+	{"syscolumnId":15,"syscolumnName":"基础智库管理","syscolumnUrl":"/#","syscolumnIcon":"menu-icon fa fa-github-alt","children":[
+		{"syscolumnId":16,"syscolumnName":"快捷回复","syscolumnUrl":"/fastreply-manage","syscolumnIcon":""},
+		{"syscolumnId":17,"syscolumnName":"机器人回复","syscolumnUrl":"/robot-manage","syscolumnIcon":""}
+	]},
+	{"syscolumnId":18,"syscolumnName":"基本信息","syscolumnUrl":"/#","syscolumnIcon":"menu-icon fa fa-desktop","children":[
+		{"syscolumnId":19,"syscolumnName":"企业信息","syscolumnUrl":"/syscompany-view","syscolumnIcon":""},
+	    {"syscolumnId":20,"syscolumnName":"部门信息","syscolumnUrl":"/syssection-manage","syscolumnIcon":""},
+	    {"syscolumnId":21,"syscolumnName":"员工信息","syscolumnUrl":"/sysstaff-manage","syscolumnIcon":""},
+	    {"syscolumnId":22,"syscolumnName":"公司信息列表","syscolumnUrl":"/company-manage","syscolumnIcon":""}
+	]},
+	{"syscolumnId":23,"syscolumnName":"游客列表","syscolumnUrl":"/tourist-manage","syscolumnIcon":"menu-icon fa fa-users"},       
+	{"syscolumnId":24,"syscolumnName":"设置中心","syscolumnUrl":"/#","syscolumnIcon":"menu-icon fa fa-cogs","children":[
+		{"syscolumnId":25,"syscolumnName":"基本设置","syscolumnUrl":"/syssetting-modify","syscolumnIcon":""},
+	    {"syscolumnId":26,"syscolumnName":"欢迎语设置","syscolumnUrl":"/sysgreeting-modify","syscolumnIcon":""},
+	    {"syscolumnId":27,"syscolumnName":"服务时间管理","syscolumnUrl":"/syskefutime-modify","syscolumnIcon":""},
+	    {"syscolumnId":28,"syscolumnName":"工单属性管理","syscolumnUrl":"/sysorderattr-modify","syscolumnIcon":""}
+	]},
+	{"syscolumnId":29,"syscolumnName":"个人管理","syscolumnUrl":"/#","syscolumnIcon":"menu-icon fa fa-vcard","children":[
+		{"syscolumnId":30,"syscolumnName":"个人管理","syscolumnUrl":"/sysperson-modify","syscolumnIcon":""}
+	]}
+]

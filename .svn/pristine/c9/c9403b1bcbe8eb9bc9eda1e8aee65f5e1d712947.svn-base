@@ -1,0 +1,651 @@
+layui.define(['yali', 'form'], function(exports) {
+	'use strict';
+	var $ = layui.jquery;
+	var yali = layui.yali;
+	var layim = yali.layim;
+	var layer = layui.layer;
+	var laytpl = layui.laytpl;
+	var form = layui.form;
+	var device = layui.device();
+	//初始化
+	
+	$.ajaxSetup({
+		xhrFields: {
+			withCredentials: true
+		}
+	});
+
+	var socket, setting, initdata = {},
+		YaliIM = function() {
+			var that = this;
+			/^((?:\w+):\/\/([^\/:]*)(?::\d+)?)\/([^?]*)(?:\?(.*))?$/gi.exec($('script#yali-im')[0].src);
+
+			initdata = {
+				host: 'http://im.newyali.cn', // RegExp.$1
+				domain: RegExp.$2,
+				wshost: 'ws://im.newyali.cn:9321', // 'ws://' + RegExp.$1 + ':9321'
+				uri: RegExp.$3,
+				qstring: RegExp.$4
+			};
+			aesDecrypt(RegExp.$4, function(result1) {
+				initdata.channelCode = result1;
+				getSetting(function(result2) {
+					initdata.setting = result2;
+				});
+			});
+
+		};
+
+	YaliIM.prototype.init = function(options) {
+		var that = this;
+		$.extend(true, that.config, options);
+		init(that.config);
+		return that;
+	};
+
+	YaliIM.prototype.aesEncrypt = function(str, callback) {
+		return aesEncrypt(str, callback), this;
+	}
+	YaliIM.prototype.aesDecrypt = function(str, callback) {
+		return aesDecrypt(str, callback), this;
+	}
+	YaliIM.prototype.imAuth = function(obj, callback) {
+		var auth = null;
+		var times = 0, timer = setInterval(function(){	
+			if(initdata.channelCode && initdata.setting && times++ < 3) {
+				auth = imAuth(obj, callback);
+			}
+			clearInterval(timer);
+		}, 500);
+		return auth, this;
+	}
+	YaliIM.prototype.imQuit = function(obj, callback) {
+		return imQuit(obj, callback), this;
+	}
+
+	var
+		init = function(config) {
+			var times = 0, timer = setInterval(function(){
+				if(initdata.channelCode && initdata.setting && times++ < 3) {
+					userAuth();
+				}
+				clearInterval(timer);
+			}, 500);	
+		},
+		userAuth = function(options) {
+			$.getJSON(initdata.host + '/api/im/userAuth.action', initdata.qstring + '&' + window.location.hostname, function(res) {
+				if (res.code == 200) {
+					initdata.user = res.data;
+					document.cookie = 'JSESSIONID=' + initdata.user.sessionId + ';path=/';
+					var userTemp = {
+						id: initdata.user.id,
+						username: initdata.user.username,
+						sign: initdata.user.sign,
+						type: initdata.user.type,
+						avatar: initdata.user.avatar,
+						sessionId: initdata.user.sessionId,
+						host: initdata.host,
+						wshost: initdata.wshost,
+						code: initdata.qstring,
+						brief: initdata.channelCode.brief
+					}
+
+					aesEncrypt(userTemp, function(aesUser) {
+						userInit({
+							user: aesUser
+						});
+					});
+				} else {
+					console.log(res.msg);
+				}
+			}).error(function(res) {
+				console.log(res);
+				console.log('IM初始化用户信息失败，刷新页面请重试');
+			});
+		},
+		userInit = function(options) {
+			$.getJSON(initdata.host + '/static/js/lim.config.' + initdata.channelCode.device + '.json', options.user, function(res) {
+				if (res.code === 200) {
+					layim.config(res.data);
+					initdata.mine = layim.cache().mine;
+					if (initdata.mine && initdata.mine.hasOwnProperty('id')) {
+						socket = new WebSocket(initdata.wshost + '?key=' + initdata.mine.id + '&' + initdata.qstring);
+						socketConn(socket);
+					}
+				} else {
+					console.log(res.msg);
+				}
+			}).error(function(res) {
+				console.log(res);
+				console.log('IM初始化用户信息失败，刷新页面请重试');
+			});
+		},
+		socketConn = function(socket) {
+
+			socket.onopen = function() {
+				$.getJSON(initdata.host + '/chatlog/countChatlog.action', {
+					id: initdata.mine.id
+				}, function(data, status) {
+					if (Number(data) > 0) {
+						initdata.msgboxCount = data;
+						layim.msgbox(initdata.msgboxCount);
+					}
+				});
+				console.log('通信连接成功');
+				$('.lim').on('click', limChat).removeClass('yali-btn-disabled yali-disabled');
+			};
+
+			socket.onclose = function(res) {
+				$('.lim').off('click', limChat).addClass('yali-btn-disabled');
+				console.log('通信连接已关闭');
+
+			};
+
+			socket.onerror = function(res) {
+				$('.lim').off('click', limChat).addClass('yali-btn-disabled');
+				console.log('通信发生异常');
+			};
+
+
+			socket.onmessage = function(res) {
+
+				var obj = JSON.parse(res.data);
+				if (obj != null && obj.hasOwnProperty('type') && obj.hasOwnProperty('data')) {
+					var to = obj.data;
+
+					switch (obj.type) {
+						case 'statusMessage':
+							layim.setFriendStatus(to.id, to.content);
+							break;
+						case 'chatKefuMessage':
+						case 'chatMemberMessage':
+						case 'rebroadMessage':
+							layim.chat({
+								name: to.username,
+								username: to.username,
+								type: to.type,
+								avatar: to.avatar,
+								id: to.id
+							});
+							layim.getMessage(to);
+							break;
+						case 'chatMessage':
+						case 'systemMessage':
+							layim.getMessage(to);
+							break;
+						case 'closeMessage':
+							layer.open({
+								title: '系统提醒',
+								content: to.content,
+								end: function() {
+									idletime.reset();
+									layim.closeChat();
+								}
+							});
+							break;
+						case 'closePanelMessage':
+							layer.open({
+								title: '系统提醒',
+								content: to.content,
+								end: function() {
+									idletime.reset();
+									layim.closeChat();
+								}
+							});
+							break;
+						case 'promptMessage':
+							layer.open({
+								title: '系统提醒',
+								content: to.content,
+								offset: 'rb',
+								shade: 0,
+								time: 10000
+							});
+							break;
+						default:
+							layim.getMessage(to);
+					}
+
+				} else {
+					console.log('接受到的消息为空');
+				}
+			};
+		},
+		getSetting = function(callback) {
+			$.getJSON(initdata.host + '/api/lim/setting/settingInit.action', {
+				companyId: initdata.channelCode.companyid
+			}, function(res) {
+				if (res.code == 200) {
+					this.callback = callback;
+					this.callback(res.data);
+				}
+			});
+		},
+		idletime = {
+			timerWarning: null,
+			timerClosure: null,
+			reset: function() {
+				clearTimeout(this.timerWarning);
+				clearTimeout(this.timerClosure);
+				return this;
+			},
+			start: function() {
+				if (initdata.setting.settingWarningletime != 0) {
+					this.timerWarning = setTimeout(function() {
+						layer.open({
+							title: '聊天窗口即将关闭',
+							content: initdata.setting.settingWarningletimetip
+						});
+					}, initdata.setting.settingWarningletime * 60 * 1000);
+				}
+
+				if (initdata.setting.settingClosureletime != 0) {
+					this.timerClosure = setTimeout(function() {
+						layer.open({
+							title: '聊天窗口即将关闭',
+							content: initdata.setting.settingClosureletimetip,
+							yes: function(index, layero) {
+								layer.close(index);
+								layim.closeChat();
+							}
+						});
+					}, (initdata.setting.settingClosureletime + initdata.setting.settingWarningletime) * 60 * 1000);
+				}
+			}
+		}
+
+
+	//LAYIM方法
+	//
+	//
+	layim.on('chatChange', function(res) {
+		initdata.to = res.data, initdata.elem = res.elem, initdata.textarea = res.textarea;
+
+		// if (initdata.to.type == 'friend' && initdata.to.status == 'offline') {
+		// 	layim.setChatStatus('<span style="color:#969c98;">离线</span>');
+		// }
+		// if (initdata.to.type == 'friend' && initdata.to.status == 'online') {
+		// 	layim.setChatStatus('<span style="color:#969c98;">在线</span>');
+		// }
+
+		if (initdata.to.type == 'friend' && initdata.msgboxCount > 0) {
+			$.getJSON(
+				initdata.host + '/chatlog/readFriendChatlog.action', {
+					fromid: initdata.to.id,
+					id: initdata.mine.id
+				},
+				function(res) {
+					if (res.code == 200 && res.data != null && res.data.length > 0) {
+						$.each(res.data, function(index, msg) {
+							layim.getMessage(msg);
+						});
+						initdata.msgboxCount = initdata.msgboxCount - res.data.length;
+						if (initdata.msgboxCount > 0) {
+							layim.msgbox(initdata.msgboxCount);
+						} else {
+							$('.layim-tool-msgbox span').text('').css('display', 'none');
+						}
+					}
+				});
+		}
+	});
+
+	layim.on('sendMessage', function(res) {
+		var consultRobot = {},
+			type = 'chatMessage';
+		res.to.list = null;
+
+		if ((initdata.mine.id).indexOf('_type_tourist_') >= 0) {
+			idletime.reset().start();
+		}
+		if (res.to.id == 'robot_key') {
+			consultRobot.skillId = initdata.skill;
+			consultRobot.questionfirst = consultRobot.questionsecond;
+			consultRobot.questionsecond = res.mine.content;
+			res.mine.content = JSON.stringify(consultRobot);
+			type = 'robotMessage';
+		}
+
+		socket.send(JSON.stringify({
+			type: type,
+			data: res
+		}));
+	});
+
+	// 状态切换
+	layim.on('online', function(status) {
+		socket.send(JSON.stringify({
+			type: 'statusMessage', // 随便定义，用于在服务端区分消息类型
+			data: {
+				id: initdata.mine.id,
+				system: true,
+				type: 'friend',
+				content: status
+			}
+		}));
+	});
+
+	//修改个性签名
+	layim.on('sign', function(value) {
+		$.post(initdata.host + '/api/im/userSign.action', {
+			'id': initdata.mine.id,
+			'sign': value,
+			'code': initdata.qstring
+		}, function(res) {
+			if (res.code != 200) {
+				layer.msg(res.msg);
+			}
+		});
+	});
+
+	//监听查看更多记录
+	layim.on('chatlog', function(data, ul) {
+		$.getJSON(initdata.host + '/chatlog/showChatlog.action', {
+			type: data.type,
+			toId: data.id,
+			mineId: initdata.mine.id
+		}, function(res) {
+			layim.panel({
+				title: '与 ' + data.name + ' 的聊天记录', //标题					
+				tpl: '<div class="layim-chat-main"><ul> {{# layui.each(d.data.row, function(index, item){  if(item.id == d.data.d) { }} <li class="layim-chat-li layim-chat-mine"><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite><i>{{ layui.data.date(item.timestamp) }}</i>{{ item.username }}</cite></div><div class="layim-chat-text">{{item.content}}</div></li> {{# } else { }}<li layim-chat-li><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite>{{ item.username }}<i>{{ layui.data.date(item.timestamp) }}</i></cite></div><div class="layim-chat-text">{{item.content}}</div></li> {{# } });  }} <ul></div>',
+				data: {
+					id: initdata.mine.id,
+					row: res.data
+				}
+			});
+		});
+	});
+
+	//监听查看聊天信息(如群成员)
+	layim.on('detail', function(data) {
+		//查看群组信息（如成员）
+		$.getJSON(initdata.host + '/api/im/groupMembers.action', {
+			toId: data.id,
+			mineId: initdata.mine.id
+		}, function(res) {
+			layim.panel({
+				title: data.name + '(' + res.data.list.length + ')',
+				tpl: '<ul class="layui-layim-list  layui-show">{{# layui.each(d.data.rows, function(index, item){  }}  <li><div><img src="{{ item.avatar }}" /></div><span>{{ item.username }}</span><p>{{ item.sign }} </p></li>  {{#   })}} </ul>',
+				data: {
+					rows: res.data.list //rows为群组成员
+				}
+			});
+		});
+	});
+
+
+	//拓展更多功能
+	layim.on('moreList', function(obj) {
+		switch (obj.alias) { //alias即为上述配置对应的alias
+			case 'find': //发现
+				layer.msg('未定义');
+				break;
+			case 'share':
+				layim.panel({
+					title: 'share', //分享
+					tpl: '<div style="padding: 10px;">自定义模版，{{d.data.test}}</div>', //模版
+					data: { //数据
+						test: ''
+					}
+				});
+				break;
+		}
+	});
+
+	// 留言板
+	layim.on('tool(msgboard)', function(insert, send, obj) {
+		var flag = true;
+		var msgdetail = {};
+		var tpl = [
+			'<form class="layui-form box-padding-20">',
+			'<div class="layui-form-item">',
+			'<label class="layui-form-label"><span class="text-danger">*</span> 昵称</label>',
+			'<div class="layui-input-block">',
+			'<input type="text" name="touristName" class="layui-input" lay-verify="required|title">',
+			'</div>',
+			'</div>',
+			'<div class="layui-form-item">',
+			'<label class="layui-form-label"><span class="text-danger">*</span> 手机</label>',
+			'<div class="layui-input-block">',
+			'<input type="tel" name="touristPhone" class="layui-input" lay-verify="required|phone">',
+			'</div>',
+			'</div>',
+			'<div class="layui-form-item layui-form-text">',
+			'<label class="layui-form-label"><span class="text-danger">*</span> 内容</label>',
+			'<div class="layui-input-block">',
+			'<textarea name="touristContent" class="layui-textarea" lay-verify="required"></textarea>',
+			'</div>',
+			'</div>',
+			'<div class="layui-form-item">',
+			'<div class="layui-input-block text-right">',
+			'<button class="layui-btn" lay-submit lay-filter="msgboardform">立即提交</button>',
+			'<button type="reset" class="layui-btn layui-btn-primary">重置</button>',
+			'</div>',
+			'</div>',
+			'</form>'
+		].join('');
+
+
+		layer.open({
+			type: 1,
+			title: '留言板',
+			area: ['600px'],
+			shadeClose: true,
+			content: laytpl(tpl).render({}),
+			success: function(layero, index) {
+				form.render();
+				form.verify({ //自定义验证规则
+					title: function(value, item) { //value：表单的值、item：表单的DOM对象
+						if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+							return '昵称不能有特殊字符';
+						}
+						if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+							return '昵称首尾不能出现下划线\'_\'';
+						}
+						if (/^\d+\d+\d$/.test(value)) {
+							return '昵称不能全为数字';
+						}
+					}
+				});
+				form.on('submit(msgboardform)', function(data) { //监听提交
+					msgdetail.touristId = initdata.mine.id;
+					msgdetail.touristUname = initdata.mine.username;
+					msgdetail.companyId = initdata.channelCode.companyid;
+					msgdetail.messageBoardStatus = 0;
+					msgdetail.touristName = data.field.touristName;
+					msgdetail.touristPhone = data.field.touristPhone;
+					msgdetail.touristContent = data.field.touristContent;
+
+					if (flag) {
+						$.ajax({
+							type: 'POST',
+							url: initdata.host + '/api/lim/messageboard/messageboardSave.action',
+							contentType: 'application/json; charset=UTF-8',
+							dataType: 'json',
+							data: JSON.stringify(msgdetail),
+							success: (function(res) {
+								if (res.code == 200) {
+									flag = false;
+									layer.msg(res.msg);
+									layer.close(index);
+								}
+							})
+						})
+					} else {
+						layer.msg("不能重复提交");
+						return false; //不关闭弹层
+					}
+					return false;
+				});
+			}
+		});
+	})
+
+	//评分
+	$('body').on('mouseover', '.layui-layim-marking', function(e) {
+		var score = $(e.target).index() + 1;
+		$(this).find('i').each(function(index, obj) {
+			if (index < score) {
+				$(obj).css({
+					'color': '#FC0'
+				});
+			} else {
+				$(obj).removeAttr('style');
+			}
+		});
+	}).on('click', '.layui-layim-marking', function(e) {
+		var tempMine = {},
+			tempTo = {};
+		tempMine = initdata.mine;
+		tempMine.content = $(e.target).index() + 1;
+		tempTo = {
+			id: initdata.to.id,
+			type: initdata.to.type
+		};
+		socket.send(JSON.stringify({
+			type: 'touristGiveKefuScore',
+			data: {
+				to: tempTo,
+				mine: tempMine
+			}
+		}))
+		$('body').off('mouseover', '.layui-layim-marking').off('click', '.layui-layim-marking');
+	})
+
+	//内部方法，提供外部调用接口
+	//
+	//
+
+	var limChat = function() {
+			var tempMine = {},
+				tempTo = {},
+				toType, toId, msgType;
+
+			tempMine = initdata.mine;
+			initdata.skill = $(this).data('skill') || 0;
+			initdata.toType = $(this).data('totype') || 'kefu';
+			initdata.toId = $(this).data('toid') || 0;
+
+			tempTo.id = (toId !== 0) ? ('companyId_' + initdata.channelCode.companyid + '_type_' + initdata.toType + '_userId_' + initdata.toId + '_channelId_' + initdata.channelCode.channelId) : null;
+			tempTo.type = 'friend';
+
+			if (initdata.toType === 'kefu') {
+				msgType = 'chatKefuMessage'
+				tempMine.content = {
+					skill: initdata.skill,
+					content: 'a(' + location.href + ')[' + (document.title || location.href) + ']'
+				}
+			} else {
+				msgType = 'chatMemberMessage';
+				tempMine.content = 'a(' + location.href + ')[' + (document.title || location.href) + ']';
+			}
+
+			socket.send(JSON.stringify({
+				type: msgType,
+				data: {
+					mine: tempMine,
+					to: tempTo
+				}
+			}));
+		},
+		aesEncrypt = function(json, callback) {
+			var result = null;
+			$.ajax({
+				type: 'post',
+				contentType: 'application/json',
+				url: initdata.host + '/api/lim/aes/aesEncrypt.action',
+				data: JSON.stringify(json),
+				dataType: 'json',
+				success: function(res) {
+					if (res.code == 200) {
+						result = res.data;
+					} else {
+						console.log(res.msg);
+					}
+					this.callback = callback;
+					this.callback(result);
+				},
+				error: function(xhr, status, error) {
+					console.log(xhr);
+				}
+			});
+		},
+		aesDecrypt = function(str, callback) {
+			var result = null;
+			$.ajax({
+				type: 'post',
+				contentType: 'application/json',
+				url: initdata.host + '/api/lim/aes/aesDecrypt.action',
+				data: str,
+				dataType: 'json',
+				success: function(res) {
+					if (res.code == 200) {
+						result = res.data;
+					} else {
+						console.log(res.msg);
+					}
+					this.callback = callback;
+					this.callback(result);
+				},
+				error: function(xhr, status, error) {
+					console.log(xhr);
+				}
+			});
+		},
+		imAuth = function(obj, callback) {
+			
+			obj.usertype = obj.usertype || initdata.channelCode.usertype;
+			obj.companyid = obj.companyid || initdata.channelCode.companyid;			
+				
+			var id = 'companyId_' + obj.companyid + '_type_' + obj.usertype + '_userId_' + obj.userid;
+			id += obj.usertype === 'member' ? '_channelId_' + initdata.channelCode.channelId : '';
+			if (obj.usertype !== 'tourist') {
+				$.ajax({
+					type: 'post',
+					url: initdata.host + '/api/yim/imAuth.action',
+					data: {
+						id: id,
+						type: 'login',
+						code: initdata.qstring
+					},
+					dataType: 'json',
+					success: function(res) {
+						this.callback = callback;
+						this.callback(res);
+					},
+					error: function(xhr, status, error) {
+						console.log(xhr);
+					}
+				});
+			};
+
+		},
+		imQuit = function(obj, callback) {
+			
+			obj.usertype = obj.usertype || initdata.channelCode.usertype;
+			obj.companyid = obj.companyid || initdata.channelCode.companyid;			
+				
+			var id = 'companyId_' + obj.companyid + '_type_' + obj.usertype + '_userId_' + obj.userid;
+			id += obj.usertype === 'member' ? '_channelId_' + initdata.channelCode.channelId : '';
+			if (obj.usertype !== 'tourist') {
+				$.ajax({
+					type: 'post',
+					url: initdata.host + '/api/yim/imAuth.action',
+					data: {
+						id: id,
+						type: 'loginOut',
+						code: initdata.qstring
+					},
+					dataType: 'json',
+					success: function(res) {
+						this.callback = callback;
+						this.callback(res);
+					},
+					error: function(xhr, status, error) {
+						console.log(xhr);
+					}
+				});
+			};
+		}
+	exports('yaliim', new YaliIM());
+});

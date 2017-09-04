@@ -1,0 +1,45 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-row class="item-detail">
+		<d-text label="访客(访客姓名/访客ID)">{{item.historyId}}</d-text>
+		<d-text label="会话ID">{{item.historyConsationid}}</d-text>
+		<d-text label="会话类型">{{item.historyType}}</d-text>
+		<d-text label="会话标签">{{item.historyTab}}</d-text>
+		<d-text label="来源渠道">{{item.historyConfig}}</d-text>
+		<d-text label="接待客服">{{item.historyKefu}}</d-text>
+		<d-text label="参与坐席">{{item.historyLeve}}</d-text>
+		<d-text label="响应时长（首次/平均）">{{item.historyResponse}}</d-text>
+		<d-text label="会话开始时间">{{item.historySarttime}}</d-text>
+		<d-text label="会话结束时间">{{item.historyEndtime}}</d-text>
+		<d-text label="满意度">{{item.historySatisfy}}</d-text>
+		<d-text label="会话结束类型">{{item.historyEtype}}</d-text>
+		<d-text label="结束时访客状态">{{item.historyVisitatusend}}</d-text>
+	</el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+	computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+	data() {
+	    return{
+	    	loading:true,
+			path: './history/history',
+			route: 'historyManage',
+			item: {}
+		}
+	},
+	mounted(){
+		this.viewDbItem();
+	},
+	computed:{
+		createTime(){
+			return new Date(this.item.historyCreatetime).toLocaleString('chinese',{hour12:false}); 
+		}
+	}
+}
+</script>

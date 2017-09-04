@@ -1,0 +1,51 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="items != null">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="companyId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="companyName" label="公司名称" sortable></el-table-column>
+    <el-table-column header-align="center" prop="companyWebsite" label="公司网站地址" sortable></el-table-column>
+    <el-table-column header-align="center" prop="companyGmname" label="公司管理员账号" sortable></el-table-column>
+    <el-table-column header-align="center" prop="companyKefuname" label="公司总客服账号" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+            <d-privilege v-if="privileges != null" :options="privileges" :query="{id: scope.row.companyId}" size="small" :isLabel="false"></d-privilege>
+      </template>
+    </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+    data() {
+        return {
+            loading: true,
+            path: './sysbasicinfo/company/company',
+            count: 0,
+            items: null,
+            privileges:null,
+        } 
+    },
+    computed:{
+    ...mapGetters({
+      tabItems: 'GET_TABS',
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+    mounted(){
+        let url = this.config.userpath + this.path.substr(1) + '-items.action';
+        this.listItems(url); 
+      this.getPrivilege({pos: 1});
+    this.$bus.$on('companyDelete', (option) => {
+        this.reomveItem(option);
+    });
+    },
+    watch:{
+        $route(){
+            let url = this.config.userpath + this.path.substr(1) + '-items.action';
+            this.listItems(url);
+        }
+    }
+}
+</script>

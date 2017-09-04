@@ -1,0 +1,98 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="roleForm" label-width="120px">
+    <el-form-item label="角色名称" prop="roleName">
+      <s-textfield v-model="item.roleName"></s-textfield>
+    </el-form-item>
+    <el-form-item label="角色权限" prop="roleColumnIds">
+      <el-tree :data="columnJson"  node-key="id" :props="{label: 'name', children: 'children'}" show-checkbox :default-checked-keys="[7,46,54]"  :render-content="renderContent"></el-tree>
+    </el-form-item>
+    <el-form-item label="角色描述" prop="roleDescription">
+      <s-textarea v-model="item.roleDescription"></s-textarea>
+    </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('roleForm')">确认</el-button>
+    <el-button @click="formReset('roleForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './permissions/role/role',
+      route: 'roleManage',
+      rules: null,
+      item: null,
+      columnJson: null
+    }
+  },
+  mounted() {
+    this.getData('columnJson', './navigation/privilege/privilege-nodes.json');
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  },
+  methods: {
+    renderContent(h, { node, data, store }) {
+      let pris = [];
+      let prisName = [];
+      if(data.level==1 && data.children){
+        $.each(data.children,function (index1,value1){
+          pris.push(value1.privileges);
+            $.each(value1.privileges,function (index2,value2){
+              prisName.push(value2.name);
+            });
+        });
+      }else if(data.level==1 && data.children == undefined){
+        $.each(data,function (index1,value1){
+          pris.push(value1.privileges);
+            $.each(value1.privileges,function (index2,value2){
+              prisName.push(value2.name);
+            });
+        });
+      }
+      console.log(prisName)
+
+      if(data.level == 1 && data.children){//渲染栏目名称，这是有二级节点的，如坐席管理
+        return (
+          <span>
+            <span>
+              <span>{node.label}</span>
+            </span>
+          </span>
+        )
+      }
+      if(data.level == 1 && data.children == undefined){//渲染栏目名称以及细粒度，这是没有二级节点的，如工单、游客
+        return (
+          <span>
+            <span>
+              <span>{node.label}</span>
+            </span>
+            <span style="float: right; margin-right: 20px">
+              <el-button size="mini">{prisName}没二级节点的细粒度</el-button>
+            </span>
+          </span>
+        )
+      }
+      if(data.level == 2){//渲染栏目名称以及细粒度，这是二级节点，如技能组管理，人工坐席
+        return (
+          <span>
+            <span>
+              <span>{node.label}</span>
+            </span>
+            <span style="float: right; margin-right: 20px">
+              <el-button size="mini">{prisName}二级节点的细粒度</el-button>
+            </span>
+          </span>
+        )
+      }
+    }
+  }
+}
+</script>

@@ -1,0 +1,75 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="sysorderattrForm" label-width="200px">
+  <el-form-item label="客服接单上限" prop="sysorderKefumax">
+    <s-input-number v-model="item.sysorderKefumax"></s-input-number>
+  </el-form-item>
+  <el-form-item label="工单创建时间上限" prop="sysorderCreatelimit">
+    <s-input-number v-model="item.sysorderCreatelimit"></s-input-number>
+  </el-form-item>
+  <el-form-item label="客服受理工单时间上限" prop="sysorderSeizedlimit">
+    <s-input-number v-model="item.sysorderSeizedlimit"></s-input-number>
+  </el-form-item>
+  <el-form-item label="超时提示语" prop="sysorderOvertimetip">
+    <s-textfield v-model="item.sysorderOvertimetip"></s-textfield>
+  </el-form-item>
+  <el-form-item label="是否开启用户上传附件" prop="sysorderIsupload">
+    <s-switch v-model="item.sysorderIsupload"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启离线客服参与系统派单" prop="sysorderIsaccept">
+    <s-switch v-model="item.sysorderIsaccept"></s-switch>
+  </el-form-item>
+  <el-form-item label="工单超时是否提醒客服" prop="sysorderIswarnkefu">
+    <s-switch v-model="item.sysorderIswarnkefu"></s-switch>
+  </el-form-item>
+  <el-form-item label="工单超时是否提醒组长" prop="sysorderIswarnchargeman">
+    <s-switch v-model="item.sysorderIswarnchargeman"></s-switch>
+  </el-form-item>
+  <el-form-item label="工单超时是否提醒班长" prop="sysorderIswarnmonitor">
+    <s-switch v-model="item.sysorderIswarnmonitor"></s-switch>
+  </el-form-item>
+  <el-form-item label="处理超时是否提醒客服" prop="sysorderIshandlewarnkefu">
+    <s-switch v-model="item.sysorderIshandlewarnkefu"></s-switch>
+  </el-form-item>
+  <el-form-item label="处理超时是否提醒组长" prop="sysorderIshandlewarnchargeman">
+    <s-switch v-model="item.sysorderIshandlewarnchargeman"></s-switch>
+  </el-form-item>
+  <el-form-item label="处理超时是否提醒班长（早晚班班长）" prop="sysorderIshandlewarnmonitor">
+    <s-switch v-model="item.sysorderIshandlewarnmonitor"></s-switch>
+  </el-form-item>
+  <el-form-item label="工单关闭后是否允许编辑" prop="sysorderIsedit">
+    <s-switch v-model="item.sysorderIsedit"></s-switch>
+  </el-form-item>
+  <el-form-item label="批量导出工单时，是否导出工单备注" prop="sysorderIsexportremarks">
+    <s-switch v-model="item.sysorderIsexportremarks"></s-switch>
+  </el-form-item>
+  <el-form-item label="重要工单是否标记" prop="sysorderImportantsign">
+    <s-switch v-model="item.sysorderImportantsign"></s-switch>
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('sysorderattrForm')">确认</el-button>
+    <el-button @click="formReset('sysorderattrForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+        loading: true,
+        path: './syssetting/sysorderattr/sysorderattr',
+        rules: null,
+        item: null
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+        this.initItem();
+    }
+  }
+}
+</script>

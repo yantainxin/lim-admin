@@ -1,0 +1,61 @@
+<#assign d=JspTaglibs["/WEB-INF/data-tags.tld"]/>
+<@d.aesTag key="_q;,ym_@3:v+X8fd" value="${RequestParameters['user']!}" type="decrypt" />
+<#assign user = aesResult?eval />
+<#assign sign=user.sign!"" />
+<#assign usertype=user.type!"tourist" />
+<#assign avatar=user.avatar!"" />
+<#assign username=user.username!"游客" />
+<#assign id=user.id!"" />
+<#assign JS=user.JS!""/>
+<#assign host=user.host!"" />
+<#assign wshost=user.wshost!"" />
+<#assign brief=user.brief!false />
+<#assign code=user.code!"" />
+
+<#assign tool>[{"alias" : "msgboard", "title" : "留言板", "icon" : "&#xe60a;"},{"alias" :"marking","title":"评价","icon":"&#xe600;"}]</#assign>
+<#assign init>{"mine":{"username":"${username}", "id": "${id}","avatar": "${avatar}","sign": "${sign}"}}</#assign>
+
+<#if usertype == "staff">
+	<#assign tool>[{"alias" : "webuploadImage", "title" : "图片上传", "icon" : "&#xe60d;"},{"alias" : "webuploadFile", "title" : "文件上传", "icon" : "&#xe61d;"},{"alias" : "code", "title" : "代码", "icon" : "&#xe64e;"}]</#assign>
+	<#assign init>{	"url" : "${host}/httpClient/ajaxInit.action;jsessionid=${JS}", "type" : "get", "data" : {"id":"${id}","code":"${code}" }	}</#assign>
+<#elseif usertype == "member">
+	<#if brief>
+		<#assign tool>[{"alias" : "webuploadImage", "title" : "图片上传", "icon" : "&#xe60d;"},{"alias" : "webuploadFile", "title" : "文件上传", "icon" : "&#xe61d;"}]</#assign>
+		<#assign init>{"mine":{"username":"${username}", "id": "${id}","avatar": "${avatar}","sign": "${sign}"}}</#assign>
+	<#else>
+		<#assign tool>[{"alias" : "webuploadImage", "title" : "图片上传", "icon" : "&#xe60d;"},{"alias" : "webuploadFile", "title" : "文件上传", "icon" : "&#xe61d;"}]</#assign>
+		<#assign init>{	"url" : "${host}/httpClient/ajaxInit.action;jsessionid=${JS}", "type" : "get", "data" : {"id":"${id}","code":"${code}" }	}</#assign>
+	</#if>
+<#else>
+	<#assign tool>[{"alias" : "webuploadImage", "title" : "图片上传", "icon" : "&#xe60d;"},{"alias" : "webuploadFile", "title" : "文件上传", "icon" : "&#xe61d;"},{"alias" : "msgboard", "title" : "留言板", "icon" : "&#xe60a;"}]</#assign>
+	<#assign init>{"mine":{"username":"${username}", "id": "${id}","avatar": "${avatar}","sign": "${sign}"}}</#assign>
+</#if>
+
+{
+	"code":200,
+	"data":{
+		"brief": ${brief?c},
+		"init" : ${init},
+		"title" : "${username}",
+		"isNewFriend":false,
+	    "uploadImage": {"url": "${host}/uploadImage.action?id=${id}", "type": "post","data" : { }},
+	    "uploadFile":  {"url": "${host}/uploadFile.action?id=${id}",   "type": "post","data" : { }},
+		"notice":true,
+		"isgroup":true,
+		"tool" : ${tool},
+		"maxLength": 800,
+		"moreList": [{
+	      "alias": "find"
+	      ,"title": "朋友圈"
+	      ,"iconUnicode": "&#xe628;"
+	      ,"iconClass": ""
+	    },{
+		    "alias": "share"
+		    ,"title": "分享"
+		    ,"iconUnicode": ""
+		    ,"iconClass": ""
+		  }]
+	}
+}
+
+

@@ -1,0 +1,133 @@
+<template>
+  <div class="wrapper bgImage">
+   <!--  <div class="floater"></div> -->
+    <div class="login-logo">
+      <el-row :gutter="20">
+        <el-col :span="20">
+        <img class="img-responsive_login" src="../../../static/image/logo-blue1.png"></el-col>
+        <el-col :span="4">
+        <p><a href="http://www.newyali.com/" target="_blank" title="广东鸭梨">鸭梨官网</a>&nbsp;|&nbsp;<a>帮助中心</a>&nbsp;|&nbsp;<i class="fa fa-question-circle-o"></i>&nbsp;&nbsp;</p>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="line"></div>
+  <el-row :gutter="20"> 
+    <el-col :span="15">
+    <div class="login-container">
+        <img src="../../../static/image/leftPic.png" class="back">
+        <img src="../../../static/image/talk.png" id="atip"/>
+        <img src="../../../static/image/news.png" id="btip" />
+        <img src="../../../static/image/search.png" id="ctip" />
+        <img src="../../../static/image/skin.png" id="dtip"/>
+        <img src="../../../static/image/upload.png" id="etip"/>
+        <div class="heightLine"></div>  
+    </div>
+    </el-col>
+    <el-col :span="9">
+    <el-row class="login-form bg-primary-light" v-loading="loading" element-loading-text="拼命加载中">    
+          <el-row class="text-center h3">管理员登录<hr></el-row>
+          <el-form :model="item" :rules="rules" ref="sysadm" label-width="80px">
+            <el-form-item label="帐号" prop="account" class="text-white">
+              <s-textfield v-model="item.account" placeholder="用户名/邮箱/手机号码"></s-textfield>
+            </el-form-item>
+            <el-form-item label="密码" prop="password" class="text-white">
+              <s-password v-model="item.password" placeholder="请输入密码"></s-password>
+            </el-form-item>
+            <el-form-item label="校验码" prop="randomcode" class="text-white randomcode">
+              <el-col :span="12">
+                <s-textfield v-model="item.randomcode" placeholder="请输入校验码"></s-textfield>
+              </el-col>
+              <el-col :span="1">&nbsp;</el-col>
+              <el-col :span="11">
+                <img id="random" :src="randomUrl" @click="getRandom">
+              </el-col>
+            </el-form-item>
+            <el-form-item>
+              <el-button @click="userLogin('sysadm')">登录</el-button>
+              <el-button @click="formReset('sysadm')">重置</el-button>
+            </el-form-item>
+          </el-form>
+          <br>
+    </el-row>
+    </el-col>
+  </el-row>
+    <div class="copyright">
+        <p align="center">技术支持：<a href="http://www.newyali.com/" target="_blank" title="广东鸭梨">广东鸭梨新媒体信息科技股份有限公司</a><br>©2017 Yali</p>  
+    </div>
+  </div>
+</template>
+<script>
+import { mapActions } from 'vuex'
+export default{
+  data() {
+    return {
+      loading: false,
+      path: './user/sysadm',
+      route: 'desk',
+      random: Math.random(),
+      item: {
+        account:'1234@qq.com',
+        password:'222222',
+        randomcode:'1234'
+      },
+      rules: {
+        account:[{type: 'string',required: true,message : '账号不能为空',trigger: 'blur'}],
+        password:[
+          {type: 'string', required: true, message : '密码不能为空',trigger:' blur'},
+          {type: 'string', pattern: '^(\\w){6,20}$', message : '只能输入6-20个字母、数字、下划线', trigger: 'blur'}],
+        randomcode:[{type: 'string',required: true,message : '验证码不能为空',trigger: 'blur'}]
+      }
+    }
+  },
+  computed: {
+    randomUrl() {
+      return this.config.host + '/RandomServlet?' + this.random;
+    }
+  },
+  methods: {
+    ...mapActions({
+      setPersonal: 'SET_PERSONAL'
+    }),
+    getRandom(){
+      return this.random = Math.random();
+    }
+  },
+  mounted(){
+      $('#atip').mouseover(function(){  
+            layer.tips('支持私聊、群聊模式，同时支持查看聊天记录。', '#atip', {
+                tips: [1, '#2dc3e8']
+            });                
+        });
+
+        $('#btip').mouseover(function(){  
+            layer.tips('支持发送离线消息，用户上线提示离线消息条数以及支持查看离线消息内容。', '#btip', {
+                tips: [1, '#2dc3e8']
+            });                
+        });
+
+        $('#ctip').mouseover(function(){  
+            layer.tips('支持查询添加好友功能，更加快捷的找到用户。', '#ctip', {
+                tips: [1, '#2dc3e8']
+            });                
+        }); 
+
+        $('#dtip').mouseover(function(){  
+            layer.tips('支持用户更换lim的皮肤，多种皮肤更换不同心情。', '#dtip', {
+                tips: [1, '#2dc3e8']
+            });                
+        });
+
+        $('#etip').mouseover(function(){  
+            layer.tips('私聊、群聊模式下支持上传图片、文件功能。', '#etip', {
+                tips: [1, '#2dc3e8']
+            });                
+        });
+    },
+}
+</script>
+<style>
+.bgImage{
+  background-image: url(../../../static/image/bg_1.jpg) !important;
+  background-size: 100%;
+}
+</style>

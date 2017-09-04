@@ -1,0 +1,183 @@
+<template>
+<div class="desk">
+  <div class="widget radius-bordered">
+    <div class="widget-header">
+      <span class="widget-caption">桌面</span>
+    </div>
+    <div class="widget-body">
+    <el-row :gutter="15">
+      <el-col :span="18">
+        <el-row :xs="24" :sm="24" :md="24" :lg="24">
+          <div class="Chart">
+            <center><h5>工单状态</h5></center>
+            <el-row :gutter="10" :xs="24" :sm="24" :md="24" :lg="24">
+              <template v-for="order in orderdata">
+                <el-col :xs="5" :sm="5" :md="5" :lg="5" :style="'background:'+order.background"><center><i :class="order.icon"></i></center></el-col>
+                <el-col :xs="7" :sm="7" :md="7" :lg="7" class="wRight" ><h4>{{order.count}}</h4><h6>{{order.orderdetailStatu}}</h6></el-col>
+              </template>
+            </el-row>
+          </div>
+        </el-row>
+
+      <el-row>
+        <el-col :span="24">
+          <div class="Chart"><center><h5>图表2</h5></center><canvas class="lineChar"></canvas></div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="12">
+        <el-col :span="8">
+          <div class="Chart"><center><h5>图表4</h5></center><canvas class="radarChar"></canvas></div>
+        </el-col>
+        <el-col :span="8">
+          <div class="Chart"><center><h5>图表6</h5></center><canvas class="polarChar"></canvas></div>
+        </el-col>
+        <el-col :span="8">
+          <div class="Chart"><center><h5>图表6</h5></center><canvas class="polarChar"></canvas></div>
+        </el-col>
+      </el-row>
+      </el-col>
+      <el-col :span="6">
+        <el-row :span="24">
+          <template v-for="kefu in kefudata">
+          <el-col><div class="Chart1"><h5>{{kefu.kefuIsstate}}|{{kefu.count}}</h5></div></el-col>
+          </template>
+        </el-row>
+        <el-row>
+          <el-col :xs="24" :sm="24" :md="24" :lg="24">
+          <div class="Chart">
+            <h5>最近访客<span><a href="./index.html#/desk" class="more pull-right">更多访客详情</a></span></h5>
+            <el-row>
+              <template v-for="tourist in touristdata">
+                <el-col :xs="5" :sm="5" :md="3" :lg="3"><a href=""><img :src="tourist.touristPhoto"></a></el-col>
+                <el-col :xs="7" :sm="7" :md="5" :lg="5" class="visRight"><a href="">{{tourist.touristName}}</a><br>{{tourist.touristCreatetime}}</el-col>
+              </template>
+            </el-row>
+          </div>
+        </el-col>
+        </el-row>
+      </el-col>
+      </el-row>
+    </div>
+  </div>
+</div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+import LineExample from './LineChart.js'
+export default {
+  components: {
+    LineExample
+  },
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data(){
+    return{
+      dataRed: [40, 32, 10, 40, 32, 80, 40],
+      dataBlue: [60, 55, 32, 10, 2, 12, 53],
+      kefudata:{},
+      orderdata:{},
+      touristdata:{}
+
+    }
+  },
+  mounted(){
+    let obj = this;
+    /*---------游客访问量--------------*/
+    let arr =  [{"months":"3","count":"50"}, {"months":"5","count":"159"},{"months":"6","count":"138"}];
+    let months = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+    let month=[];
+    let counts=[0,0,0,0,0,0,0,0,0,0,0,0];
+    let count=[];
+    $.each(arr,function(idx,item){
+      month.push(item.months);
+      count.push(item.count);
+      counts[parseInt(item.months)-1]= item.count;
+
+    });
+    this.lineChar({'month': months, 'count':counts});
+
+    /*----------客服状态数-------------------------*/
+    this.$http.get('http://192.168.1.246:8080/sysadm/diagram/kefu-statuSum.json', {}).then(function(res) {
+      this.kefudata = res.body.data;
+    });
+
+    /*-----------工单状态---------------------------*/
+    this.$http.get('http://192.168.1.246:8080/sysadm/diagram/order-statuSum.json', {}).then(function(res) {
+      this.orderdata = res.body.data;
+    });
+
+    /*-----------游客访问-------------------------------*/
+    this.$http.get('http://192.168.1.246:8080/sysadm/diagram/tourist-newly.json', {}).then(function(res) {
+      console.log(res.body.data)
+      this.touristdata = res.body.data;
+    });
+
+
+    this.polarChar({'data': [10, 6, 8, 4, 8, 6]});
+    this.radarChar({'data': [80, 50, 70, 60, 40, 20], 'data1': [30, 20, 50, 50, 10, 60]});
+  }
+}
+</script>
+ <style>
+    .container {
+      max-width: 800px;
+      margin:  0 auto;
+    }
+    .Chart {
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0px 2px 15px rgba(25, 25, 25, 0.27);
+      margin:  5px 0;
+      padding:15px;
+    }
+    .Chart1 {
+      background: #fff;
+      border-radius: 5px;
+      border-left: 1px solid rgba(255, 99, 132);
+      background: rgba(255, 99, 132, 0.2);
+      /* box-shadow: 0px 2px 15px rgba(25, 25, 25, 0.27); */
+      margin:  5px 0;
+      padding:5px;
+    }
+    .Chart h5 {
+      margin-top: 0;
+      padding: 5px 0;
+      color:  rgba(255, 0,0, 0.5);
+      border-bottom: 1px solid #E8E8E8;
+    }
+    
+    .smallchar{
+      max-width: 400px;
+    }
+
+    .barChar,.lineChar,.radarChar,.pieChar,.polarChar{
+      padding:10px;
+    }
+
+    .cLeft{
+      text-align: center;
+    }
+    .fa-2x{
+      padding: 18px 0 18px 0;
+      color: #fff;
+    }
+
+    .wRight{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis; 
+      text-align: center;
+      border:1px solid #E8E8E8; 
+      background: #fff;
+    }
+    .visRight{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+</style>

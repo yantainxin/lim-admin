@@ -1,0 +1,48 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="items != null">
+  <el-table :data="items" border stripe>
+  <el-table-column align="center" prop="robotId" label="ID" sortable width="100"></el-table-column>
+  <el-table-column header-align="center" prop="robotKeyword" label="关键字" sortable></el-table-column>
+  <el-table-column header-align="center" prop="robotQuestion" label="问题" sortable></el-table-column>
+  <el-table-column header-align="center" prop="robotAnswer" label="答案" sortable></el-table-column>
+  <el-table-column align="center" label="操作" width="180">
+    <template scope="scope">
+      <d-privilege v-if="privileges != null" :options="privileges" :query="{id: scope.row.robotId}" size="small" :isLabel="false"></d-privilege>
+    </template>
+  </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  data() {
+    return {
+      loading: true,
+      path: './thinktank/robot/robot',
+      count: 0,
+      items: null,
+      privileges:null
+    } 
+  },
+  computed:{
+    ...mapGetters({
+      tabItems: 'GET_TABS',
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  mounted(){
+    this.listItems();
+    this.getPrivilege({pos: 1});
+    this.$bus.$on('robotDelete', (option) => {
+      this.reomveItem(option);
+    });
+  },
+  watch:{
+    $route(){
+      this.listItems();
+    }
+  }
+}
+</script>

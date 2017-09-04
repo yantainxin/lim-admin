@@ -1,0 +1,24 @@
+<template>
+<div class="sysgreeting">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+            <span class="widget-caption">欢迎语设置</span>
+        </div>
+        <div class="widget-body">
+            <el-row class="content-tools">
+                <el-col :span="8">
+                </el-col>
+                <el-col :span="16" class="text-right">
+                    <el-button-group>
+                    <h-privilege-top columnId="28"></h-privilege-top>
+                        <!-- <router-link class="el-button" :to="{name:'sysgreetingModify'}" tag="button" title="刷新"><i class="fa fa-refresh"></i><span class="hidden-xs">刷新</span></router-link>
+                        <router-link class="el-button" :to="{name:'sysgreetingView'}" tag="button" title="详细"><i class="fa fa-eye"></i><span class="hidden-xs">详细</span></router-link> -->
+                    </el-button-group>
+                </el-col>
+            </el-row>
+            <hr>
+            <router-view></router-view>
+        </div>
+    </div>
+</div>
+</template>

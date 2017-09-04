@@ -1,0 +1,36 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="网站名称">{{item.sysconfigName}}</d-text>
+    <d-text label="网站别名">{{item.sysconfigAlias}}</d-text>
+    <d-text label="网址">{{item.sysconfigUrl}}</d-text>
+    <d-text label="联系人">{{item.sysconfigLinkman}}</d-text>
+    <d-text label="固定电话">{{item.sysconfigTel}}</d-text>
+    <d-text label="传真">{{item.sysconfigFax}}</d-text>
+    <d-text label="状态" v-if="item.sysconfigIsclose == 0">关闭</d-text>
+    <d-text label="状态" v-if="item.sysconfigIsclose == 1">开启</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data() {
+    return {
+      loading:true,
+      path: './system/sysconfig/sysconfig',
+      item: null
+    } 
+  },
+  mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    console.log(123, url, )
+    this.viewItem(url, {web_id: this.personal.companyid}); 
+  }
+}
+</script>

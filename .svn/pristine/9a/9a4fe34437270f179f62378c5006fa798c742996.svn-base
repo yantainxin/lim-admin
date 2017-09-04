@@ -1,0 +1,76 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table v-if="items != null" :data="items" border stripe>
+    <el-table-column align="center" prop="staffId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="staffNo" label="编号" sortable></el-table-column>
+    <el-table-column header-align="center" prop="staffRealname" label="姓名" sortable></el-table-column>
+    <el-table-column header-align="center" prop="staffIskefu" label="客服" sortable :formatter="formatter1"></el-table-column>
+    <el-table-column header-align="center" prop="staffStatus" label="状态" sortable :formatter="formatter2"></el-table-column>
+   <!--  <el-table-column align="center" label="操作" width="180">
+    <template scope="scope">
+        <d-privilege v-if="privileges != null" :options="privileges" :query="{id: scope.row.staffId}" size="small" :isLabel="false"></d-privilege>
+      </template>
+        <template scope="scope">
+            <router-link class="el-button el-button-info el-button-small" :to="{name:'staffView', query:{id: scope.row.staffId}}" tag="button" title="详细">
+                <i class="fa fa-eye"></i><span class="hidden-xs">详细</span>
+            </router-link>
+              </template>
+    </el-table-column> -->
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL',
+      tabItems: 'GET_TABS',
+      tabActive: 'GET_TAB_ACTIVE'
+    }),
+    url() {
+      return this.config.userpath + this.path.substr(1) + '-items.action';
+    }
+  },
+  data() {
+    return {
+      loading: true,
+      path: './basicinfo/staff/staff',
+      count: 0,
+      items: null,
+      privileges:null,
+    } 
+  },
+  mounted() {
+    let url = this.config.userpath + this.path.substr(1) + '-items.action';
+    this.listItems(url); 
+    this.getPrivilege({pos: 1});
+    this.$bus.$on('staffDelete', (option) => {
+      this.reomveItem(option);
+    });
+  },
+  watch:{
+    $route() {
+      let url = this.config.userpath + this.path.substr(1) + '-items.action';
+      this.listItems(url);
+    }
+  },
+  methods: {
+    formatter1(row, column) {
+      if(row.staffIskefu == 1){
+          return "是";
+      }else{
+          return "否";
+      }
+    },
+    formatter2(row, column) {
+      if(row.staffStatus == 1){
+        return "停职";
+      }else{
+        return "在职";
+      }
+    }
+  }
+}
+</script>

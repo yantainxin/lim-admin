@@ -1,0 +1,49 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-row class="item-detail">
+		<d-text label="访客ID">{{item.historyCustomerid}}</d-text>
+		<d-text label="会话类型">{{item.historyCustomertype}}</d-text>
+		<d-text label="接待客服">{{item.historyKefuname}}</d-text>
+		<d-text label="会话开始时间">{{item.historyBegintime}}</d-text>
+		<d-text label="会话结束时间">{{item.historyEndtime}}</d-text>
+	</el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+	computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    }),
+    createTime(){
+			return new Date(this.item.historyCreatetime).toLocaleString('chinese',{hour12:false}); 
+	}
+  },
+	data() {
+	    return{
+	    	loading:true,
+			path: './history/history',
+			route: 'historyManage',
+			item: {}
+		}
+	},
+	mounted(){
+		let url = this.config.host + window.location.pathname.substr(0, 5) + this.path.substr(1) + 'Init.action';
+
+        if(this.hasOwnProperty('url')) {
+            url = this.url;
+        }
+
+        let params = Object.assign(this.$route.query, option);
+        
+        this.$http.get(url, {params:params}).then(function(res) {
+            if(res.body.code == 200) {
+                layer.close(loading); 
+                this.count = res.body.count;
+                this.item = res.body.data;
+            }
+        });
+	}
+}
+</script>

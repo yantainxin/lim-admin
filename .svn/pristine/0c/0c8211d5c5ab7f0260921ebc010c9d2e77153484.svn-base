@@ -1,0 +1,148 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+<el-form v-if="item != null && rules != null" :model="item" :rules="rules" ref="downloadForm" label-width="200px">
+    <el-form-item label="文件名称" prop="downloadName">
+      <s-textfield v-model="item.downloadName" placeholder="请填写文件名称"></s-textfield>
+    </el-form-item>
+    <el-form-item label="文件描述" prop="downloadDescription">
+      <s-textarea v-model="item.downloadDescription" placeholder="请填写文件描述"></s-textarea>
+    </el-form-item>
+    <el-form-item label="上传文件">
+    <el-upload
+        class="avatar-uploader"
+        :action="uploadurl"
+        :show-file-list="false"
+        accept=".doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .gif, .jpeg, .png, .jpg"
+        :on-success="handleAvatarSuccess"
+        :on-error="errorMsg"
+        :before-upload="beforeAvatarUpload">
+        <img v-if="item.downloadPath" :src="item.downloadPath" class="avatar">
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      </el-upload>
+      <p style="color:red">只允许上传格式为“.doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .gif, .jpeg, .png, .jpg”的文件</p>
+      <!-- <el-upload
+      class="uploadArea"
+      ref="upload"
+      :action="uploadurl"
+      :multiple="false"
+      accept=".doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .gif, .jpeg, .png, .jpg"
+      :on-preview="handlePreview"
+      :on-remove="handleRemove"
+      :on-success="successMsg"
+      :on-error="errorMsg"
+      :file-list="fileList"
+      :auto-upload="false"
+      >
+      <el-button slot="trigger" type="primary"><i class="iconfont icon-document">&nbsp;&nbsp;选取文件</i></el-button>&nbsp;
+      <el-button type="success" @click="submitUpload"><i class="iconfont icon-import">&nbsp;&nbsp;开始上传</i></el-button>
+      <div slot="tip" class="el-upload__tip">只能上传excel文件，且不超过500kb</div>
+    </el-upload> -->
+    </el-form-item>
+    
+     <!-- <el-form-item label="文件大小" prop="downloadSize">
+      <el-input v-model="item.downloadSize" disabled>
+        <template slot="append">KB</template>
+      </el-input>
+    </el-form-item> 
+
+     <el-form-item label="文件路径" prop="downloadPath">
+      <s-textfield v-model="item.downloadPath" disabled></s-textfield>
+    </el-form-item> -->
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('downloadForm')">确认</el-button>
+    <el-button @click="formReset('downloadForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './thinktank/download/download',
+      route: 'downloadManage',
+      rules: null,
+      item: null,
+      fileList: [],
+      uploadurl:'',
+    }
+  },
+  mounted() {
+    this.initForm();
+    this.uploadurl = this.config.host + window.location.pathname.substr(0, 7) + this.path.substr(1) + 'Save.action';
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  },
+  methods:{
+    // submitUpload() {
+    //   this.$refs.upload.submit();
+    // },
+    // handleRemove(file, fileList) {
+    //   console.log(file, fileList);
+    // },
+    // handlePreview(file) {
+    //   console.log(file);
+    // }, 
+    handleAvatarSuccess(res, file) {
+      if(res.code == 200){
+        this.item.downloadPath =  res.data.downloadPath;
+        this.item.downloadSize =  res.data.downloadSize;
+      }
+    },
+    beforeAvatarUpload(file) {
+      console.log(999,file.type);
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$message.error('上传文件大小不能超过 2MB');
+      }
+      return isLt2M;
+    },
+    successMsg(response, file, fileList){
+      this.$message({
+        message: '文件上传成功',
+        type: 'success',
+        duration: 1500
+      });
+      //this.item.downloadSize = (file.size/1024).toFixed(2);
+      this.item.downloadSize = file.size;
+      this.item.downloadPath = file.url;
+      console.log(88,this.item.downloadSize,this.item.downloadPath);
+    },
+    errorMsg(){
+      this.$message.error('文件上传失败，请检查文件格式');
+    }
+  }
+}
+</script>
+<style>
+  /*.uploadArea{
+    border:1px dashed #BEBEBE ;
+  }*/
+   .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+</style>

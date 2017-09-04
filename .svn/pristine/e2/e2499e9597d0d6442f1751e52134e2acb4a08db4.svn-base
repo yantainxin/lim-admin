@@ -1,0 +1,34 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="fastreplyFrom" label-width="120px">
+    <el-form-item label="快捷回复内容" prop="fastreplyContent">
+      <s-textarea v-model="item.fastreplyContent"></s-textarea>
+    </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('fastreplyFrom')">确认</el-button>
+    <el-button @click="formReset('fastreplyFrom')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './thinktank/fastreply/fastreply',
+      route: 'fastreplyManage',
+      rules: null,
+      item: {}
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  }
+}
+</script>

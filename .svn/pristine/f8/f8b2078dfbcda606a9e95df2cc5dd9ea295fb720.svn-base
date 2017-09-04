@@ -1,0 +1,37 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="ID">{{item.orderdetailId}}</d-text>
+    <d-text label="编号">{{item.orderdetailNo}}</d-text>
+    <d-text label="工单主题">{{item.orderdetailTitle}}</d-text>
+    <d-text label="处理截止时间">{{item.orderdetailLasttime}}</d-text>
+    <d-text label="实际处理时间">{{item.orderdetailSolvetime}}</d-text>
+    <d-text label="工单状态" v-if="item.orderdetailStatus == 0">待受理</d-text>
+    <d-text label="工单状态" v-if="item.orderdetailStatus == 1">已受理</d-text>
+    <d-text label="工单状态" v-if="item.orderdetailStatus == 2">已解决</d-text>
+    <d-text label="工单状态" v-if="item.orderdetailStatus == 3">已超时</d-text>
+    <d-text label="工单状态" v-if="item.orderdetailStatus == 4">已取消</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data() {
+    return {
+      loading:true,
+      path: './order/order',
+      item: null
+    } 
+  },
+  mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {id:this.$route.query.id});
+  }
+}
+</script>

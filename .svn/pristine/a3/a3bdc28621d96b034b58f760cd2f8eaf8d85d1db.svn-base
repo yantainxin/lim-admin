@@ -1,0 +1,158 @@
+{
+	"code": 200,
+    "msg": "处理成功",
+    "data": {
+		"sysorderKefumax": [
+			{
+				"type": "number",
+                "required": true,
+                "message" : "客服接单上限不能为空",
+                "trigger": "blur"
+			},
+			{
+				"type": "number",
+	            "min": 1,
+	            "max": 99999,
+	            "message" : "请输入1-5位整数",
+	            "trigger": "blur"
+	        }
+		],
+		"sysorderCreatelimit": [
+			{
+				"type": "number",
+                "required": true,
+                "message" : "工单创建时间上限不能为空",
+                "trigger": "blur"
+			},
+			{
+				"type": "number",
+				"min" : 5,
+				"max" : 8,
+				"message" : "单位为小时,请输入5-8个小时内的整数",
+				"trigger": "change"
+			}
+		],
+		"sysorderSeizedlimit" : [
+			{
+				"type": "number",
+                "required": true,
+                "message" : "客服受理工单时间上限不能为空",
+                "trigger": "blur"
+			},
+			{
+				"type": "integer",
+				"min" : 5,
+				"max" : 8,
+				"message" : "单位为小时,请输入5-8个小时内的整数",
+				"trigger": "change"
+			}
+		],
+		"sysorderOvertimetip": [
+			{
+				"type": "string",
+                "required": true,
+                "message" : "超时提示语不能为空",
+                "trigger": "blur"
+			}
+		],
+		"sysorderIsupload": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择是否开启用户上传附件",
+	            "trigger": "change"
+			}
+		],
+		"sysorderIsaccept": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择是否开启离线客服参与系统派单",
+	            "trigger": "change"
+			}
+		],
+		"sysorderIswarnkefu": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择工单超时是否提醒客服",
+	            "trigger": "change"
+			}
+		],
+		"sysorderIswarnchargeman": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择工单超时是否提醒组长",
+	            "trigger": "change"
+			}
+		],
+		"sysorderIswarnmonitor": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择工单超时是否提醒班长",
+	            "trigger": "change"
+			}
+		],
+		"sysorderIshandlewarnkefu": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择处理超时是否提醒客服",
+	            "trigger": "change"
+			}
+		],
+		"sysorderIshandlewarnchargeman": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择处理超时是否提醒组长",
+	            "trigger": "change"
+			}
+		],
+		"sysorderIshandlewarnmonitor": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择处理超时是否提醒班长（早晚班班长)",
+	            "trigger": "change"
+			}
+		],
+		"sysorderIsedit": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择工单关闭后是否允许编辑",
+	            "trigger": "change"
+			}
+		],
+		"sysorderIsexportremarks": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择批量导出工单时，是否导出工单备注",
+	            "trigger": "change"
+			}
+		],
+		"sysorderImportantsign": [
+			{
+				"type": "enum",
+                "required": true,
+                "enum": [0,1],
+	            "message" : "请选择重要工单是否标记",
+	            "trigger": "change"
+			}
+		]
+	}
+}

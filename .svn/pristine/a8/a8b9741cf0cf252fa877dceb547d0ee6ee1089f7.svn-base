@@ -1,0 +1,8 @@
+[
+	{"id":1,"name":"在线客服","url":"/#","icon":"menu-icon fa fa-user-circle"},
+	{"id":5,"name":"历史记录","url":"/#","icon":"menu-icon fa fa-history"},
+	{"id":7,"name":"工单中心","url":"/#","icon":"menu-icon fa fa-newspaper-o"},
+	{"id":10,"name":"客户中心","url":"/#","icon":"menu-icon fa fa-users"},        
+	{"id":14,"name":"留言管理","url":"/messageboard-manage","icon":"menu-icon fa fa-commenting"},
+	{"id":15,"name":"下载中心","url":"/downloadcenter-manage","icon":"menu-icon fa fa-download"}
+]

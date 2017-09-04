@@ -1,0 +1,5 @@
+require('../static/lib/crypt/aes.js');
+require('../static/lib/crypt/mode-ecb.js');
+require('../static/lib/layui/layui.js');
+require('../static/lib/layui/layui.config.mobile.js');
+require('../static/lib/layui/lim.wx.js');

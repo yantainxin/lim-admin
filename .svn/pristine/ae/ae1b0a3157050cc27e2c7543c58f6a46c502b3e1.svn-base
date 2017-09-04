@@ -1,0 +1,48 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-row class="item-detail">
+        <d-text label="ID">{{item.messageBoardId}}</d-text>
+        <d-text label="公司ID">{{item.companyId}}</d-text>
+        <d-text label="游客ID">{{item.touristId}}</d-text>
+        <d-text label="游客名字">{{item.touristName}}</d-text>
+        <d-text label="游客真实名字">{{item.touristUname}}</d-text>
+        <d-text label="游客邮箱">{{item.touristEmail}}</d-text>
+        <d-text label="游客电话">{{item.touristPhone}}</d-text>
+        <d-text label="游客留言">{{item.touristContent}}</d-text>
+        <d-text label="操作状态" v-if="item.messageBoardStatus == 0">未处理</d-text>
+        <d-text label="操作状态" v-if="item.messageBoardStatus == 1">处理</d-text>
+        <d-text label="操作状态" v-if="item.messageBoardStatus == 2">其他</d-text>
+        <d-text label="创建时间">{{Createtime}}</d-text>
+        <d-text label="处理时间">{{Updatetime}}</d-text>
+    </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+    data() {
+        return{
+            loading:true,
+            path: './messageboard/messageboard',
+            item: {},
+            personal: {}
+        } 
+    },
+    mounted(){
+        this.viewItem();
+    },
+    computed:{
+        Createtime(){
+            return new Date(this.item.messageBoardCreatetime).toLocaleString('chinese',{hour12:false}); 
+        },
+        Updatetime(){
+            return new Date(this.item.messageBoardUpdatetime).toLocaleString('chinese',{hour12:false}); 
+        }
+    }
+}
+</script>

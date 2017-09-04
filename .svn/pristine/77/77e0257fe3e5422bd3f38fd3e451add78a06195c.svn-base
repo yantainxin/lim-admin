@@ -1,0 +1,32 @@
+<template>
+    <div class="form-horizontal div-striped">
+        <s-text label="游客编号" name="touristId" :value="item.touristId"></s-text>
+        <s-text label="游客名" name="touristName" :value="item.touristName"></s-text>
+        <s-text label="访问IP地址" name="touristIp" :value="item.touristIp"></s-text>
+        <s-text label="游客访问网站的公司编号" name="touristCompanyid" :value="item.touristCompanyid"></s-text>
+        <s-text label="网卡地址" name="touristNicaddress" :value="item.touristNicaddress"></s-text>
+        <s-text label="创建时间" name="touristCreatetime" :value="createTime"></s-text>
+        <s-text label="来源地址" name="touristFrom" :value="item.touristFrom"></s-text>
+    </div>
+</template>
+
+<script>
+import Vue from 'vue'
+export default{
+    data() {
+        return{
+            path: './tourist/tourist',
+            route: 'touristManage',
+            item: {}
+        } 
+    },
+    mounted(){
+        this.viewItem();
+    },
+    computed:{
+        createTime(){
+            return new Date(this.item.touristCreatetime).toLocaleString('chinese',{hour12:false}); 
+        }
+    }
+}
+</script>

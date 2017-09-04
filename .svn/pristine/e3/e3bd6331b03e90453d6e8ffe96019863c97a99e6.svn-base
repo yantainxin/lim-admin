@@ -1,0 +1,51 @@
+<template>
+<div class="sysstaff">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+            <span class="widget-caption">员工信息</span>
+        </div>
+        <div class="widget-body">
+            <el-row class="content-tools">              
+                <el-col :span="8">
+                    <s-search routeName="sysstaffManage"></s-search>
+                </el-col>
+                <el-col :span="16" class="text-right">
+                    <el-button-group>
+                        <router-link class="el-button" :to="{name:'sysstaffManage'}" tag="button"><i class="fa fa-list"></i><span>管理</span></router-link>
+                        <a class="el-button" @click="show()" tag="button"><i class="fa fa-sign-out"></i><span>导出</span></a>
+                    </el-button-group>
+                </el-col>
+            </el-row>
+            <el-form ref="sysstaffForm" class="export" v-if="willShow" label-width="160px">
+                <hr>
+                <el-col :span="20">
+                <el-form-item label="用户自定义" prop="columnPid">
+                <s-checkbox-group v-model="property" :options="options"></s-checkbox-group>
+                </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-button>确定导出</el-button>
+                </el-col>
+            </el-form>
+            <hr>
+            <router-view></router-view>
+        </div>
+    </div>
+</div>
+</template>
+<script>
+export default {
+    data() {
+        return {
+            willShow:false,
+            property: [],
+            options: [{'value':0, 'label':'ID'}, {'value':1, 'label':'编号'}, {'value':2, 'label':'姓名'},{'value':3, 'label':'性别'}, {'value':4, 'label':'移动电话'}, {'value':5, 'label':'邮箱'},{'value':6, 'label':'客服状态'}, {'value':7, 'label':'状态'}, {'value':8, 'label':'所属部门'}]
+        }
+    },
+    methods: {
+        show:function(){
+          this.willShow = !this.willShow;
+        }
+    }
+}
+</script>

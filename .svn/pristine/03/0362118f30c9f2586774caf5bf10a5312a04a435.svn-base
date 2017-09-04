@@ -1,0 +1,43 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+	<el-table :data="items" border stripe>
+    <el-table-column align="center" prop="orderdetailId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="orderdetailNo" label="编号" sortable></el-table-column>
+    <el-table-column header-align="center" prop="orderdetailTitle" label="工单主题" sortable></el-table-column>
+    <el-table-column header-align="center" prop="orderdetailLasttime" label="处理截止时间" sortable></el-table-column>
+    <el-table-column header-align="center" prop="orderdetailSolvetime" label="实际处理时间" sortable></el-table-column>
+    <el-table-column header-align="center" prop="orderdetailStatus" label="工单状态" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+    	<template scope="scope">
+
+    		<h-privilege-right :privileges="privileges" :objId="{id: scope.row.orderdetailId}" :objViewid="{id: scope.row.orderdetailId}" @reomve="reomveItem($event)"></h-privilege-right>
+
+      </template>
+    </el-table-column>
+  </el-table>					
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+export default{
+	data() {
+		return {
+			loading: true,
+			path: './order/order',
+			count: 0,
+			items: [],
+			privileges:[],
+			columnId:8
+		} 
+	},
+	mounted(){
+		this.listItems();
+		this.getPrivilege(); 
+	},
+	watch:{
+		$route(){
+			this.listItems();
+		}
+	}
+}
+</script>

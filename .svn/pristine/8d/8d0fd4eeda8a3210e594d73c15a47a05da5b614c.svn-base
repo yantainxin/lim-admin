@@ -1,0 +1,43 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="channelId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="channelNumber" label="渠道号" sortable></el-table-column>
+    <el-table-column header-align="center" prop="channelWebname" label="网站名称" sortable></el-table-column>
+    <el-table-column header-align="center" prop="channelUrl" label="网站链接" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+            <router-link class="el-button el-button--info el-button--small" :to="{name:'channelModify', query:{id: scope.row.channelId}}" tag="button" title="编辑">
+                <i class="fa fa-edit"></i><span class="hidden-xs">编辑</span>
+            </router-link>
+        <el-button size="small" type="danger" icon="delete" @click="reomveItem(scope.row.channelId)" title="删除"><span class="hidden-xs">删除</span></el-button>
+      </template>
+    </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+export default{
+    data() {
+        return {
+            loading: true,
+            path: './system/channel/channel',
+            count: 0,
+            items: []
+        } 
+    },
+    mounted(){
+        console.log(this.loading);
+        this.listItems(); 
+    },
+    watch:{
+        loading(){
+            console.log(this.loading);
+        },
+        $route(){
+            this.listItems();
+        }
+    }
+}
+</script>

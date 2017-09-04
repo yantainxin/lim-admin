@@ -1,0 +1,70 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="sysroleForm" label-width="120px">
+    <el-form-item label="角色名称" prop="sysroleName">
+      <s-textfield v-model="item.sysroleName"></s-textfield>
+    </el-form-item>
+    <el-form-item label="角色权限" prop="sysroleColumnIds">
+      <el-tree :data="columnJson"  node-key="id" :props="{label: 'name', children: 'children'}" show-checkbox :default-checked-keys="[7,46,54]"  :render-content="renderContent"></el-tree>
+    </el-form-item>
+    <el-form-item label="角色描述" prop="sysroleDescription">
+      <s-textarea v-model="item.sysroleDescription"></s-textarea>
+    </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('sysroleForm')">确认</el-button>
+    <el-button @click="formReset('sysroleForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './permissions/sysrole/sysrole',
+      route: 'sysroleManage',
+      rules: null,
+      item: null
+    }
+  },
+  mounted() {
+    this.getData('columnJson', './navigation/sysprivilege/sysprivilege-nodes.json');
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  },
+  methods: {
+    renderContent(h, { node, data, store }) {
+      let prisName = [];
+      if(data.children){//有子集
+        return (
+          <span>
+            <span>
+              <span>{node.label}</span>
+            </span>
+          </span>
+        )
+      } 
+      else{//没有子集，相当于工单查询、游客管理和技能组、坐席管理等都是同级的
+        $.each(data.privileges,function (index1,value1){
+            prisName.push(value1.name);
+        });
+        return (
+          <span>
+            <span>
+              <span>{node.label}</span>
+            </span>
+            <span style="float: right; margin-right: 20px">
+              {prisName && prisName.map((name,idx)=><el-button size="mini" key={'${idx}'}>{name}</el-button>)}
+            </span>
+          </span>
+        )
+      }
+    }
+  }
+}
+</script>

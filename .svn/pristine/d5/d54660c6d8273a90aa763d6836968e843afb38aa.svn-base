@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>lim-admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="shortcut icon" type="image/x-icon" href="../static/image/favicon.png"/>
+  </head>
+  <body>
+  <a class="layui-btn layui-btn-normal" href="./sysadm/index.html" target="_blank">公司管理入口</a>
+  <a class="layui-btn layui-btn-success" href="./kefu/index.html" target="_blank">公司客服入口</a>
+  <a class="layui-btn layui-btn-danger" href="http://pms.newyali.cn/index/index/index.html" target="_blank">公司员工入口</a>
+  <button class="lim layui-btn layui-btn-warm layui-btn-disabled">咨询公司客服</button>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+  <script src="./static/lib/crypt/aes.js"></script>
+  <script src="./static/lib/crypt/mode-ecb.js"></script>
+  <script src="./static/lib/layui/layui.js"></script>
+  <script id="yali-im" src="http://127.0.0.1:8080/static/lib/layui/layui.config.js"></script>
+  <script id="yali-im" src="http://127.0.0.1:8080/static/lib/layui/lim.pc.js?HKAA9IrHMm5jU0bHk3FJ4C7ZhUEK0rvywYZUUBIuo5TvcZnSYMZP/ecNaoWlHS0UrlpZ/rtW+u3ik1ytREu6t2SDFMDdJZraIo0YyrYaQgA="></script>
+
+<!--   <script src="http://192.168.1.70:8080/static/lib/layui/lim.h5.js?5lTb4qtPpmQWSqxXlgaNwAHftLXYE6RTLLTsISicncyoYqEWBg8HmJhp7MeJ3KY5jicJw4mgeQvIcjo0niI56TGiyxjQwV1HVL5J42EdAfoRpcSIOMGHLeYwTfXiucFM"></script> -->
+  </html>

@@ -1,0 +1,43 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="items != null">
+	<el-table :data="items" border stripe>
+    <el-table-column align="center" prop="sysorderdetailId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="sysorderdetailNo" label="编号" sortable></el-table-column>
+    <el-table-column header-align="center" prop="sysorderdetailTitle" label="工单主题" sortable></el-table-column>
+    <el-table-column header-align="center" prop="sysorderdetailLasttime" label="处理截止时间" sortable></el-table-column>
+    <el-table-column header-align="center" prop="sysorderdetailSolvetime" label="实际处理时间" sortable></el-table-column>
+    <el-table-column header-align="center" prop="sysorderdetailStatus" label="工单状态" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+    	<template scope="scope">
+		    <router-link class="el-button el-button--info el-button--small" :to="{name:'orderModify', query:{id: scope.row.sysorderdetailId}}" tag="button">
+		    	<i class="fa fa-edit"></i><span>编辑</span>
+		    }
+		    }
+		    </router-link>
+        <el-button size="small" type="danger" icon="delete" @click="reomveItem(scope.row.sysorderdetailId)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>					
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+export default{
+	data() {
+		return {
+			loading: true,
+			path: './order/order',
+			count: 0,
+			items: null
+		} 
+	},
+	mounted(){
+		this.listItems();
+	},
+	watch:{
+		$route(){
+			this.listItems();
+		}
+	}
+}
+</script>

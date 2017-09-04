@@ -1,0 +1,40 @@
+<template>
+    <header class="page-head el-row bg-primary">
+        <div class="header-logo pull-left"><img class="img-responsive" src="../../../static/image/logo.png" alt="鸭梨LIM"></div>
+        <div class="header-menu pull-left"><span><i class="fa fa-md fa-list"></i></span></div>
+        <div class="header-user pull-right">
+            <span>
+                <label><img class="img-rounded" v-if="personal.avatar":src="personal.avatar"><i v-if="!personal.avatar" class="fa fa-md fa-user-circle-o">&nbsp;</i>{{personal.username}},欢迎您登陆</label>
+                <label>
+                    <i class="fa fa-md fa-question-circle-o"></i>&nbsp;帮助
+                </label>
+                <label>
+                    <a @click="logout()"><i class="fa fa-md fa-power-off"></i>&nbsp;退出</a>
+                </label>
+                <label>
+                    <el-tooltip content="更新缓存">
+                        <i class="fa fa-md fa-history"></i>
+                    </el-tooltip>
+                </label>
+            </span>
+        </div>
+</header>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+    methods: {
+        logout() {
+            window.sessionStorage.clear();
+            this.$router.push({name: 'login'});
+            layer.msg(res.body.msg);
+        }
+    }
+}
+</script>

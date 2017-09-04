@@ -1,0 +1,65 @@
+<template>
+	<header class="page-head el-row bg-primary">
+		<div class="header-logo pull-left"><img class="img-responsive" src="../../../static/image/logo.png" alt="鸭梨LIM"></div> 
+		<div class="header-menu pull-left" @click="handleClick"><i class="fa fa-md fa-list"></i></div>
+		<div class="header-user pull-right">
+      <label>
+        <el-button size="small" v-if="personal.adminId === 0" @click="toUserCenter()">进入员工管理</el-button>
+      </label>
+			<label>
+				<img v-if="personal.avatar" class="img-rounded" :src="personal.avatar">
+        <i v-else class="fa fa-md fa-user-circle-o"></i> {{personal.adminRealname}}，欢迎您！
+			</label>
+			<label>
+				<el-dropdown>
+          <span class="el-dropdown-link cursor-pointer">
+					 <i class="fa fa-md fa-question-circle-o"></i> 帮助
+          </span>
+          <el-dropdown-menu slot="dropdown" class="help">
+            <el-dropdown-item ><i class="fa fa-md fa-newspaper-o"></i> 如何操作</el-dropdown-item>
+            <el-dropdown-item ><i class="fa fa-md fa-paint-brush"></i> 意见反馈</el-dropdown-item>
+            <el-dropdown-item ><i class="fa fa-md fa-send"></i> <a href="http://www.newyali.com/" target="_blank" title="广东鸭梨">鸭梨官网</a></el-dropdown-item>
+            <el-dropdown-item ><i class="fa fa-md fa-vcard"></i> 关于我们</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+			</label>
+			<label>
+				<a href="#" @click="userLogout()"><i class="fa fa-md fa-power-off"></i> 注销</a>
+			</label>
+		</div>
+</header>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+export default{
+	data() {
+    return {
+      path: './user/sysadm',
+    }
+  },
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL',
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+	methods: {
+     ...mapActions({
+      clearTabs: 'CLEAR_TABS',
+      clearPersonal: 'CLEAR_PERSONAL',      
+      clear: 'CLEAR'
+    }),
+    toUserCenter(){
+      this.$http.post('http://ucenter.newyali.cn/client/auth/auth', 
+        {'client_id': 'b655b0cecdf089ecdf08028c3abb4b3028c3abb44', 'openid': '1887C7275C1DD612015D95F7BB1BBCBC', 'access_token': this.personal.accessToken},
+        {headers: {'Content-Type': 'application/json; charset=utf-8'}}).then(function(res) {
+        console.log(res);
+      });
+    },
+    handleClick(){
+      $('.page-container').toggleClass('menu-compact');
+    }
+	}
+}
+</script>

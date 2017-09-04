@@ -1,0 +1,36 @@
+<template>
+    <div class="form-horizontal div-striped">
+        <s-text label="ID" :value="item.staffId"></s-text>
+        <s-text label="编号" :value="item.staffNo"></s-text>
+        <s-text label="姓名" :value="item.staffRealname"></s-text>
+        <s-text label="性别" v-if="item.staffSex == 0" value="男"></s-text>
+        <s-text label="性别" v-if="item.staffSex == 1" value="女"></s-text>
+        <s-text label="手机号码" :value="item.staffPhone"></s-text>
+        <s-text label="邮箱" :value="item.staffEmail"></s-text>
+        <s-text label="客服" v-if="item.staffIskefu == 0" value="否"></s-text>
+        <s-text label="客服" v-if="item.staffIskefu == 1" value="是"></s-text>
+        <s-text label="状态" v-if="item.staffStatus == 0" value="在职"></s-text>
+        <s-text label="状态" v-if="item.staffStatus == 1" value="停职"></s-text>
+        <s-text label="所属部门" :value="item.sectionid"></s-text>
+        <s-hidden name="公司网站ID" :value="item.companyWebId"></s-hidden>
+    </div>
+</template>
+
+<script>
+export default{
+    data() {
+        return{
+            path: './basicinfo/staff/staff',
+            //url: 'http://www.newyali.cn/api/SonMessage/GetSonStaffDetail',
+            item: {},
+            personal: {}
+        } 
+    },
+    mounted(){
+        this.$http.get(this.config.host+'/user/getAdmin.action', {}).then(function(res) {
+            this.personal = res.body;
+            this.viewItem({'uid':this.$route.query.id});
+        });
+    }
+}
+</script>

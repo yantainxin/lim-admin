@@ -1,0 +1,78 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+<el-form v-if="item != null && rules != null" :model="item" :rules="rules" ref="downloadForm" label-width="200px">
+    <el-form-item label="文件名称" prop="downloadName">
+      <s-textfield v-model="item.downloadName" placeholder="请填写文件名称"></s-textfield>
+    </el-form-item>
+    <el-form-item label="文件描述" prop="downloadDescription">
+      <s-textarea v-model="item.downloadDescription" placeholder="请填写文件描述"></s-textarea>
+    </el-form-item>
+    <el-form-item label="上传文件">
+    <el-upload
+        class="uploader" list-type="picture-card"
+        accept=".doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .gif, .jpeg, .png, .jpg"
+        :action="uploadurl"
+        :show-file-list="false"
+        :on-success="handleAvatarSuccess"
+        :on-error="errorMsg"
+        :before-upload="beforeAvatarUpload">
+        <img v-if="item.downloadPath && (item.ext=='gif' ||item.ext=='jpeg' ||item.ext=='png' ||item.ext=='jpg')"
+         :src="item.downloadPath">
+        <i v-if="item.downloadPath && !(item.ext=='gif' ||item.ext=='jpeg' ||item.ext=='png' ||item.ext=='jpg')" 
+        :class="'ext iconfont icon-' + item.ext" ></i>
+        <i v-if="item.downloadPath == '' || item.downloadPath == null || item.downloadPath == undefined" 
+        class="iconfont icon-plus "></i>
+      </el-upload>
+      <p style="color:red">只允许上传格式为“.doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .gif, .jpeg, .png, .jpg”的文件</p>
+    </el-form-item>    
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('downloadForm')">确认</el-button>
+    <el-button @click="formReset('downloadForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './thinktank/download/download',
+      route: 'downloadManage',
+      rules: null,
+      item: null,
+      fileList: [],
+      uploadurl:'',
+    }
+  },
+  mounted() {
+    this.initForm();
+    this.uploadurl = this.config.host + window.location.pathname.substr(0, 7) + this.path.substr(1) + 'Save.action';
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  },
+  methods:{
+    handleAvatarSuccess(res, file) {
+      if(res.code == 200){
+        this.item.downloadPath =  res.data.downloadPath;
+        this.item.downloadSize =  res.data.downloadSize;
+        this.item.ext =  res.data.ext;
+
+      }
+    },
+    beforeAvatarUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$message.error('上传文件大小不能超过 2MB');
+      }
+      return isLt2M;
+    },
+    errorMsg(){
+      this.$message.error('文件上传失败');
+    }
+  }
+}
+</script>

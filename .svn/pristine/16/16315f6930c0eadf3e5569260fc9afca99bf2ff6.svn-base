@@ -1,0 +1,240 @@
+<template>
+<div>
+<el-row :gutter="20">
+  <el-col :xs="24" :md="12">
+    <div class="Chart">
+      <center><h5>工单</h5></center>
+    <el-row>
+        <el-col :xs="24" :sm="12" :md="24">
+          <el-col :xs="5" :md="5" class="cLeft-1"><i class="fa fa-2x fa-clock-o"></i></el-col>
+          <el-col :xs="7" :md="7" class="wRight"><h4>150</h4><h6>待处理工单量</h6></el-col>
+          <el-col :xs="5" :md="5" class="cLeft-2"><i class="fa fa-2x fa-check-square-o"></i></el-col>
+          <el-col :xs="7" :md="7" class="wRight"><h4>3000</h4><h6>已解决工单总量</h6></el-col>
+        </el-col>
+        <el-col :xs="24" :sm="12" :md="24">
+          <el-col :xs="5" :md="5" class="cLeft-3"><i class="fa fa-2x fa-edit"></i></el-col>
+          <el-col :xs="7" :md="7" class="wRight"><h4>3150</h4><h6>已发布工单总量</h6></el-col>
+          <el-col :xs="5" :md="5" class="cLeft-4"><i class="fa fa-2x fa-times-rectangle-o"></i></el-col>
+          <el-col :xs="7" :md="7" class="wRight"><h4>250</h4><h6>待审核不通过数量</h6></el-col>
+        </el-col>
+    </el-row>
+    </div>
+  </el-col>
+  <el-col :xs="24" :md="12">
+    <div class="Chart">
+        <h5>最近访客<span><a href="./index.html#/desk" class="more pull-right">更多访客详情</a></span></h5>
+          <el-row>
+            <div class="visitor">
+              <el-col :xs="24" :sm="8" :md="24">
+                  <el-col :xs="3" :md="3">
+                    <a href=""><img src="../../../static/image/fk1.png"></a>
+                  </el-col>
+                  <el-col :xs="5" :md="5" class="visRight"><a href="">小红</a><br>16:20</el-col>
+                  <el-col :xs="3" :md="3">
+                    <a href=""><img src="../../../static/image/fk3.png"></a>
+                  </el-col>
+                  <el-col :xs="5" :md="5" class="visRight"><a href="">小王</a><br>16:20
+                  </el-col>
+                  <el-col :xs="3" :md="3">
+                    <a href=""><img src="../../../static/image/fk1.png"></a>
+                  </el-col>
+                  <el-col :xs="5" :md="5" class="visRight"><a href="">冰红茶</a><br>16:20
+                  </el-col>
+              </el-col>
+
+              <el-col :xs="24" :sm="8" :md="24">
+                  <el-col :xs="3" :md="3">
+                    <a href=""><img src="../../../static/image/fk2.png"></a>
+                  </el-col>
+                  <el-col :xs="5" :md="5" class="visRight"><a href="">奶茶小妹</a><br>16:20</el-col>
+                  <el-col :xs="3" :md="3">
+                    <a href=""><img src="../../../static/image/fk3.png"></a>
+                  </el-col>
+                  <el-col :xs="5" :md="5" class="visRight"><a href="">喔喔</a><br>16:20
+                  </el-col>
+                  <el-col :xs="3" :md="3">
+                    <a href=""><img src="../../../static/image/fk2.png"></a>
+                  </el-col>
+                  <el-col :xs="5" :md="5" class="visRight"><a href="">(⊙o⊙)</a><br>16:20
+                  </el-col>
+              </el-col>
+
+              <el-col :xs="24" :sm="8" :md="24">
+                  <el-col :xs="3" :md="3">
+                    <a href=""><img src="../../../static/image/fk3.png"></a>
+                  </el-col>
+                  <el-col :xs="5" :md="5" class="visRight"><a href="">小蛋糕</a><br>16:20</el-col>
+                  <el-col :xs="3" :md="3">
+                    <a href=""><img src="../../../static/image/fk1.png"></a>
+                  </el-col>
+                  <el-col :xs="5" :md="5" class="visRight"><a href="">阿道夫</a><br>16:20
+                  </el-col>
+                  <el-col :xs="3" :md="3">
+                    <a href=""><img src="../../../static/image/fk3.png"></a>
+                  </el-col>
+                  <el-col :xs="5" :md="5" class="visRight"><a href="">枫</a><br>16:20<br>
+                  </el-col>
+              </el-col>    
+
+                  <!-- <el-col :xs="2" :md="3">
+                    <a href=""><img src="../../../static/image/fk2.png"></a>
+                  </el-col>
+                  <el-col :xs="6" :md="5" class="visRight"><a href="">二哈</a><br>16:20</el-col>
+                  <el-col :xs="2" :md="3">
+                    <a href=""><img src="../../../static/image/fk1.png"></a>
+                  </el-col>
+                  <el-col :xs="6" :md="5" class="visRight"><a href="">呵呵</a><br>16:20
+                  </el-col>
+                  <el-col :xs="2" :md="3">
+                    <a href=""><img src="../../../static/image/fk3.png"></a>
+                  </el-col>
+                  <el-col :xs="6" :md="5" class="visRight"><a href="">VC橙</a><br>16:20
+                  </el-col> -->
+            </div>
+        </el-row>
+    </div>
+  </el-col>
+</el-row>
+
+<el-row :gutter="20">
+  <el-col :span="12">
+    <div class="Chart">
+        <center><h5>图表1</h5></center>
+              <canvas class="barChar"></canvas>
+    </div>
+  </el-col>
+
+  <el-col :span="12">
+    <div class="Chart">
+        <center><h5>图表2</h5></center>
+              <canvas class="lineChar"></canvas>
+    </div>
+  </el-col>
+</el-row>
+  <el-col :span="24">
+        <div class="Chart">
+        <center><h5>2017上半年费用支出情况</h5></center>
+              <line-example labelRed="小红" :dataRed="dataRed" labelBlue="小蓝" :dataBlue="dataBlue"></line-example>
+            </div>
+  </el-col>
+
+<el-row :gutter="15">
+  <el-col :span="8">
+    <div class="Chart">
+        <center><h5>图表4</h5></center>
+              <canvas class="radarChar"></canvas>
+    </div>
+  </el-col>
+  
+  <el-col :span="8">
+    <div class="Chart">
+        <center><h5>图表5</h5></center>
+              <canvas class="pieChar"></canvas>
+    </div>
+  </el-col>
+  
+  <el-col :span="8">
+    <div class="Chart">
+        <center><h5>图表6</h5></center>
+              <canvas class="polarChar"></canvas>
+    </div>
+  </el-col>
+</el-row>
+</div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+import LineExample from './LineChart.js'
+export default {
+  components: {
+    LineExample
+  },
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data(){
+    return{
+      dataRed: [40, 32, 10, 40, 32, 80, 40],
+      dataBlue: [60, 55, 32, 10, 2, 12, 53],
+      path: './tourist/tourist',
+      item: {},
+    }
+  },
+  mounted(){
+    this.barChar({'data': [12, 12, 3, 5, 2, 3]});
+    this.lineChar({'data': [12, 12, 3, 5, 2, 3]});
+    this.polarChar({'data': [10, 6, 8, 4, 8, 6]});
+    this.radarChar({'data': [80, 50, 70, 60, 40, 20], 'data1': [30, 20, 50, 50, 10, 60]});
+    this.pieChar({'data': [40, 50, 10]});
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url);
+  }
+}
+</script>
+ <style>
+    .container {
+      max-width: 800px;
+      margin:  0 auto;
+    }
+    .Chart {
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0px 2px 15px rgba(25, 25, 25, 0.27);
+      margin:  25px 0;
+      padding:10px;
+    }
+
+    .Chart h5 {
+      margin-top: 0;
+      padding: 15px 0;
+      color:  rgba(255, 0,0, 0.5);
+      border-bottom: 1px solid #E8E8E8;
+    }
+    
+    .smallchar{
+      max-width: 400px;
+    }
+
+    .barChar,.lineChar,.radarChar,.pieChar,.polarChar{
+      padding:10px;
+    }
+
+    .cLeft-1{
+      text-align: center;
+      background: #56C7F1;
+    }
+    .cLeft-2{
+      text-align: center;
+      background: #FED12A;
+    }
+    .cLeft-3{
+      text-align: center;
+      background: #FF6C5E;
+    }
+    .cLeft-4{
+      text-align: center;
+      background: #6CCBC2;
+    }
+    .fa-2x{
+      padding: 18px 0 18px 0;
+      color: #fff;
+    }
+
+    .wRight{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis; 
+      text-align: center;
+      border:1px solid #E8E8E8; 
+      background: #fff;
+    }
+    .visRight{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+</style>

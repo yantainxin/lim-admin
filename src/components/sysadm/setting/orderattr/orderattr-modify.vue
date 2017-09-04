@@ -1,0 +1,76 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+<el-form v-if="item != null && rules != null" :model="item" :rules="rules" ref="orderattrForm" label-width="200px">
+  <el-form-item label="客服接单上限" prop="orderKefumax">
+    <s-input-number v-model="item.orderKefumax"></s-input-number>
+  </el-form-item>
+  <el-form-item label="工单创建时间上限" prop="orderCreatelimit">
+    <s-input-number v-model="item.orderCreatelimit"></s-input-number>
+  </el-form-item>
+  <el-form-item label="客服受理工单时间上限" prop="orderSeizedlimit">
+    <s-input-number v-model="item.orderSeizedlimit"></s-input-number>
+  </el-form-item>
+  <el-form-item label="超时提示语" prop="orderOvertimetip">
+    <s-textfield v-model="item.orderOvertimetip" placeholder="请填写超时提示语"></s-textfield>
+  </el-form-item>
+  <el-form-item label="是否开启用户上传附件" prop="orderIsupload">
+    <s-switch v-model="item.orderIsupload"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启离线客服参与系统派单" prop="orderIsaccept">
+    <s-switch v-model="item.orderIsaccept"></s-switch>
+  </el-form-item>
+  <el-form-item label="工单超时是否提醒客服" prop="orderIswarnkefu">
+    <s-switch v-model="item.orderIswarnkefu"></s-switch>
+  </el-form-item>
+  <el-form-item label="工单超时是否提醒组长" prop="orderIswarnchargeman">
+    <s-switch v-model="item.orderIswarnchargeman"></s-switch>
+  </el-form-item>
+  <el-form-item label="工单超时是否提醒班长" prop="orderIswarnmonitor">
+    <s-switch v-model="item.orderIswarnmonitor"></s-switch>
+  </el-form-item>
+  <el-form-item label="处理超时是否提醒客服" prop="orderIshandlewarnkefu">
+    <s-switch v-model="item.orderIshandlewarnkefu"></s-switch>
+  </el-form-item>
+  <el-form-item label="处理超时是否提醒组长" prop="orderIshandlewarnchargeman">
+    <s-switch v-model="item.orderIshandlewarnchargeman"></s-switch>
+  </el-form-item>
+  <el-form-item label="处理超时是否提醒班长（早晚班班长）" prop="orderIshandlewarnmonitor">
+    <s-switch v-model="item.orderIshandlewarnmonitor"></s-switch>
+  </el-form-item>
+  <el-form-item label="工单关闭后是否允许编辑" prop="orderIsedit">
+    <s-switch v-model="item.orderIsedit"></s-switch>
+  </el-form-item>
+  <el-form-item label="批量导出工单时，是否导出工单备注" prop="orderIsexportremarks">
+    <s-switch v-model="item.orderIsexportremarks"></s-switch>
+  </el-form-item>
+  <el-form-item label="重要工单是否标记" prop="orderImportantsign">
+    <s-switch v-model="item.orderImportantsign"></s-switch>
+  </el-form-item>
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('orderattrForm')">确认</el-button>
+    <el-button @click="formReset('orderattrForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+        loading: true,
+        path: './setting/orderattr/orderattr',
+        rules: null,
+        item: null,
+        route:'orderattrView'
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+        this.initItem();
+    }
+  }
+}
+</script>

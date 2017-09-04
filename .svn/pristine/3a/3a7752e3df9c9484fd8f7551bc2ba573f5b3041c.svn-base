@@ -1,0 +1,360 @@
+<template>
+<div class="chat">
+    <div class="widget radius-bordered">
+        <div class="widget-header">
+            <span class="widget-caption">在线客服</span>
+        </div>
+        <div class="widget-body">     
+					<el-row>
+							<div class="layui-box layui-layim" id="layui-layim"></div>
+	      			<el-tabs class="layui-box layui-layim-panel"  type="border-card" value="fastreply">
+						    <el-tab-pane label="快捷回复" name="fastreply">
+									  <ul>
+									    <li v-for="(item, index) in items" @click="handleClick(index)">{{item.fastreplyContent}}</li>
+									  </ul>
+						    </el-tab-pane>
+						    <el-tab-pane label="用户信息" name="userinfo">
+						    	用户详细信息............
+						    </el-tab-pane>
+						  </el-tabs>
+							<div class="layui-box layui-layim-chat layer-anim" id="layui-layim-chat">
+								<div class="layui-unselect layim-chat-list"></div>
+								<div class="layim-chat-box">
+									<div class="layui-unselect layim-chat-title"></div>
+									<div class="layim-chat-main"></div>
+									<div class="layim-chat-footer">
+										<div class="layui-unselect layim-chat-tool"></div>
+										<div class="layim-chat-textarea"><textarea></textarea></div>
+										<div class="layim-chat-bottom"></div>
+									</div>
+								</div>
+							</div>
+					</el-row>
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+
+export default{
+	data() {
+		return {
+			items: null
+		}
+	},
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+
+	mounted(){
+		this.getData('items', './thinktank/fastreply/fastreply-items.json');
+
+		let $this = this;
+		let socket;
+		layui.use(['layim', 'webupload'], function(){
+			let layim = layui.layim;
+
+		  layim.config({
+		    init: {url: $this.config.host + '/syskefu/syskefuInit.action?syskefuId=' + $this.personal.syskefuId, type : 'get', data : {}},
+		    members: {url: $this.config.host + '/syskefu/syskefuMembers.action?syskefuId=' + $this.personal.syskefuId, type: 'get', data: {}},
+		    // uploadImage: {url: $this.config.host + '/library/ajaxUpload.action;jsessionid=' + $this.personal.sessionId, type: 'post'},
+		    // uploadFile: {url: $this.config.host + '/library/ajaxUpload.action;jsessionid=' + $this.personal.sessionId, type: 'post'},
+		    tool: [
+		    	{"alias" : "webuploadImage", "title" : "图片上传", "icon" : "&#xe60d;"},
+		    	{"alias" : "webuploadFile", "title" : "文件上传", "icon" : "&#xe61d;"},
+		    	{"alias" : "rebroad", "title" : "呼叫转移", "icon" : "&#xe606;"},
+		    	{"alias" : "finish", "title" : "已解决", "icon" : "&#xe627;"}
+		    ],
+		    title : "我的IM",
+		    isAudio : true,
+				copyright : true,
+		  //   msgbox: $this.config.host + '/socket/msgbox.html;jsessionid=' + $this.personal.sessionId,
+		    chatLog: $this.config.host + '/syskefu/chatlog/chatlog.html?syskefuId=' + $this.personal.syskefuId
+	  	});
+
+	  	let webuploadImage = layui.webupload({
+				auto: true,
+				swf: 'static/lib/webuploader/Uploader.swf',
+		    server: $this.config.host + '/syskefu/syskefuUploadImage.action',		    
+				paste: document.body,
+		    accept: {
+	        title: 'Images',
+	        extensions: 'gif,jpg,jpeg,png',
+	        mimeTypes: 'image/*'
+	    	}
+			});
+
+	  	let webuploadFile = layui.webupload({
+				auto: true,
+				swf: 'static/lib/webuploader/Uploader.swf',
+		    server: $this.config.host + '/syskefu/syskefuUploadFile.action'
+			});
+	
+			let target = $this.config.wshost + '?key=' + $this.personal.syskefuMineId;
+			 socket = new WebSocket(target);
+		  let msgboxCount = 0;
+		  socket.onopen = function() {
+		  	heartCheck.reset().start();
+
+		  	/*
+		  	$this.$http.get($this.config.host + '/chatlog/countChatlog.action', {params:{id: $this.personal.id}}).then(function(res) {
+		  		msgboxCount = Number(res.body);
+	  			if (msgboxCount > 0) {
+						layim.msgbox(msgboxCount);
+					}
+	      });*/
+			}
+
+			layim.on('chatChange', function(res) {
+/*				let type = res.data.type;
+				let formid = res.data.id;
+				let avatar = res.data.avatar;
+				let username = res.data.username;
+				
+				if (type == 'friend' && msgboxCount != 0) {
+
+					$this.$http.get($this.config.host + '/chatlog/readFriendChatlog.action', {params:{formid: formid, id: $this.personal.id}}).then(function(res) {
+						if(res.body != null && res.body != ''){
+							$.each(JSON.parse(res.body), function(n, value) {
+								layim.getMessage({
+									username : value.username,
+									avatar : value.avatar,
+									id : value.id,
+									type : value.type,
+									content : value.content,
+									timestamp : value.timestamp,
+									formid : value.formid,
+									mine : value.mine,
+									system : false
+								});
+							});
+							msgboxCount = msgboxCount - JSON.parse(data).length;
+							layim.msgbox(msgboxCount);
+						}
+					}, function(){
+						layer.msg('发生错误。请重新登录。');
+					});
+				}
+*/
+				webuploadImage.addButton({id: '.layim-tool-webuploadImage'});
+				webuploadFile.addButton({id: '.layim-tool-webuploadFile'});
+				
+			});
+
+			//监听发送消息
+			layim.on('sendMessage', function(res) {
+				heartCheck.reset().start();
+				socket.send(JSON.stringify({
+					type : 'chatMessage' // 随便定义，用于在服务端区分消息类型
+					,
+					data : res
+				}));
+			});
+
+
+				// 监听收到的消息
+			socket.onmessage = function(res) {
+				//eval('var obj =' + res.data + ';');
+				heartCheck.reset().start();
+				let obj = JSON.parse(res.data);
+				if (obj != null) {
+					let type = obj.type;
+					let data = obj.data;
+					/* 各种消息类型 */
+					if (type != null && (type == 'chatMessage'  || type == 'rebroadMessage' || type == 'crossMessage')) {
+						layim.getMessage(data);
+					} else if(type!=null && type == 'chatKefuMessage' ){
+						layim.addList({
+	            type: data.type
+	            ,username: data.username
+	            ,avatar: data.avatar
+	            ,groupid: 0 //所在的分组id
+	            ,id: data.id //好友ID
+	            ,sign: data.sign //好友签名
+	          });
+	          	layim.getMessage(data);
+
+					}
+
+						else if (type != null && (type == 'offline' || type == 'online')) {
+						let id = data.id;
+						layim.setFriendStatus(id, type);
+					} else if (type != null && type == 'kefuStatusMessage') {
+						console.log("提示客服:"+data.content);
+						if (data.content.length > 0) {
+							$('#tipContent').html(data.content);
+						}
+						if (data.receving > 0) {
+							$('#recevingCount').html(data.receving);
+						}
+						
+					}else if (type != null && (type == 'systemTip')) {
+						layer.open({
+							  title: '系统提醒'
+							  ,content: data.systemTip
+							  ,offset: 'rb'
+							  ,shade: 0
+							  ,time :10000
+						});  
+					}
+				} else {
+					console.log('socket.onmessage接受到的消息为空');
+				}
+			};
+
+			// 状态切换
+			layim.on('online', function(status) {
+				if (status == 'online') { // 除非选在在线状态，其他状态全部是离线
+					socket.send(JSON.stringify({
+						type : 'memberStatusMessage', // 随便定义，用于在服务端区分消息类型
+						data : {
+							id : user.id,
+							type : 'friend',
+							content : 'online'
+						}
+					}));
+				} else { // 如果是隐身或者离线，同一提示为离线
+					socket.send(JSON.stringify({
+						type : 'memberStatusMessage', // 随便定义，用于在服务端区分消息类型
+						data : {
+							id : user.id,
+							system : true,
+							type : 'friend',
+							content : 'offline'
+						}
+					}));
+				}
+			});
+
+			/* 将客户呼叫转移给其他客服 */
+			layim.on('tool(rebroad)', function(insert, send, obj) { // 事件中的tool为固定字符，而code则为过滤器，对应的是工具别名（alias）
+				let temp = obj.data;
+				if ($('#recevingCount').html() > 0) {
+					$('#recevingCount').html($('#recevingCount').html()-1);
+				}
+				layim.addList({
+	            type: temp.type
+	            ,username: temp.username
+	            ,avatar: temp.avatar
+	            ,groupid: 2 //0为未处理 1为已处理 2为其他
+	            ,id: temp.id //好友ID
+	      });
+
+
+				socket.send(JSON.stringify({
+					type : 'rebroadMessage', // 随便定义，用于在服务端区分消息类型
+					data : {
+						to : {
+							id : temp.id,// 用户在layim面板中的id
+							username : temp.username,// 用户名称
+							avatar : temp.avatar,// 用户头像
+							type : temp.type,// 消息类型
+						},
+						mine : {
+							id : user.id,// 客服的id
+							username : user.username, // 我的昵称
+							content : user.id,
+						}
+					}
+				}));
+			});
+
+			/* 完成客户咨询 */
+			layim.on('tool(finish)', function(insert, send, obj) {
+				let temp = obj.data;
+				layer.msg("完成咨询");
+				if ($('#recevingCount').html() > 0) {
+					$('#recevingCount').html($('#recevingCount').html()-1);
+				}
+				layim.addList({
+	            type: temp.type
+	            ,username: temp.username
+	            ,avatar: temp.avatar
+	            ,groupid: 1 //0为未处理 1为已处理 2为其他
+	            ,id: temp.id //好友ID
+	      });
+				socket.send(JSON.stringify({
+					type : 'finishChatKefu',
+					data : {
+						to : {
+							id : temp.id,
+							username : temp.username,
+							avatar : temp.avatar,
+							type : temp.type,
+						},
+						mine : {
+							id : user.id,
+							username : user.username
+						}
+					}
+				}));
+			});
+
+			webuploadImage.on('uploadSuccess', function( file, res ) {
+				$('.layui-layim-chat').find('textarea').val('img['+ $this.config.host + (res.data.src||'') +']');
+			});
+			webuploadFile.on('uploadSuccess', function( file, res ) {
+				$('.layui-layim-chat').find('textarea').val('file('+ (res.data.src||'') +')['+ (res.data.name||'下载文件') +']');
+			});
+
+			$('.site-demo-layim').on('click', function() {
+				let type = $(this).data('type');
+				active[type] ? active[type].call(this) : '';
+			});
+
+		});
+
+
+		// 心跳检测
+		let heartCheck = {
+			timeout : 80000,// 80秒.框架是120秒没有心跳就断开
+			timeoutObj : null,
+			reset : function() {
+				clearTimeout(this.timeoutObj);
+				clearTimeout(this.serverTimeoutObj);
+				return this;
+			},
+			start : function() {
+				this.timeoutObj = setInterval(function() {
+					socket.send("$%$");
+				}, this.timeout);
+			}
+		}
+
+	// this.$nextTick(function(){
+	// 	$('.layim-tab-content').height($('.page-main').outerHeight(true) - 200);
+	// });
+	},
+	methods:{
+		aesEncrypt(content) {
+			let key = CryptoJS.enc.Utf8.parse(this.config.aesKey);
+			let srcs = CryptoJS.enc.Utf8.parse(content);
+			let encrypted = CryptoJS.AES.encrypt(srcs, key, {
+				mode : CryptoJS.mode.ECB,
+				padding : CryptoJS.pad.Pkcs7
+			});
+			return encrypted.toString();
+		},
+		aesDecrypt(content) {
+			content = content.replace(/\s/g,'+');//由于地址栏接收到的加密串存在+号回被自动转为空格。需要替换回来。
+			let key = CryptoJS.enc.Utf8.parse(this.config.aesKey);
+			let decrypt = CryptoJS.AES.decrypt(content, key, {
+				mode : CryptoJS.mode.ECB,
+				padding : CryptoJS.pad.Pkcs7
+			});
+			return CryptoJS.enc.Utf8.stringify(decrypt).toString();
+		},
+		handleClick(index){
+			$('.layui-layim-chat').find('textarea').val(this.items[index].fastreplyContent);
+		}
+	}
+
+}
+</script>
+<style>
+	.layim-tool-webuploadImage input, .layim-tool-webuploadFile input{display: none;}
+</style>

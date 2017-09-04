@@ -1,0 +1,32 @@
+<!-- <template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="ID">{{item.orderdetailId}}</d-text>
+    <d-text label="编号">{{item.orderdetailNo}}</d-text>
+    <d-text label="工单主题">{{item.orderdetailTitle}}</d-text>
+    <d-text label="处理截止时间">{{item.orderdetailLasttime}}</d-text>
+    <d-text label="实际处理时间">{{item.orderdetailSolvetime}}</d-text>
+    <d-text label="工单状态">{{item.orderdetailStatus}}</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data() {
+    return {
+      loading:true,
+      path: './order/order',
+      item: null
+    } 
+  },
+  mounted() {
+    this.viewItem();
+  }
+}
+</script> -->

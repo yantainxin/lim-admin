@@ -1,0 +1,35 @@
+<template>
+<div class="item-box">
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+  <el-row v-if="item != null"class="item-detail">
+    <d-text label="ID">{{item.kefuId}}</d-text>
+    <d-text label="昵称">{{item.kefuUsername}}</d-text>
+    <d-text label="在线状态">
+        <d-maps v-model="item.kefuIsstate" :options="[{'value':0, 'label':'离线'}, {'value':1, 'label':'在线'}]"></d-maps>
+    </d-text>
+    <d-text label="移动电话">{{item.kefuPhone}}</d-text>
+  </el-row>
+</el-row>
+</div>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+	data() {
+		return {
+			loading:true,
+			path: './management/kefu/kefu',
+			item: null
+		} 
+	},
+	mounted() {
+		let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {id:this.$route.query.id}); 
+  }
+}
+</script>

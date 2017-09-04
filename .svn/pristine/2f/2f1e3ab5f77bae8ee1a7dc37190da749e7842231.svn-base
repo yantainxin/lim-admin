@@ -1,0 +1,487 @@
+layui.use(['mobile', 'layer', 'laytpl', 'form'], function() {
+	var $ = layui.jquery;
+	var mobile = layui.mobile;
+	var layim = mobile.layim;
+	var layer = layui.layer;
+	var laytpl = layui.laytpl;
+	var form = layui.form;
+	var aesKey = '_q;,ym_@3:v+X8fd'; //秘钥。16位
+
+	var $this = this;
+	var url = $('script#yali-im')[0].src;
+	var regex = /^((?:\w+):\/\/([^\/:]*)(?::\d+)?)\/([^?]*)(?:\?(.*))?$/gi;
+
+	regex.exec(url);
+	var host = RegExp.$1;
+	var domain = RegExp.$2;
+	var uri = RegExp.$3;
+	var qstring = RegExp.$4;
+	var wshost = 'ws://' + domain + ':9321';
+	
+	// host = 'http://192.168.1.123';
+	// wshost = 'ws://192.168.1.158:9321';
+
+
+	var user, config, setting, socket, mine, to, elem, textarea, kefuStatus, msgboxCount = 0, skill = 0;
+
+	$.ajaxSetup({
+		xhrFields: {
+			withCredentials: true
+		}
+	});
+
+	$.getJSON(host + '/api/im/userAuth.action', qstring + '&' + window.location.hostname, function(res) {
+
+		if (res.code == 200) {
+			user = res.data;
+			document.cookie = 'JSESSIONID=' + user.sessionId + ';path=/';
+			var channelCode = JSON.parse(aesDecrypt(qstring));
+			var userTemp = {id:user.id, username:user.username, sign:user.sign, type:user.type, avatar:user.avatar, sessionId:user.sessionId, host:host, wshost:wshost, code:qstring, brief:channelCode.brief}
+			var aesUser = aesEncrypt(JSON.stringify(userTemp));
+
+			$.getJSON(host + '/static/js/lim.config.h5.json', aesUser, function(res) {
+
+				if (res.code === 200) {
+					config = res.data;
+					layim.config(config);
+
+					mine = layim.cache().mine;
+					if (mine && mine.hasOwnProperty('id')) {
+						socket = new WebSocket(wshost + '?key=' + mine.id + '&' + qstring);
+					}
+
+					socket.onopen = function() {
+
+						$.getJSON(host + '/chatlog/countChatlog.action', {
+							id: mine.id
+						}, function(data, status) {
+							if (Number(data) > 0) {
+								msgboxCount = data;
+
+								$.getJSON(host + '/chatlog/mobile/getLeaveMsg.action', {
+									id: mine.id
+								}, function(res) {
+									var json = res.data;
+									if (json != null && json != '') {
+										$.each(json, function(n, value) {
+											layim.getMessage({
+												username: value.username,
+												avatar: value.avatar,
+												id: value.id,
+												type: value.type,
+												content: value.content,
+												timestamp: value.timestamp,
+												fromid: value.fromid,
+												mine: value.mine,
+												system: false
+											});
+										});
+									}
+								});
+							}
+						});
+
+						console.log('通信连接成功');
+						$('.lim').removeClass('layui-btn-disabled yali-disabled disabled');
+					};
+
+					socket.onclose = function(res) {
+						console.log('通信连接已关闭');
+					};
+					socket.onerror = function(res) {
+						console.log('通信发生异常');
+					};
+
+
+
+					layim.on('chatChange', function(res) {
+						to = res.data, elem = res.elem, textarea = res.textarea;
+
+						if (to.type == 'friend' && to.status == 'offline') {
+							layim.setChatStatus('<span style="color:#969c98;">离线</span>');
+						}
+						if (to.type == 'friend' && to.status == 'online') {
+							layim.setChatStatus('<span style="color:#969c98;">在线</span>');
+						}
+
+						if (to.type == 'friend' && msgboxCount != 0) {
+							$.getJSON(
+								host + '/chatlog/readFriendChatlog.action', {
+									fromid: to.id,
+									id: mine.id
+								},
+								function(res) {
+									if (res.code == 200 && res.data != null && res.data.length > 0) {
+										$.each(res.data, function(index, msg) {
+											layim.getMessage(msg);
+										});
+										msgboxCount = msgboxCount - res.data.length;
+									}
+								});
+						}
+					});
+
+					// 监听发送消息
+					var consultRobot = {};
+					layim.on('sendMessage', function(res) {
+						var type = 'chatMessage';
+						res.to.list = null;
+
+						if ((mine.id).indexOf('_type_tourist_') >= 0) {
+							idletime.reset().start();
+						}
+						if (res.to.id == 'robot_key') {
+							consultRobot.skillId = skill;
+							consultRobot.questionfirst = consultRobot.questionsecond;
+							consultRobot.questionsecond = res.mine.content;
+							res.mine.content = JSON.stringify(consultRobot);
+							type = 'robotMessage';
+						}
+
+						socket.send(JSON.stringify({
+							type: type,
+							data: res
+						}));
+					});
+
+					// 监听收到的消息
+					socket.onmessage = function(res) {
+							var obj = JSON.parse(res.data);
+							if (obj != null && obj.hasOwnProperty('type') && obj.hasOwnProperty('data')) {
+								var to = obj.data;
+								switch (obj.type) {
+									case 'statusMessage':
+										layim.setFriendStatus(to.id, to.content);
+										break;
+									case 'chatKefuMessage':
+									case 'rebroadMessage':
+										layim.chat({
+											name: to.username,
+											username: to.username,
+											type: to.type,
+											avatar: to.avatar,
+											id: to.id
+										});
+										layim.getMessage(to);
+										break;
+									case 'chatMessage':
+									case 'systemMessage':
+										layim.getMessage(to);
+										break;
+									case 'closeMessage':
+										layer.open({
+											title: '系统提醒',
+											content: to.content,
+											end: function() {
+												idleTime.reset();
+												layim.closeChat();
+											}
+										});
+										break;
+									case 'closePanelMessage':
+										layer.open({
+											title: '系统提醒',
+											content: to.content,
+											end: function() {
+												idleTime.reset();
+												layim.closeChat();
+											}
+										});
+										break;
+									case 'closePanelMessage':
+										layer.open({
+											title: '系统提醒',
+											content: to.content,
+											end: function() {
+												idleTime.reset();
+												layim.closeChat();
+											}
+										});
+										break;
+									case 'promptMessage':
+										layer.open({
+											title: '系统提醒',
+											content: to.content,
+											offset: 'rb',
+											shade: 0,
+											time: 10000
+										});
+										break;
+									default:
+										layim.getMessage(to);
+								}
+							}
+						}
+						// 状态切换
+					layim.on('online', function(status) {
+						socket.send(JSON.stringify({
+							type: 'statusMessage', // 随便定义，用于在服务端区分消息类型
+							data: {
+								id: mine.id,
+								system: true,
+								type: 'friend',
+								content: status
+							}
+						}));
+					});
+					//监听查看更多记录
+					layim.on('chatlog', function(data, ul) {
+						$.getJSON(host + '/chatlog/showChatlog.action', {
+							type: data.type,
+							toId: data.id,
+							mineId: mine.id
+						}, function(res) {
+							layim.panel({
+								title: '与 ' + data.name + ' 的聊天记录' //标题
+									,
+								tpl: '<div class="layim-chat-main"><ul> {{# layui.each(d.data.row, function(index, item){  if(item.id =="' + user.id + '") { }} <li class="layim-chat-li layim-chat-mine"><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite><i>{{ layui.data.date(item.timestamp) }}</i>{{ item.username }}</cite></div><div class="layim-chat-text">{{item.content}}</div></li> {{# } else { }}<li layim-chat-li><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite>{{ item.username }}<i>{{ layui.data.date(item.timestamp) }}</i></cite></div><div class="layim-chat-text">{{item.content}}</div></li> {{# } });  }} <ul></div>',
+								data: {
+									row: res.data
+								}
+							});
+						});
+					});
+					//监听查看聊天信息(如群成员)
+					layim.on('detail', function(data) {
+						//查看群组信息（如成员）
+						$.getJSON(host + '/api/im/groupMembers.action', {
+							toId: data.id,
+							mineId: mine.id
+						}, function(res) {
+							layim.panel({
+								title: data.name + '(' + res.data.list.length + ')',
+								tpl: '<ul class="layui-layim-list  layui-show">{{# layui.each(d.data.rows, function(index, item){  }}  <li><div><img src="{{ item.avatar }}" /></div><span>{{ item.username }}</span><p>{{ item.sign }} </p></li>  {{#   })}} </ul>',
+								data: {
+									rows: res.data.list //rows为群组成员
+								}
+							});
+						});
+					});
+					//拓展更多功能
+					layim.on('moreList', function(obj) {
+						switch (obj.alias) { //alias即为上述配置对应的alias
+							case 'find': //发现
+								layer.msg('未定义');
+								break;
+							case 'share':
+								layim.panel({
+									title: 'share' //分享
+										,
+									tpl: '<div style="padding: 10px;">自定义模版，{{d.data.test}}</div>' //模版
+										,
+									data: { //数据
+										test: '123'
+									}
+								});
+								break;
+						}
+					});
+					//修改个性签名
+					layim.on('sign', function(value) {
+						$.post(host + '/api/im/userSign.action', {
+							'id': mine.id,
+							'sign': value,
+							'code':qstring
+						}, function(res) {
+							if(res.code != 200){
+								layer.msg(res.msg);
+							}
+						});
+						//此时，你就可以通过Ajax将新的签名同步到数据库中了。
+					});
+
+					// 留言板
+          layim.on('tool(msgboard)', function(insert, send, obj) {
+ 						var flag = true;
+            var msgdetail = {};
+            var tpl = ['<form class="layui-form" style="margin:20px 65px 0 0;">', '<div class="layui-form-item">', '<label class="layui-form-label">* 昵称</label>', '<div class="layui-input-block">', '<input type="text" name="touristName" class="layui-input">', '</div>', '</div>', '<div class="layui-form-item">', '<label class="layui-form-label">* 手机</label>', '<div class="layui-input-block">', '<input type="tel" name="touristPhone" class="layui-input">', '</div>', '</div>', '<div class="layui-form-item layui-form-text">', '<label class="layui-form-label">  内容</label>', '<div class="layui-input-block">', '<textarea name="touristContent" class="layui-textarea"></textarea>', '</div>', '</div>', '</form>'].join('');
+            layer.open({
+              type: 1,
+              title: '留言板',
+              area: ['600px', '370px'],
+              btn: ['提交', '关闭'],
+              shadeClose: true,
+              content: tpl,
+              success: function(index, layero) {
+                // form.render();
+              },
+              yes: function(index, layero) {
+                msgdetail.touristId = mine.id;
+                msgdetail.touristUname = mine.username;
+                msgdetail.companyId = Number(mine.id.split('_')[1]);
+                msgdetail.messageBoardStatus = 0;
+                msgdetail.touristName = layero.find('input[name="touristName"]').val();
+                msgdetail.touristPhone = layero.find('input[name="touristPhone"]').val();
+                msgdetail.touristContent = layero.find('textarea[name="touristContent"]').val();
+                if (!msgdetail.touristName && !msgdetail.touristPhone) {
+                  layer.msg('请填写昵称及手机号码');
+                } else if (msgdetail.touristName == '' || msgdetail.touristName == null || msgdetail.touristName == undefined) {
+                  layer.msg('昵称不能为空');
+                } else if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(msgdetail.touristName)) {
+                  layer.msg('昵称不能含有特殊字符');
+                } else if (/(^\_)|(\__)|(\_+$)/.test(msgdetail.touristName)) {
+                  layer.msg('昵称首尾不能含有下划线“ _ ”');
+                } else if ((/^\d+\d+\d$/.test(msgdetail.touristName))) {
+                  layer.msg('昵称不能全为数字');
+                } else if (msgdetail.touristPhone == '' || msgdetail.touristPhone == null || msgdetail.touristPhone == undefined) {
+                  layer.msg('手机号码不能为空');
+                } else if (!(/^1[34578]\d{9}$/.test(msgdetail.touristPhone))) {
+                  layer.msg('手机号码填写格式有误');
+                } else {
+                  if (flag) {
+										$.ajax({
+											type: 'POST',
+											url: host + '/api/lim/messageboard/messageboardSave.action',
+											contentType: 'application/json; charset=UTF-8',
+											dataType: 'json',
+											data: JSON.stringify(msgdetail),
+											success: (function(res) {
+												if (res.code == 200) {
+													flag = false;
+													layer.msg(res.msg);
+													layer.close(index);
+												}
+											})
+										})
+                  } else {
+                    layer.msg("不能重复提交");
+                    return false;//不关闭弹层
+                  }
+                }
+              }
+            });
+          })
+
+
+					$('.lim').on('click', function() {
+						var tempTo = {}, tempMine = {}, toType, toId, msgType = 'chatMessage';
+						tempMine = mine;
+						skill = $(this).data('skill') || 0;
+						toType = $(this).data('totype') || 'kefu';
+						toId = $(this).data('toid') || 0;
+
+						tempMine.content = (skill !== 0)?skill : null;
+						tempTo.id = (toId !== 0)?('companyId_' + channelCode.companyid + '_type_' + toType + '_userId_' + toId + '_channelId_' + channelCode.channelid):null;
+						msgType = (toType === 'kefu')?'chatKefuMessage': 'chatMessage';
+						
+						socket.send(JSON.stringify({
+							type: msgType,
+							data: {
+								mine: tempMine,
+								to: tempTo
+							}
+						}));
+					});
+
+
+					//评分
+					$('body').on('mouseover', '.layui-layim-marking', function(e) {
+						var score = $(e.target).index() + 1;
+						$(this).find('i').each(function(index, obj) {
+							if (index < score) {
+								$(obj).css({
+									'color': '#FC0'
+								});
+							} else {
+								$(obj).removeAttr('style');
+							}
+						});
+					}).on('click', '.layui-layim-marking', function(e) {
+						var tempMine = mine,
+						tempTo = new Object();
+						tempMine.content = $(e.target).index() + 1;
+						tempTo.id = to.id;
+						tempTo.type = to.type;
+						socket.send(JSON.stringify({
+							type: 'touristGiveKefuScore',
+							data: {
+								to: tempTo,
+								mine: tempMine
+							}
+						}))
+						$('body').off('mouseover', '.layui-layim-marking').off('click', '.layui-layim-marking');
+					})
+
+
+
+					if ((mine.id).indexOf("_type_tourist_") != -1) {
+						$.getJSON(host + '/api/lim/setting/settingInit.action', {
+							companyId: mine.id.split("_")[1]
+						}, function(res) {
+							if (res.code == 200) {
+								setting = res.data;
+							}
+						});
+
+						var idletime = {
+							timerWarning: null,
+							timerClosure: null,
+							reset: function() {
+								clearTimeout(this.timerWarning);
+								clearTimeout(this.timerClosure);
+								return this;
+							},
+							start: function() {
+								if (setting.settingWarningletime != 0) {
+									this.timerWarning = setTimeout(function() {
+										layer.open({
+											title: '聊天窗口即将关闭',
+											content: setting.settingWarningletimetip
+										});
+									}, setting.settingWarningletime * 60 * 1000);
+								}
+
+								if (setting.settingClosureletime != 0) {
+									this.timerClosure = setTimeout(function() {
+										layer.open({
+											title: '聊天窗口即将关闭',
+											content: setting.settingClosureletimetip,
+											yes: function(index, layero) {
+												layim.closeChat();
+											}
+										});
+									}, (setting.settingClosureletime + setting.settingWarningletime) * 60 * 1000);
+								}
+							}
+						}
+					}
+
+				} else {
+					layer.msg(res.msg);
+					return false;
+				}
+			}).error(function(res) {
+				console.log(res);
+				layer.msg('IM初始化配置信息失败，刷新页面请重试');
+			})
+		} else {
+			layer.msg(res.msg);
+			return false;
+		}
+
+	}).error(function(res) {
+		console.log(res);
+		layer.msg('IM初始化用户信息失败，刷新页面请重试');
+	})
+
+	//加密
+	function aesEncrypt(content) {
+		var key = CryptoJS.enc.Utf8.parse(aesKey);
+		var srcs = CryptoJS.enc.Utf8.parse(content);
+		var encrypted = CryptoJS.AES.encrypt(srcs, key, {
+			mode: CryptoJS.mode.ECB,
+			padding: CryptoJS.pad.Pkcs7
+		});
+		return encrypted.toString().replace(/\+/g, '%2B').replace(/\//g, '%2F');
+	}
+	//解密
+	function aesDecrypt(content) {
+		content = content.replace(/\s/g, '+'); //由于地址栏接收到的加密串存在+号回被自动转为空格。需要替换回来。
+		var key = CryptoJS.enc.Utf8.parse(aesKey);
+		var decrypt = CryptoJS.AES.decrypt(content, key, {
+			mode: CryptoJS.mode.ECB,
+			padding: CryptoJS.pad.Pkcs7
+		});
+		return CryptoJS.enc.Utf8.stringify(decrypt).toString();
+	}
+});

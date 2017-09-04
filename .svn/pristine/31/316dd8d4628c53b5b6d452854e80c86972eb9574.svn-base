@@ -1,0 +1,40 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table v-if="items != null" :data="items" border stripe>
+    <el-table-column align="center" prop="touristId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="touristName" label="客户名" sortable></el-table-column>
+    <el-table-column header-align="center" prop="touristIp" label="访问IP地址" sortable></el-table-column>
+    <el-table-column header-align="center" prop="touristFrom" label="来源地址" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+            <router-link class="el-button el-button--info el-button--small" :to="{name:'touristView', query:{id: scope.row.touristId}}" tag="button">
+                <i class="iconfont icon-chakan"></i><span>详细</span>
+            </router-link>
+      </template>
+    </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+export default{
+  data() {
+    return {
+        loading: true,
+        path: './tourist/tourist',
+        count: 0,
+        items: null
+      }
+    },
+    mounted() {
+      this.listItems();
+    },
+    watch: {
+      $route() {
+        this.listItems();
+      }
+    }
+}
+</script>
+
+

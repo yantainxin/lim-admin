@@ -1,0 +1,29 @@
+{
+    "code": 200,
+    "msg": "处理成功",
+    "data": {
+        "skillName" :[
+            {
+                "type": "string",
+                "required": true,
+                "message":"技能组名称不能为空",
+                "trigger": "blur"
+            },
+            {
+                "type": "string",
+                "min": 2,
+                "max": 10,
+                "message" : "长度不合法，请填写长度为2-10的技能组名称",
+                "trigger": "blur"
+            }
+        ],
+        "skillDescription" :[
+            {
+                "type": "string",
+                "required": true,
+                "message" : "技能组描述不能为空",
+                "trigger": "blur"
+            }
+        ]
+    }
+}

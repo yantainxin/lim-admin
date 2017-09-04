@@ -1,0 +1,70 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+<el-form :model="item" :rules="rules" ref="syssettingForm" label-width="200px">
+  <el-form-item label="会话闲置时间" prop="syssettingSessionidletime">
+    <s-textfield v-model="item.syssettingSessionidletime"></s-textfield>
+  </el-form-item>
+  <el-form-item label="超时结束提示语" prop="syssettingOvertimetip">
+    <s-textfield v-model="item.syssettingOvertimetip"></s-textfield>
+  </el-form-item>
+  <el-form-item label="评价邀请语" prop="syssettingInvitationmsg">
+    <s-textfield v-model="item.syssettingInvitationmsg"></s-textfield>
+  </el-form-item>
+  <el-form-item label="评价感谢语" prop="syssettingThanksmsg">
+    <s-textfield v-model="item.syssettingThanksmsg"></s-textfield>
+  </el-form-item>
+  <el-form-item label="客服接待设置" prop="syssettingReceive">
+    <s-switch v-model="item.syssettingReceive"></s-switch>
+  </el-form-item>
+  <el-form-item label="会话转接设置" prop="syssettingIstransfer">
+    <s-switch v-model="item.syssettingIstransfer"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否客服设置头像功能" prop="syssettingIsavatar">
+    <s-switch v-model="item.syssettingIsavatar"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启发送文件功能" prop="syssettingIsfile">
+    <s-switch v-model="item.syssettingIsfile"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启截屏/截图功能" prop="syssettingIsprintscreen">
+    <s-switch v-model="item.syssettingIsprintscreen"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启发送文件功能" prop="syssettingIsemotion">
+    <s-switch v-model="item.syssettingIsemotion"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启发送语音功能" prop="syssettingIsvoice">
+    <s-switch v-model="item.syssettingIsvoice"></s-switch>
+  </el-form-item>
+  <el-form-item label="预知访客消息" prop="syssettingIsmessage">
+    <s-switch v-model="item.syssettingIsmessage"></s-switch>
+  </el-form-item>
+  <el-form-item label="是否开启敏感词感知功能" prop="syssettingIssensitive">
+    <s-switch v-model="item.syssettingIssensitive"></s-switch>
+  </el-form-item>
+
+  <el-form-item>
+    <el-button type="primary" @click="formSubmit('syssettingForm')">确认</el-button>
+    <el-button @click="formReset('syssettingForm')">重置</el-button>
+  </el-form-item>
+</el-form>
+</el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './syssetting/syssetting/syssetting',
+      rules: null,
+      item: null
+    }
+  },
+  mounted() {
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+        this.initItem();
+    }
+  }
+}
+</script>

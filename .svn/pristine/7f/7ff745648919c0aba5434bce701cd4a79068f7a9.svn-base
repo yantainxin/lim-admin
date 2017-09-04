@@ -1,0 +1,45 @@
+<template>
+  <el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null && rules != null">
+    <el-form :model="item" :rules="rules" ref="sysprivilegeFrom" label-width="120px">
+      <el-form-item label="父节点" prop="sysprivilegePid">
+        <s-cascader v-if="syscolumnJson != null" v-model="item.syscolumnPid" :options="syscolumnJson" :props="{label:'syscolumnName', value:'syscolumnId', children:'syscolumns'}" :show-all-levels="false" change-on-select></s-cascader>
+      </el-form-item>
+      <el-form-item label="名称" prop="sysprivilegeName">
+        <s-textfield v-model="item.sysprivilegeName"></s-textfield>
+      </el-form-item>
+      <el-form-item label="链接" prop="sysprivilegeUrl">
+        <s-textfield v-model="item.sysprivilegeUrl"></s-textfield>
+      </el-form-item>
+      <el-form-item label="描述" prop="sysprivilegeDescription">
+        <s-textarea v-model="item.sysprivilegeDescription"></s-textarea>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="formSubmit('sysprivilegeFrom')">确认</el-button>
+        <el-button @click="formReset('sysprivilegeFrom')">重置</el-button>
+      </el-form-item>
+    </el-form>
+  </el-row>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      path: './navigation/sysprivilege/sysprivilege',
+      route: 'syscolumnManage',
+      rules: null,
+      item: null,
+      syscolumnJson: null
+    }
+  },
+  mounted() {
+    this.getData('syscolumnJson', './navigation/syscolumn/syscolumn-nodes.json');
+    this.initForm();
+  },
+  watch: {
+    $route (to, form){
+      this.initItem();
+    }
+  }
+}
+</script>

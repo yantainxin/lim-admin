@@ -1,0 +1,68 @@
+import Vue from 'vue'
+import VueBus from 'vue-bus'
+import $ from 'jquery'
+import VueResource from 'vue-resource'
+import ElementUI from 'element-ui'
+
+import store from '../../vuex/store'
+import config from '../../common/config.js'
+import dataSource from '../../common/data.source.js'
+import charSource from '../../common/char.source.js'
+import formTags from '../../common/form.tags.js'
+import formAction from '../../common/form.action.js'
+
+import router from './router.js'
+import sysmgr from './sysmgr.vue'
+
+import 'lib/ueditor/ueditor.config.js'
+import 'lib/ueditor/ueditor.all.min.js'
+//import 'lib/layui/layui.js'
+import 'lib/layui/css/layui.css'
+import 'lib/layer/layer.js'
+
+import 'lib/bootstrap/css/bootstrap.min.css'
+import 'lib/font-awesome/css/font-awesome.min.css'
+import '../../../theme/index.css'
+import '../../../static/css/global.css'
+
+Vue.use(VueResource);
+Vue.use(ElementUI);
+Vue.use(VueBus);
+Vue.use(dataSource);
+Vue.use(charSource);
+Vue.use(formAction);
+
+Vue.prototype.config = config;
+Vue.config.productionTip = false;
+Vue.http.options.credentials = true;//接口时注释
+Vue.http.options.xhr = { withCredentials: true }
+Vue.http.options.headers = {'Content-Type':'application/x-www-form-urlencoded; application/json; charset=UTF-8;'};
+Vue.http.options.emulateJSON = true;// post的时候会把JSON对象转成formdata
+
+router.beforeEach((to, from, next) => {
+	if(to.name == 'error') {
+		
+	}	else if(to.name == 'login') {
+		if(sessionStorage.hasOwnProperty('personal')){
+			router.push({ name: 'main' });
+		}
+	}	else {
+		if(!sessionStorage.hasOwnProperty('personal')){
+			router.push({ name: 'login' });
+		} 
+	}
+	next();
+	console.log(to.name, sessionStorage.getItem('personal'));
+})
+
+
+/* eslint-disable no-new */
+new Vue({
+	store,
+	el: '#sysmgr',
+	router: router,
+	template: '<sysmgr/>',
+	components: { sysmgr }
+});
+
+

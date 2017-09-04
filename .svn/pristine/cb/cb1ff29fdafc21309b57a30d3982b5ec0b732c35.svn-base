@@ -1,0 +1,53 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="会话闲置时间">{{item.settingSessionidletime}}</d-text>
+    <d-text label="超时结束提示语">{{item.settingOvertimetip}}</d-text>
+    <d-text label="评价邀请语">{{item.settingInvitationmsg}}</d-text>
+    <d-text label="评价感谢语">{{item.settingThanksmsg}}</d-text>
+    <d-text label="客服接待设置" v-if="item.settingReceive == 0">关闭</d-text>
+    <d-text label="客服接待设置" v-if="item.settingReceive == 1">开启</d-text>
+    <d-text label="会话转接设置" v-if="item.settingIstransfer == 0">关闭</d-text>
+    <d-text label="会话转接设置" v-if="item.settingIstransfer == 1">开启</d-text>
+    <d-text label="是否客服设置头像功能" v-if="item.settingIsavatar == 0">否</d-text>
+    <d-text label="是否客服设置头像功能" v-if="item.settingIsavatar == 1">是</d-text>
+    <d-text label="是否开启【游客/会员】发送图片功能" v-if="item.settingIsimage == 0">否</d-text>
+    <d-text label="是否开启【游客/会员】发送图片功能" v-if="item.settingIsimage == 1">是</d-text>
+    <d-text label="是否开启【游客/会员】发送文件功能" v-if="item.settingIsfile == 0">否</d-text>
+    <d-text label="是否开启【游客/会员】发送文件功能" v-if="item.settingIsfile == 1">是</d-text>
+<!--
+    <d-text label="是否开启【游客/会员】截屏/截图功能" v-if="item.settingIsprintscreen == 0">否</d-text>
+    <d-text label="是否开启【游客/会员】截屏/截图功能" v-if="item.settingIsprintscreen == 1">是</d-text> -->
+    <d-text label="是否开启【游客/会员】发送表情功能" v-if="item.settingIsemotion == 0">否</d-text>
+    <d-text label="是否开启【游客/会员】发送表情功能" v-if="item.settingIsemotion == 1">是</d-text>
+<!-- 
+    <d-text label="是否开启发送语音功能" v-if="item.settingIsvoice == 0">否</d-text>
+    <d-text label="是否开启发送语音功能" v-if="item.settingIsvoice == 1">是</d-text>
+    <d-text label="预知访客消息" v-if="item.settingIsmessage == 0">关闭</d-text>
+    <d-text label="预知访客消息" v-if="item.settingIsmessage == 1">开启</d-text>
+    <d-text label="是否开启敏感词感知功能" v-if="item.settingIssensitive == 0">否</d-text>
+    <d-text label="是否开启敏感词感知功能" v-if="item.settingIssensitive == 1">是</d-text> -->
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+	data() {
+		return {
+			loading:true,
+			path: './setting/setting/setting',
+			item: null
+		} 
+	},
+	mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {id:this.$route.query.id}); 
+  }
+}
+</script>

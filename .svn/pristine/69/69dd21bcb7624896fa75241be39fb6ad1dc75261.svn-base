@@ -1,0 +1,33 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="工作日">{{item.kefutimeWorkdays}}</d-text>
+    <d-text label="上班时间">{{item.skillDescription}}</d-text>
+    <d-text label="下班时间接入新会话状态" v-if="item.kefutimeIsdialog == 0">关闭</d-text>
+    <d-text label="下班时间接入新会话状态" v-if="item.kefutimeIsdialog == 1">开启</d-text>  
+    <d-text label="下班时间是否释放排队访客" v-if="item.kefutimeIsvisitor == 0">否</d-text>
+    <d-text label="下班时间是否释放排队访客" v-if="item.kefutimeIsvisitor == 1">是</d-text>
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+	data() {
+		return {
+			loading:true,
+			path: './setting/kefutime/kefutime',
+			item: null
+		} 
+	},
+	mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {id:this.$route.query.id}); 
+  }
+}
+</script>

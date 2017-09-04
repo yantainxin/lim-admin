@@ -1,0 +1,46 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table v-if="items != null" :data="items" border stripe>
+    <el-table-column align="center" prop="historyId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="historyCustomerid" label="访客ID" sortable></el-table-column>
+    <el-table-column header-align="center" prop="historyCustomertype" label="会话类型" sortable></el-table-column>    
+    <el-table-column header-align="center" prop="historyKefuname" label="接待客服" sortable></el-table-column>
+    <el-table-column header-align="center" prop="historyBegintime" label="会话开始时间" sortable></el-table-column>
+    <el-table-column header-align="center" prop="historyEndtime" label="会话结束时间" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+      <template scope="scope">
+        <router-link class="el-button el-button--small" :to="{name:'historyView', query:{id: scope.row.historyId}}" tag="button">
+          <i class="iconfont icon-detail"></i>
+        </router-link>
+      </template>
+    </el-table-column>          
+ </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed: {
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+  data() {
+    return {
+      loading: false,
+      path: './history/history',
+      count: 0,
+      items: null,
+    }
+  },
+  mounted() {
+    this.listItems();
+  },
+  watch: {
+    $route() {
+      this.listItems();
+    }
+  }
+}
+</script>

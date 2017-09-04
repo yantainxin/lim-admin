@@ -1,0 +1,153 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "vue-beauty",
+        "scope": null,
+        "escapedName": "vue-beauty",
+        "name": "vue-beauty",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "D:\\vueSpace\\lim-admin"
+    ]
+  ],
+  "_cnpm_publish_time": 1489570253839,
+  "_from": "vue-beauty",
+  "_hasShrinkwrap": false,
+  "_id": "vue-beauty@0.1.1",
+  "_location": "/vue-beauty",
+  "_nodeVersion": "7.7.2",
+  "_npmOperationalInternal": {
+    "host": "packages-18-east.internal.npmjs.com",
+    "tmp": "tmp/vue-beauty-0.1.1.tgz_1489570251569_0.3870606031268835"
+  },
+  "_npmUser": {
+    "name": "yuu2lee4",
+    "email": "yuu2lee4@qq.com"
+  },
+  "_npmVersion": "4.1.2",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "vue-beauty",
+    "scope": null,
+    "escapedName": "vue-beauty",
+    "name": "vue-beauty",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "http://registry.npm.taobao.org/vue-beauty/download/vue-beauty-0.1.1.tgz",
+  "_shasum": "9eb807678ba34f4e786b7ad3c7c4237e7d70e0a6",
+  "_shrinkwrap": null,
+  "_spec": "vue-beauty",
+  "_where": "D:\\vueSpace\\lim-admin",
+  "author": {
+    "name": "G7:FE-driver"
+  },
+  "bugs": {
+    "url": "https://github.com/FE-Driver/vue-beauty/issues"
+  },
+  "dependencies": {
+    "async-validator": "^1.6.8",
+    "classnames": "^2.2.5",
+    "core-js": "^2.4.1",
+    "velocity-animate": "^1.4.3",
+    "vue-resource": "^0.9.3"
+  },
+  "description": "Ant Design components built with Vue.js",
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.3.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-latest": "^6.22.0",
+    "babel-preset-stage-2": "^6.22.0",
+    "babel-runtime": "^6.23.0",
+    "beautify": "^0.0.8",
+    "clipboard": "^1.6.0",
+    "connect-history-api-fallback": "^1.3.0",
+    "css-loader": "^0.26.1",
+    "eslint": "^3.16.0",
+    "eslint-config-airbnb-base": "^11.1.0",
+    "eslint-plugin-html": "^2.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eventsource-polyfill": "^0.9.6",
+    "express": "^4.14.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.10.0",
+    "formidable": "^1.1.1",
+    "function-bind": "^1.1.0",
+    "highlight.js": "^9.9.0",
+    "html-webpack-plugin": "^2.28.0",
+    "http-proxy-middleware": "^0.17.3",
+    "json-loader": "^0.5.4",
+    "less": "^2.7.2",
+    "less-loader": "^2.2.3",
+    "ora": "^1.1.0",
+    "shelljs": "^0.7.6",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "vue": "^1.0.28",
+    "vue-hot-reload-api": "^1.3.3",
+    "vue-html-loader": "^1.2.3",
+    "vue-loader": "^8.5.3",
+    "vue-router": "^0.7.13",
+    "vue-style-loader": "^1.0.0",
+    "webpack": "^1.14.0",
+    "webpack-dev-middleware": "^1.10.1",
+    "webpack-hot-middleware": "^2.17.0",
+    "webpack-merge": "^3.0.0"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "9eb807678ba34f4e786b7ad3c7c4237e7d70e0a6",
+    "size": 515755,
+    "noattachment": false,
+    "tarball": "http://registry.npm.taobao.org/vue-beauty/download/vue-beauty-0.1.1.tgz"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es6": true
+    }
+  },
+  "gitHead": "bf64d120b16b16328f748f0d4c0e738beb39b67a",
+  "homepage": "https://github.com/FE-Driver/vue-beauty",
+  "keywords": [
+    "vue",
+    "vue-beauty",
+    "vue-component",
+    "ant-design"
+  ],
+  "license": "MIT",
+  "main": "package/vue-beauty.min.js",
+  "maintainers": [
+    {
+      "name": "yuu2lee4",
+      "email": "yuu2lee4@qq.com"
+    }
+  ],
+  "name": "vue-beauty",
+  "optionalDependencies": {},
+  "publish_time": 1489570253839,
+  "readme": "<p align=\"center\">\n    <a href=\"https://github.com/FE-Driver/vue-beauty\">\n        <img width=\"200\" src=\"https://raw.githubusercontent.com/FE-Driver/vue-beauty/master/src/assets/VB-logo.png\">\n    </a>\n</p>\n\n# vue-beauty [![npm](http://img.shields.io/npm/v/vue-beauty.svg)](https://www.npmjs.com/package/vue-beauty) [![NPM downloads](http://img.shields.io/npm/dm/vue-beauty.svg)](https://www.npmjs.com/package/vue-beauty) [![MIT License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://www.npmjs.com/package/vue-beauty)\nBeautiful  UI components build with vue and ant design\n\n- 目前主分支基于vue1.0开发，vue2.0版本请关注[next分支](https://github.com/FE-Driver/vue-beauty/tree/next)\n\n## 特性\n- 丰富的组件，涵盖常用场景\n- 基于vue组件化开发，数据驱动视图\n- 封装复杂性，提供简单友好的api\n- 基于ant design样式优化\n\n## 引入\n使用npm或者yarn\n```\nnpm install vue-beauty -S  OR  yarn add vue-beauty\n\nimport Vue from 'vue'\n//import css\nimport 'vue-beauty/package/style/vue-beauty.min.css'\n\n//import components\nimport vueBeauty from 'vue-beauty'\nVue.use(vueBeauty)\n\n//OR\nimport {alert} from 'vue-beauty'\nVue.use(alert)\n```\n或使用 &lt;script&gt; 全局引用\n```\n<link rel=\"stylesheet\" href=\"vue-beauty.min.css\"> \n<script type=\"text/javascript\" src=\"vue-beauty.min.js\"></script> \n```\n您可以通过 `npm install vue-beauty@beta -S`  OR  `yarn add vue-beauty@beta` 来体验vue2.0的组件库，但不推荐在生产环境使用。  \n更多说明，请查看我们的[在线文档](https://fe-driver.github.io/vue-beauty)。\n\n## 浏览器支持\nchrome、firefox、暂不支持IE(计划支持IE11+)。\n\n## Polyfill\n本组件库内置了一些es最新实例方法的垫片，请查看[Polyfill](https://fe-driver.github.io/vue-beauty/#!/components/polyfill)。\n\n## 更新日志\n欢迎查看详细的[更新日志](https://github.com/FE-Driver/vue-beauty/releases)。\n\n## 参与贡献\n我们欢迎任何形式的贡献，请阅读[贡献指南](https://fe-driver.github.io/vue-beauty/#!/components/contribute)了解详细的情况。\n\n## 链接\n- [Vue官网](http://cn.vuejs.org//)\n- [Ant.Design官网](http://ant.design/)",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FE-Driver/vue-beauty.git"
+  },
+  "scripts": {
+    "build": "node build/build.js",
+    "dev": "node build/dev-server.js",
+    "package": "npm run package:dev && npm run package:prod",
+    "package:dev": "webpack --config build/webpack.package.dev.config.js",
+    "package:prod": "webpack --config build/webpack.package.prod.config.js"
+  },
+  "version": "0.1.1"
+}

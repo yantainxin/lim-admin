@@ -1,0 +1,74 @@
+<template>
+  <header class="page-head el-row bg-primary">
+    <div class="header-logo pull-left"><img width="165" class="img-responsive" src="../../../static/image/logo.png" alt="鸭梨LIM"></div>
+    <div class="header-menu pull-left"><span><i class="fa fa-md fa-list"></i></span></div>
+    <div class="header-user pull-right">
+      <span>
+        <label>
+          <img class="img-rounded" v-if="personal.avatar":src="personal.avatar"><i v-if="!personal.avatar" class="fa fa-md fa-user-circle-o">&nbsp;</i>{{personal.adminRealname}}，欢迎您
+        </label>
+        <label>
+          <el-dropdown>          
+            <i class="fa fa-md fa-question-circle-o" style="cursor:pointer"></i>&nbsp;帮助
+            <el-dropdown-menu slot="dropdown" class="help">
+              <el-dropdown-item ><i class="fa fa-md fa-newspaper-o"></i>&nbsp;&nbsp;如何操作</el-dropdown-item>
+              <el-dropdown-item ><i class="fa fa-md fa-paint-brush"></i>&nbsp;&nbsp;意见反馈</el-dropdown-item>
+              <el-dropdown-item ><i class="fa fa-md fa-send"></i>&nbsp;&nbsp;鸭梨官网</el-dropdown-item>
+              <el-dropdown-item ><i class="fa fa-md fa-vcard"></i>&nbsp;&nbsp;关于我们</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </label>
+        <label>
+          <el-tooltip content="清除缓存,将会关掉您所打开的标签">
+            <a @click="cacheClear()" ><i class="fa fa-md fa-history"></i>&nbsp;清除缓存</a>
+          </el-tooltip>
+        </label>
+        <label>
+          <a href="#" @click="logout()"><i class="fa fa-md fa-power-off"></i>&nbsp;注销</a>
+        </label>
+      </span>
+    </div>
+  </header>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL',
+      tabActive: 'GET_TAB_ACTIVE'
+    })
+  },
+  methods: {
+     ...mapActions({
+      clearTabs: 'CLEAR_TABS'
+    }),
+    logout() {
+        window.sessionStorage.clear();
+        this.$router.push({name: 'login'});
+        layer.msg(res.body.msg);
+  },
+  cacheClear() {
+      let obj = this;
+      layer.open({
+        icon: 3,
+        shade:0.3,
+        title: '清除缓存',
+        btn: ['确定', '取消'], 
+        content: '清除缓存,将会关掉您所打开的标签',
+        yes: function(index, layero){
+          obj.clearTabs();
+          layer.msg("已清除缓存")
+          layer.close(index);
+        }
+      });
+    }
+  }
+}
+</script>
+<style>
+.header-user a{text-decoration:none !important;cursor:pointer;}
+.el-dropdown {color:#fff !important;}
+.help i{color: orange !important;}
+</style>

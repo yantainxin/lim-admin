@@ -1,0 +1,35 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中" v-if="item != null">
+  <el-row class="item-detail">
+    <d-text label="ID">{{item.memberId}}</d-text>
+    <d-text label="会员编号">{{item.memberNo}}</d-text>
+    <d-text label="会员账号">{{item.memberUsername}}</d-text>
+    <d-text label="会员邮箱">{{item.memberEmail}}</d-text>
+    <d-text label="移动电话">{{item.memberPhone}}</d-text>
+    <d-text label="会员头像">{{item.memberPhoto}}</d-text>
+    <d-text label="地址">{{item.memberAddress}}</d-text>
+    <!-- <s-img label="会员头像" :value="item.memberPhoto" name="会员头像" alt="会员头像" :src="item.memberPhoto" width="90" height="90"></s-img> -->
+  </el-row>
+</el-row>
+</template>
+<script>
+import { mapGetters } from 'vuex'
+export default{
+  computed:{
+    ...mapGetters({
+      personal: 'GET_PERSONAL'
+    })
+  },
+	data() {
+		return {
+			loading:true,
+			path: './basicinfo/member/member',
+			item: null
+		} 
+	},
+	mounted() {
+    let url = this.config.userpath + this.path.substr(1) + 'Init.action';
+    this.viewItem(url, {uid:this.$route.query.id}); 
+  }
+}
+</script>

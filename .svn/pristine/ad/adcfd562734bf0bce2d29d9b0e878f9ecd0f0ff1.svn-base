@@ -1,0 +1,41 @@
+<template>
+<el-row class="content-body" v-loading="loading" element-loading-text="拼命加载中">
+    <el-table :data="items" border stripe>
+    <el-table-column align="center" prop="syskefuId" label="ID" sortable width="100"></el-table-column>
+    <el-table-column header-align="center" prop="syskefuUsername" label="昵称" sortable></el-table-column>
+    <el-table-column header-align="center" prop="syskefuIsstate" label="在线状态" sortable></el-table-column>
+    <el-table-column header-align="center" prop="syskefuAvg" label="评价平均分" sortable></el-table-column>
+    <el-table-column header-align="center" prop="syskefuMaxoforder" label="同时最大接单数" sortable></el-table-column>
+    <el-table-column header-align="center" prop="syskefuIsrobot" label="机器人服务" sortable></el-table-column>
+    <el-table-column align="center" label="操作" width="180">
+        <template scope="scope">
+            <router-link class="el-button el-button--info el-button--small" :to="{name:'syskefuModify', query:{id: scope.row.syskefuId}}" tag="button" title="编辑">
+                <i class="fa fa-edit"></i><span class="hidden-xs">编辑</span>
+            </router-link>
+        <el-button size="small" type="danger" icon="delete" @click="reomveItem(scope.row.syskefuId)" title="删除"><span class="hidden-xs">删除</span></el-button>
+      </template>
+    </el-table-column>
+  </el-table>                   
+  <d-pagination :count="count"></d-pagination>
+</el-row>
+</template>
+<script>
+export default{
+    data() {
+        return {
+            loading: true,
+            path: './management/syskefu/syskefu',
+            count: 0,
+            items: []
+        } 
+    },
+    mounted(){
+        this.listItems(); 
+    },
+    watch:{
+        $route(){
+            this.listItems();
+        }
+    }
+}
+</script>
